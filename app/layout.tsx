@@ -1,20 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Sora, Space_Mono } from "next/font/google";
 import "./globals.css";
-import Nav from "@/components/Nav";
-import Footer from "@/components/Footer";
-import CosmicBackground from "@/components/CosmicBackground";
 import ThemeProvider from "@/components/ThemeProvider";
-import CursorTrail from "@/components/CursorTrail";
-import FloatingLines from "@/components/FloatingLines";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const sora = Sora({
+  variable: "--font-sora",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const spaceMono = Space_Mono({
+  variable: "--font-space-mono",
+  weight: ["400", "700"],
   subsets: ["latin"],
 });
 
@@ -23,17 +19,17 @@ export const metadata: Metadata = {
     default: "Soham Kakra",
     template: "%s · Soham Kakra",
   },
-  description: "Soham's portfolio of work, notes, and photography.",
+  description: "A minimal, cinematic portfolio of product work and photography.",
   metadataBase: new URL("https://example.com"),
   openGraph: {
     title: "Soham Kakra",
-    description: "Soham's portfolio of work, notes, and photography.",
+    description: "A minimal, cinematic portfolio of product work and photography.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Soham Kakra",
-    description: "Soham's portfolio of work, notes, and photography.",
+    description: "A minimal, cinematic portfolio of product work and photography.",
   },
 };
 
@@ -46,14 +42,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${sora.variable} ${spaceMono.variable} antialiased`}
       >
         <ThemeProvider>
-          <Nav />
-          <FloatingLines />
-          <CursorTrail />
           {children}
-          <Footer />
         </ThemeProvider>
       </body>
     </html>

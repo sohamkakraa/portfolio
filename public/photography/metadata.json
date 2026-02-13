@@ -1,0 +1,51 @@
+{
+  "/photography/astrophotography/2E0EB61C-7BFA-4FD4-B5F2-FE5A8FE41A38.jpg": {
+    "camera": "Canon EOS 6D",
+    "lens": "24mm f/1.4",
+    "aperture": "f/2.0",
+    "shutter": "15s",
+    "iso": "1600",
+    "focalLength": "24",
+    "date": "Aug 17, 2023"
+  },
+  "/photography/automobile/0DEC1BE1-CFC4-49C1-BC41-A83FD40540A1.jpeg": {
+    "camera": "Sony A7 III",
+    "lens": "55mm f/1.8",
+    "aperture": "f/2.2",
+    "shutter": "1/200s",
+    "iso": "320",
+    "focalLength": "55"
+  },
+  "/photography/cityscapes/DSC_0039.jpg": {
+    "camera": "Nikon D750",
+    "lens": "35mm f/1.8",
+    "aperture": "f/2.8",
+    "shutter": "1/80s",
+    "iso": "800",
+    "focalLength": "35"
+  },
+  "/photography/events/DSC_0002.JPG": {
+    "camera": "Fujifilm X-T4",
+    "lens": "23mm f/2",
+    "aperture": "f/2.0",
+    "shutter": "1/125s",
+    "iso": "640",
+    "focalLength": "23"
+  },
+  "/photography/landscape/0DEC1BE1-CFC4-49C1-BC41-A83FD40540A1.jpeg": {
+    "camera": "Sony A7 III",
+    "lens": "24-70mm f/2.8",
+    "aperture": "f/4.0",
+    "shutter": "1/160s",
+    "iso": "200",
+    "focalLength": "35"
+  },
+  "/photography/wildlife/0982BFA2-F8F6-4315-8BA5-D67F5884BCE7.jpeg": {
+    "camera": "Canon R6",
+    "lens": "70-200mm f/2.8",
+    "aperture": "f/3.2",
+    "shutter": "1/640s",
+    "iso": "800",
+    "focalLength": "200"
+  }
+}

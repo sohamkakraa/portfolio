@@ -217,13 +217,15 @@ export default function Galaxy({
     let mesh: Mesh | null = null;
     let raf = 0;
     let gl: WebGLRenderingContext | null = null;
+    let scrollTimeout: number | null = null;
+    let paused = false;
 
     const targetMousePos = { x: 0.5, y: 0.5 };
     const smoothMousePos = { x: 0.5, y: 0.5 };
     let targetMouseActive = 0.0;
     let smoothMouseActive = 0.0;
 
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const dpr = 1;
     renderer = new Renderer({
       alpha: true,
       premultipliedAlpha: false,
@@ -312,7 +314,7 @@ export default function Galaxy({
 
     const lerpFactor = 0.05;
     const update = (t: number) => {
-      raf = window.requestAnimationFrame(update);
+      if (paused) return;
       program!.uniforms.uTime.value = t * 0.001;
       program!.uniforms.uStarSpeed.value = starSpeed;
 
@@ -325,15 +327,56 @@ export default function Galaxy({
       program!.uniforms.uMouseActiveFactor.value = smoothMouseActive;
 
       renderer!.render({ scene: mesh! });
+
+      raf = window.requestAnimationFrame(update);
     };
 
-    raf = window.requestAnimationFrame(update);
+    const start = () => {
+      if (raf) return;
+      paused = false;
+      raf = window.requestAnimationFrame(update);
+    };
+
+    const stop = () => {
+      paused = true;
+      if (raf) {
+        window.cancelAnimationFrame(raf);
+        raf = 0;
+      }
+    };
+
+    const handleScroll = () => {
+      stop();
+      if (scrollTimeout) {
+        window.clearTimeout(scrollTimeout);
+      }
+      scrollTimeout = window.setTimeout(() => {
+        start();
+      }, 140);
+    };
+
+    const handleVisibility = () => {
+      if (document.hidden) {
+        stop();
+      } else {
+        start();
+      }
+    };
+
+    start();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    document.addEventListener("visibilitychange", handleVisibility);
 
     return () => {
-      window.cancelAnimationFrame(raf);
+      stop();
+      if (scrollTimeout) {
+        window.clearTimeout(scrollTimeout);
+      }
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseleave", handleMouseLeave as any);
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("visibilitychange", handleVisibility);
       if (host.contains(canvas)) host.removeChild(canvas);
       gl?.getExtension("WEBGL_lose_context")?.loseContext();
     };

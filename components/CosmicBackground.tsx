@@ -10,18 +10,18 @@ export default function CosmicBackground() {
     >
       <div className="absolute inset-0">
         <Galaxy
-          mouseRepulsion
-          mouseInteraction
-          density={0.8}
-          glowIntensity={0.2}
+          mouseRepulsion={false}
+          mouseInteraction={false}
+          density={0.4}
+          glowIntensity={0.15}
           saturation={0}
           hueShift={140}
           twinkleIntensity={0.3}
           rotationSpeed={0.1}
           repulsionStrength={1}
           autoCenterRepulsion={0}
-          starSpeed={1}
-          speed={1.4}
+          starSpeed={0.7}
+          speed={1}
         />
       </div>
 

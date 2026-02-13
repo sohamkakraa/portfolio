@@ -1,23 +1,45 @@
-export const workProjects = [
+export type WorkProject = {
+  slug: string;
+  title: string;
+  meta: string;
+  description: string;
+  wip: boolean;
+  links?: {
+    live?: string;
+    github?: string;
+  };
+  snapshots?: string[];
+};
+
+export const workProjects: WorkProject[] = [
   {
-    slug: "diagnostic-reasoning-system",
-    title: "Diagnostic Reasoning System",
-    meta: "Systems thinking · Decision support",
+    slug: "medvault",
+    title: "MedVault",
+    meta: "Product engineering · Health records",
     description:
-      "A structured way to narrow root causes with evidence, constraints, and iterative refinement.",
+      "Built a high-fidelity Next.js prototype that turns scattered medical PDFs into a searchable health timeline with privacy-first, explicit-only extraction.",
+    wip: true,
+    links: {},
+    snapshots: [],
   },
   {
-    slug: "calm-ops-dashboard",
-    title: "Calm Ops Dashboard",
-    meta: "Product design · Observability",
+    slug: "tabscape",
+    title: "TabScape",
+    meta: "Fintech product · Budgeting",
     description:
-      "A calmer, clearer operations dashboard that reduces noise and prioritizes action.",
+      "Built a Next.js platform for consolidating recurring expenses into a single dashboard with rules-based categorization, payday planning, and trend forecasts.",
+    wip: true,
+    links: {},
+    snapshots: [],
   },
   {
-    slug: "night-sky-field-notes",
-    title: "Night Sky Field Notes",
-    meta: "Research · Field study",
+    slug: "robotrader",
+    title: "RoboTrader",
+    meta: "Trading systems · Data platform",
     description:
-      "A living log of observations, photos, and micro-experiments under darker skies.",
+      "Built a RoboInvestor-style daily swing trading stack with a FastAPI + Postgres backend and Next.js dashboard for signals, paper trades, and performance.",
+    wip: true,
+    links: {},
+    snapshots: [],
   },
 ];

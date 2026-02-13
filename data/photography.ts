@@ -1,20 +1,43 @@
-export const photographyCategories = [
+export type PhotographyCategory = {
+  slug: string;
+  title: string;
+  description: string;
+};
+
+export const photographyCategories: PhotographyCategory[] = [
   {
-    slug: "quiet-details",
-    title: "Quiet Details",
-    description:
-      "Small moments, soft light, and the texture between obvious subjects.",
+    slug: "wildlife",
+    title: "Wildlife",
+    description: "Candid moments of animals in motion, patience, and quiet light.",
   },
   {
-    slug: "street-notes",
-    title: "Street Notes",
-    description:
-      "Unposed frames from long walks, built around rhythm and contrast.",
+    slug: "landscape",
+    title: "Landscape",
+    description: "Wide frames, layered horizons, and the scale of open terrain.",
   },
   {
-    slug: "night-sky",
-    title: "Night Sky",
-    description:
-      "Stars, silhouettes, and slow exposures that hold on to the dark.",
+    slug: "astrophotography",
+    title: "Astrophotography",
+    description: "Night skies, long exposures, and the geometry of stars.",
+  },
+  {
+    slug: "light-trails",
+    title: "Light trails",
+    description: "Long-exposure motion studies with city glow and traffic flow.",
+  },
+  {
+    slug: "automobile",
+    title: "Automobile",
+    description: "Lines, reflections, and the craft of engineered motion.",
+  },
+  {
+    slug: "events",
+    title: "Events",
+    description: "Crowd energy, candid moments, and the story between frames.",
+  },
+  {
+    slug: "cityscapes",
+    title: "Cityscapes",
+    description: "Urban geometry, neon dusk, and the rhythm of streets.",
   },
 ];
