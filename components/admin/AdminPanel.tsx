@@ -289,11 +289,14 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
     fd.append("file", file);
     fd.append("scope", crop.scope === "about" ? "about" : "books");
     const res = await fetch("/api/upload", { method: "POST", body: fd });
+    const raw = await res.text();
     let result: { success?: boolean; path?: string; message?: string } = {};
     try {
-      result = (await res.json()) as typeof result;
+      result = raw ? (JSON.parse(raw) as typeof result) : {};
     } catch {
-      showAssetHint("Upload response was not valid JSON. Check the network or server logs.");
+      showAssetHint(
+        `Upload response was not JSON (${res.status}). ${raw.slice(0, 120).replace(/\s+/g, " ").trim() || res.statusText}`
+      );
       return;
     }
     if (!res.ok || !result.success || !result.path) {
@@ -413,11 +416,16 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
       formData.append("category", categorySlug);
       try {
         const res = await fetch("/api/upload", { method: "POST", body: formData });
-        const result = (await res.json().catch(() => ({}))) as {
-          success?: boolean;
-          path?: string;
-          message?: string;
-        };
+        const raw = await res.text();
+        let result: { success?: boolean; path?: string; message?: string } = {};
+        try {
+          result = raw ? (JSON.parse(raw) as typeof result) : {};
+        } catch {
+          failures.push(
+            `${file.name}: Bad response (${res.status}). ${raw.slice(0, 100).replace(/\s+/g, " ").trim() || res.statusText}`
+          );
+          continue;
+        }
         if (!res.ok || !result.success || !result.path) {
           failures.push(
             `${file.name}: ${result.message || (!res.ok ? `HTTP ${res.status}` : "Server rejected upload")}`
