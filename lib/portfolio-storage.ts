@@ -1,4 +1,5 @@
 import type {
+  LifeSection,
   PortfolioData,
   PhotographyCategory,
   PhotoItem,
@@ -34,6 +35,18 @@ const mergeCategories = (baseCategories: PhotographyCategory[], storedCategories
   return [...merged, ...extras];
 };
 
+const mergeLife = (base: LifeSection, stored?: LifeSection | null): LifeSection => {
+  if (!stored) return base;
+  return {
+    ...base,
+    ...stored,
+    snapshots: stored.snapshots?.length ? stored.snapshots : base.snapshots,
+    books: stored.books?.length ? stored.books : base.books,
+    places: stored.places?.length ? stored.places : base.places,
+    entertainment: stored.entertainment?.length ? stored.entertainment : base.entertainment,
+  };
+};
+
 export const mergePortfolioData = (baseData: PortfolioData, storedData?: PortfolioData | null): PortfolioData => {
   if (!storedData) {
     return baseData;
@@ -52,11 +65,17 @@ export const mergePortfolioData = (baseData: PortfolioData, storedData?: Portfol
       ...baseData.hero,
       ...storedData.hero,
       badges: storedData.hero?.badges?.length ? storedData.hero.badges : baseData.hero.badges,
+      showVivekaCta:
+        storedData.hero?.showVivekaCta !== undefined
+          ? storedData.hero.showVivekaCta
+          : baseData.hero.showVivekaCta,
+      vivekaCta: storedData.hero?.vivekaCta ?? baseData.hero.vivekaCta,
     },
     about: {
       ...baseData.about,
       ...storedData.about,
       highlights: storedData.about?.highlights?.length ? storedData.about.highlights : baseData.about.highlights,
+      portraitSrc: storedData.about?.portraitSrc ?? baseData.about.portraitSrc,
     },
     highlights: {
       ...baseData.highlights,
@@ -85,6 +104,7 @@ export const mergePortfolioData = (baseData: PortfolioData, storedData?: Portfol
       ...storedData.footer,
       links: storedData.footer?.links?.length ? storedData.footer.links : baseData.footer.links,
     },
+    life: mergeLife(baseData.life, storedData.life),
   };
 };
 

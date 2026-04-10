@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { ComponentType } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -17,137 +16,31 @@ import {
   ExternalLink,
   Mail,
 } from "lucide-react";
-import type { PortfolioData } from "@/lib/portfolio-types";
+import type { LifeEntertainment, PortfolioData } from "@/lib/portfolio-types";
 import { loadPortfolioData, mergePortfolioData } from "@/lib/portfolio-storage";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import ProjectGrid from "@/components/ProjectGrid";
 import PhotographySection from "@/components/PhotographySection";
 import ScrollReveal from "@/components/ui/ScrollReveal";
+import BookCoverTile from "@/components/BookCoverTile";
 
 type PortfolioPageProps = {
   initialData: PortfolioData;
 };
 
-type LifeMoment = {
-  title: string;
-  note: string;
-  detail: string;
-};
-
-type BookEntry = {
-  title: string;
-  author: string;
-  theme: string;
-  palette: string;
-};
-
-type TravelEntry = {
-  place: string;
-  context: string;
-  note: string;
-};
-
-type EntertainmentEntry = {
-  title: string;
-  icon: ComponentType<{ size?: number; className?: string }>;
-  picks: string[];
-};
-
-const lifeMoments: LifeMoment[] = [
-  {
-    title: "Research and product loops",
-    note: "TU/e lab time + build sprints",
-    detail:
-      "Most weeks are split between ML research, product prototyping, and turning technical ideas into interfaces people can actually use.",
-  },
-  {
-    title: "Photography in motion",
-    note: "Field sessions after classes",
-    detail:
-      "I treat photography as a design practice: framing, patience, and timing. It keeps my visual thinking sharp for product work.",
-  },
-  {
-    title: "Systems-first mindset",
-    note: "From data to decisions",
-    detail:
-      "I enjoy building end-to-end systems where data collection, model logic, and UX all support one clear outcome.",
-  },
-];
-
-const bookshelf: BookEntry[] = [
-  {
-    title: "Designing Data-Intensive Applications",
-    author: "Martin Kleppmann",
-    theme: "Systems",
-    palette: "from-indigo-600/50 via-blue-500/30 to-cyan-600/50",
-  },
-  {
-    title: "Clean Architecture",
-    author: "Robert C. Martin",
-    theme: "Engineering",
-    palette: "from-emerald-600/50 via-teal-500/30 to-cyan-600/50",
-  },
-  {
-    title: "Deep Learning",
-    author: "Goodfellow, Bengio, Courville",
-    theme: "AI",
-    palette: "from-violet-600/50 via-purple-500/30 to-indigo-600/50",
-  },
-  {
-    title: "Thinking, Fast and Slow",
-    author: "Daniel Kahneman",
-    theme: "Decision-making",
-    palette: "from-amber-600/50 via-orange-500/30 to-red-600/50",
-  },
-  {
-    title: "Atomic Habits",
-    author: "James Clear",
-    theme: "Execution",
-    palette: "from-lime-600/50 via-emerald-500/30 to-green-600/50",
-  },
-];
-
-const travelLog: TravelEntry[] = [
-  {
-    place: "Eindhoven, Netherlands",
-    context: "Current base",
-    note: "Graduate work at TU/e and a strong student-builder ecosystem.",
-  },
-  {
-    place: "Dubai, U.A.E.",
-    context: "Education and work",
-    note: "Shaped my practical approach to analytics, operations, and product delivery.",
-  },
-  {
-    place: "Hyderabad, India",
-    context: "Early engineering chapter",
-    note: "Software internship experience and foundation in full-stack execution.",
-  },
-  {
-    place: "Abu Dhabi, U.A.E.",
-    context: "Regional projects",
-    note: "Exposure to cross-functional teams and enterprise-scale workflows.",
-  },
-];
-
-const entertainmentPicks: EntertainmentEntry[] = [
-  {
-    title: "Films",
-    icon: Film,
-    picks: ["Sci-fi worldbuilding", "Biographical dramas", "Cinematic documentaries"],
-  },
-  {
-    title: "Music",
-    icon: Music,
-    picks: ["Lo-fi while coding", "Instrumental focus playlists", "Indie and alternative"],
-  },
-  {
-    title: "Shows",
-    icon: Tv,
-    picks: ["Tech and startup series", "Mystery thrillers", "Character-driven stories"],
-  },
-];
+function entertainmentIcon(kind: LifeEntertainment["kind"]) {
+  switch (kind) {
+    case "film":
+      return Film;
+    case "music":
+      return Music;
+    case "show":
+      return Tv;
+    default:
+      return Tv;
+  }
+}
 
 export default function PortfolioPage({ initialData }: PortfolioPageProps) {
   const [data, setData] = useState<PortfolioData>(initialData);
@@ -211,15 +104,17 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
                     <Link href={data.hero.ctaSecondary.href} className="btn-secondary">
                       <span>{data.hero.ctaSecondary.label}</span>
                     </Link>
-                    <a
-                      href="https://viveka.sohamkakra.com"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="btn-accent"
-                    >
-                      <span>Viveka</span>
-                      <ExternalLink size={14} />
-                    </a>
+                    {data.hero.showVivekaCta !== false && data.hero.vivekaCta && (
+                      <a
+                        href={data.hero.vivekaCta.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn-accent"
+                      >
+                        <span>{data.hero.vivekaCta.label}</span>
+                        <ExternalLink size={14} />
+                      </a>
+                    )}
                   </div>
 
                   {/* Badges */}
@@ -299,11 +194,12 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
                   {/* Image */}
                   <div className="relative min-h-[400px] overflow-hidden bg-[color:var(--bg-elevated)]">
                     <Image
-                      src="/Me.jpg"
+                      src={data.about.portraitSrc || "/Me.jpg"}
                       alt={`${data.site.name} portrait`}
                       fill
                       className="object-cover"
                       priority
+                      sizes="(max-width: 1024px) 100vw, 40vw"
                     />
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[color:var(--bg-surface)] opacity-30 lg:opacity-60" />
                   </div>
@@ -338,15 +234,17 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
                         <Mail size={14} />
                         <span>Get in touch</span>
                       </a>
-                      <a
-                        href="https://viveka.sohamkakra.com"
-                        target="_blank"
-                        rel="noreferrer"
-                        className="btn-secondary"
-                      >
-                        <span>Read Viveka</span>
-                        <ExternalLink size={14} />
-                      </a>
+                      {data.hero.showVivekaCta !== false && data.hero.vivekaCta && (
+                        <a
+                          href={data.hero.vivekaCta.href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="btn-secondary"
+                        >
+                          <span>Read {data.hero.vivekaCta.label}</span>
+                          <ExternalLink size={14} />
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -403,10 +301,8 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
         <section id="life" className="scroll-mt-24 py-24">
           <div className="section-container">
             <ScrollReveal>
-              <p className="section-label">Beyond work</p>
-              <h2 className="section-title mt-4">
-                Life, books, places, and entertainment I return to.
-              </h2>
+              <p className="section-label">{data.life.eyebrow}</p>
+              <h2 className="section-title mt-4">{data.life.title}</h2>
             </ScrollReveal>
 
             <div className="mt-12 space-y-4">
@@ -423,7 +319,7 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
                     </span>
                   </summary>
                   <div className="grid gap-4 border-t border-[color:var(--border)] p-6 md:grid-cols-3">
-                    {lifeMoments.map((moment) => (
+                    {data.life.snapshots.map((moment) => (
                       <article
                         key={moment.title}
                         className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-5"
@@ -454,24 +350,18 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
                     </span>
                   </summary>
                   <div className="border-t border-[color:var(--border)] p-6">
-                    <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
-                      {bookshelf.map((book) => (
+                    <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
+                      {data.life.books.map((book) => (
                         <article key={book.title} className="group">
-                          <div
-                            className={`relative aspect-[2/3] overflow-hidden rounded-2xl border border-[color:var(--border)] bg-gradient-to-br ${book.palette} p-4 shadow-lg transition-transform hover:-translate-y-1`}
-                          >
-                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(255,255,255,0.2),transparent_45%)]" />
-                            <div className="relative flex h-full flex-col justify-between">
-                              <p className="text-[10px] uppercase tracking-[0.2em] text-white/70">
-                                {book.theme}
-                              </p>
-                              <div>
-                                <h3 className="text-sm font-bold leading-tight text-white">
-                                  {book.title}
-                                </h3>
-                                <p className="mt-2 text-xs text-white/70">{book.author}</p>
-                              </div>
-                            </div>
+                          <BookCoverTile book={book} />
+                          <div className="mt-3 space-y-1">
+                            <p className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--accent)]">
+                              {book.theme}
+                            </p>
+                            <h3 className="text-sm font-bold leading-snug text-[color:var(--fg)] line-clamp-4">
+                              {book.title}
+                            </h3>
+                            <p className="text-xs text-[color:var(--fg-muted)] line-clamp-2">{book.author}</p>
                           </div>
                         </article>
                       ))}
@@ -493,7 +383,7 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
                     </span>
                   </summary>
                   <div className="grid gap-4 border-t border-[color:var(--border)] p-6 sm:grid-cols-2">
-                    {travelLog.map((entry) => (
+                    {data.life.places.map((entry) => (
                       <article
                         key={entry.place}
                         className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-5"
@@ -526,13 +416,15 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
                     </span>
                   </summary>
                   <div className="grid gap-4 border-t border-[color:var(--border)] p-6 md:grid-cols-3">
-                    {entertainmentPicks.map((entry) => (
+                    {data.life.entertainment.map((entry) => {
+                      const Icon = entertainmentIcon(entry.kind);
+                      return (
                       <article
                         key={entry.title}
                         className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-5"
                       >
                         <p className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.15em] text-[color:var(--fg)]">
-                          <entry.icon size={14} className="text-[color:var(--accent)]" />
+                          <Icon size={14} className="text-[color:var(--accent)]" />
                           {entry.title}
                         </p>
                         <ul className="mt-4 space-y-2.5 text-sm text-[color:var(--fg-muted)]">
@@ -544,7 +436,8 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
                           ))}
                         </ul>
                       </article>
-                    ))}
+                    );
+                    })}
                   </div>
                 </details>
               </ScrollReveal>

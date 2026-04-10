@@ -83,10 +83,16 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
       href: "#photography",
     },
     badges: ["AI/ML systems", "Data visualization", "Full-stack engineering", "Real-time products"],
+    showVivekaCta: true,
+    vivekaCta: {
+      label: "Viveka",
+      href: "https://viveka.sohamkakra.com",
+    },
   },
   about: {
     title: "About me",
     subtitle: "Data Science and AI builder with a product-first systems mindset.",
+    portraitSrc: "/Me.jpg",
     body:
       "I am pursuing an M.Sc. in Data Science and AI at Eindhoven University of Technology (TU/e). Across internships and independent products, I have worked on AI/ML-driven systems, full-stack applications, and analytics workflows that improve real decision-making.",
     highlights: [
@@ -148,6 +154,101 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
         year: "2024",
         status: "Live",
         link: "https://github.com/sohamkakraa",
+      },
+    ],
+  },
+  life: {
+    eyebrow: "Beyond work",
+    title: "Life, books, places, and entertainment I return to.",
+    snapshots: [
+      {
+        title: "Research and product loops",
+        note: "TU/e lab time + build sprints",
+        detail:
+          "Most weeks are split between ML research, product prototyping, and turning technical ideas into interfaces people can actually use.",
+      },
+      {
+        title: "Photography in motion",
+        note: "Field sessions after classes",
+        detail:
+          "I treat photography as a design practice: framing, patience, and timing. It keeps my visual thinking sharp for product work.",
+      },
+      {
+        title: "Systems-first mindset",
+        note: "From data to decisions",
+        detail:
+          "I enjoy building end-to-end systems where data collection, model logic, and UX all support one clear outcome.",
+      },
+    ],
+    books: [
+      {
+        title: "Designing Data-Intensive Applications",
+        author: "Martin Kleppmann",
+        theme: "Systems",
+        palette: "from-indigo-600/50 via-blue-500/30 to-cyan-600/50",
+      },
+      {
+        title: "Clean Architecture",
+        author: "Robert C. Martin",
+        theme: "Engineering",
+        palette: "from-emerald-600/50 via-teal-500/30 to-cyan-600/50",
+      },
+      {
+        title: "Deep Learning",
+        author: "Goodfellow, Bengio, Courville",
+        theme: "AI",
+        palette: "from-violet-600/50 via-purple-500/30 to-indigo-600/50",
+      },
+      {
+        title: "Thinking, Fast and Slow",
+        author: "Daniel Kahneman",
+        theme: "Decision-making",
+        palette: "from-amber-600/50 via-orange-500/30 to-red-600/50",
+      },
+      {
+        title: "Atomic Habits",
+        author: "James Clear",
+        theme: "Execution",
+        palette: "from-lime-600/50 via-emerald-500/30 to-green-600/50",
+      },
+    ],
+    places: [
+      {
+        place: "Eindhoven, Netherlands",
+        context: "Current base",
+        note: "Graduate work at TU/e and a strong student-builder ecosystem.",
+      },
+      {
+        place: "Dubai, U.A.E.",
+        context: "Education and work",
+        note: "Shaped my practical approach to analytics, operations, and product delivery.",
+      },
+      {
+        place: "Hyderabad, India",
+        context: "Early engineering chapter",
+        note: "Software internship experience and foundation in full-stack execution.",
+      },
+      {
+        place: "Abu Dhabi, U.A.E.",
+        context: "Regional projects",
+        note: "Exposure to cross-functional teams and enterprise-scale workflows.",
+      },
+    ],
+    entertainment: [
+      {
+        title: "Films",
+        kind: "film",
+        picks: ["Sci-fi worldbuilding", "Biographical dramas", "Cinematic documentaries"],
+      },
+      {
+        title: "Music",
+        kind: "music",
+        picks: ["Lo-fi while coding", "Instrumental focus playlists", "Indie and alternative"],
+      },
+      {
+        title: "Shows",
+        kind: "show",
+        picks: ["Tech and startup series", "Mystery thrillers", "Character-driven stories"],
       },
     ],
   },

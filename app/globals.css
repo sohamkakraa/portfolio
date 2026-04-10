@@ -676,8 +676,21 @@
 .admin-surface input,
 .admin-surface textarea,
 .admin-surface select,
-.admin-surface button {
+.admin-surface button:not(.btn-primary):not(.btn-accent) {
   color: var(--fg);
+}
+
+/* Primary/accent buttons use inverted text; admin-surface was forcing unreadable light-on-light */
+.admin-surface .btn-primary,
+.admin-surface .btn-primary span,
+.admin-surface .btn-primary svg {
+  color: var(--bg);
+}
+
+.admin-surface .btn-accent,
+.admin-surface .btn-accent span,
+.admin-surface .btn-accent svg {
+  color: #fff;
 }
 
 .admin-surface input,

@@ -22,6 +22,12 @@ export type HeroContent = {
     href: string;
   };
   badges: string[];
+  /** When false, the third hero CTA (Viveka) is hidden. */
+  showVivekaCta?: boolean;
+  vivekaCta?: {
+    label: string;
+    href: string;
+  };
 };
 
 export type HighlightItem = {
@@ -40,6 +46,47 @@ export type AboutSection = {
   subtitle: string;
   body: string;
   highlights: string[];
+  /** Public path under /public, e.g. /about/portrait.jpg */
+  portraitSrc?: string;
+};
+
+export type LifeSnapshot = {
+  title: string;
+  note: string;
+  detail: string;
+};
+
+export type LifeBook = {
+  title: string;
+  author: string;
+  theme: string;
+  /** Tailwind gradient classes for placeholder when no cover */
+  palette: string;
+  /** Uploaded cover under /public/books/... */
+  coverSrc?: string;
+  /** Digits only ISBN for Open Library cover (fallback) */
+  isbn?: string;
+};
+
+export type LifePlace = {
+  place: string;
+  context: string;
+  note: string;
+};
+
+export type LifeEntertainment = {
+  title: string;
+  kind: "film" | "music" | "show";
+  picks: string[];
+};
+
+export type LifeSection = {
+  eyebrow: string;
+  title: string;
+  snapshots: LifeSnapshot[];
+  books: LifeBook[];
+  places: LifePlace[];
+  entertainment: LifeEntertainment[];
 };
 
 export type ProjectItem = {
@@ -123,4 +170,6 @@ export type PortfolioData = {
   photography: PhotographySection;
   contact: ContactSection;
   footer: FooterContent;
+  /** “Beyond work” — life, books, places, entertainment */
+  life: LifeSection;
 };

@@ -1,16 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import {
   Camera,
   Check,
-  ChevronDown,
+  Compass,
   Eye,
   EyeOff,
   FileText,
-  FolderOpen,
   Globe,
-  Image as ImageIcon,
   Layout,
   Loader2,
   Lock,
@@ -26,15 +25,18 @@ import {
 import type {
   AboutSection,
   ContactSection,
-  HighlightItem,
-  NavItem,
+  LifeBook,
+  LifeEntertainment,
+  LifePlace,
+  LifeSection,
+  LifeSnapshot,
   PhotographyCategory,
   PhotoItem,
   PhotoMeta,
   PortfolioData,
   ProjectItem,
-  SocialLink,
 } from "@/lib/portfolio-types";
+import ImageCropDialog from "@/components/admin/ImageCropDialog";
 
 type AdminPanelProps = {
   defaultData: PortfolioData;
@@ -49,6 +51,7 @@ const TABS = [
   { id: "highlights", label: "Highlights", icon: Sparkles },
   { id: "projects", label: "Projects", icon: FileText },
   { id: "photography", label: "Photography", icon: Camera },
+  { id: "life", label: "Beyond work", icon: Compass },
   { id: "contact", label: "Contact", icon: Settings },
 ] as const;
 
@@ -156,6 +159,12 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
   const [activeTab, setActiveTab] = useState<TabId>("site");
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [statusMessage, setStatusMessage] = useState("");
+  const [crop, setCrop] = useState<{
+    src: string;
+    aspect: number;
+    scope: "about" | "books";
+    bookIndex?: number;
+  } | null>(null);
 
   // Load data from API on mount
   useEffect(() => {
@@ -192,11 +201,15 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
         setStatusMessage("Saved successfully!");
         setTimeout(() => setStatus("idle"), 2000);
       } else {
-        throw new Error("Save failed");
+        const errBody = (await res.json().catch(() => null)) as { message?: string } | null;
+        throw new Error(errBody?.message || "Save failed");
       }
-    } catch {
+    } catch (e) {
+      const detail = e instanceof Error ? e.message : "Save failed";
       setStatus("error");
-      setStatusMessage("Failed to save. Saved to localStorage as fallback.");
+      setStatusMessage(
+        `Could not save on server. ${detail} — stored in this browser only (localStorage).`
+      );
       if (typeof window !== "undefined") {
         window.localStorage.setItem("portfolio-data-v2", JSON.stringify(data));
       }
@@ -232,6 +245,51 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
 
   const updateContact = (field: keyof ContactSection, value: string) => {
     setData((prev) => ({ ...prev, contact: { ...prev.contact, [field]: value } }));
+  };
+
+  const updateLife = (field: keyof LifeSection, value: unknown) => {
+    setData((prev) => ({ ...prev, life: { ...prev.life, [field]: value } }));
+  };
+
+  const closeCrop = () => {
+    if (crop?.src.startsWith("blob:")) URL.revokeObjectURL(crop.src);
+    setCrop(null);
+  };
+
+  const handleCroppedFile = async (file: File) => {
+    if (!crop) return;
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("scope", crop.scope === "about" ? "about" : "books");
+    const res = await fetch("/api/upload", { method: "POST", body: fd });
+    const result = (await res.json()) as { success?: boolean; path?: string };
+    if (!result.success || !result.path) return;
+    if (crop.scope === "about") {
+      setData((prev) => ({
+        ...prev,
+        about: { ...prev.about, portraitSrc: result.path },
+      }));
+    } else if (crop.bookIndex !== undefined) {
+      setData((prev) => {
+        const books = [...prev.life.books];
+        const b = books[crop.bookIndex!];
+        if (b) books[crop.bookIndex!] = { ...b, coverSrc: result.path };
+        return { ...prev, life: { ...prev.life, books } };
+      });
+    }
+  };
+
+  const openAboutCrop = (file: File) => {
+    setCrop({ src: URL.createObjectURL(file), aspect: 3 / 4, scope: "about" });
+  };
+
+  const openBookCrop = (bookIndex: number, file: File) => {
+    setCrop({
+      src: URL.createObjectURL(file),
+      aspect: 2 / 3,
+      scope: "books",
+      bookIndex,
+    });
   };
 
   const updateCategory = (idx: number, field: keyof PhotographyCategory, value: unknown) => {
@@ -380,9 +438,9 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
       <div className="sticky top-0 z-40 border-b border-[color:var(--border)] bg-[color:var(--bg)]/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
           <div className="flex items-center gap-3">
-            <a href="/" className="text-sm font-bold tracking-[0.15em] uppercase text-[color:var(--fg)]">
+            <Link href="/" className="text-sm font-bold tracking-[0.15em] uppercase text-[color:var(--fg)]">
               Soham Kakra
-            </a>
+            </Link>
             <span className="rounded-full bg-[color:var(--accent)]/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-[color:var(--accent)]">
               Admin
             </span>
@@ -586,6 +644,16 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
                   <TextArea value={data.hero.subtitle} onChange={(v) => updateHero("subtitle", v)} />
                 </Field>
 
+                <label className="flex cursor-pointer items-center gap-2 pt-2 text-xs text-[color:var(--fg-muted)]">
+                  <input
+                    type="checkbox"
+                    checked={data.hero.showVivekaCta !== false}
+                    onChange={(e) => updateHero("showVivekaCta", e.target.checked)}
+                    className="rounded border-[color:var(--border)]"
+                  />
+                  Show third CTA (Viveka) in hero and about
+                </label>
+
                 <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-4">
                   Call to Actions
                 </h4>
@@ -612,6 +680,34 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
                     <Input
                       value={data.hero.ctaSecondary.href}
                       onChange={(v) => updateHero("ctaSecondary", { ...data.hero.ctaSecondary, href: v })}
+                    />
+                  </Field>
+                </div>
+
+                <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-4">
+                  Viveka CTA
+                </h4>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field label="Label">
+                    <Input
+                      value={data.hero.vivekaCta?.label ?? ""}
+                      onChange={(v) =>
+                        updateHero("vivekaCta", {
+                          label: v,
+                          href: data.hero.vivekaCta?.href ?? "https://viveka.sohamkakra.com",
+                        })
+                      }
+                    />
+                  </Field>
+                  <Field label="URL">
+                    <Input
+                      value={data.hero.vivekaCta?.href ?? ""}
+                      onChange={(v) =>
+                        updateHero("vivekaCta", {
+                          label: data.hero.vivekaCta?.label ?? "Viveka",
+                          href: v,
+                        })
+                      }
                     />
                   </Field>
                 </div>
@@ -687,6 +783,36 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
                 >
                   <Plus size={12} /> Add Highlight
                 </button>
+
+                <Field label="Portrait photo">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                    {data.about.portraitSrc ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={data.about.portraitSrc}
+                        alt=""
+                        className="h-28 w-24 rounded-xl border border-[color:var(--border)] object-cover"
+                      />
+                    ) : (
+                      <span className="text-xs text-[color:var(--fg-muted)]">Using default /Me.jpg on site.</span>
+                    )}
+                    <div>
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0];
+                          if (f) openAboutCrop(f);
+                          e.target.value = "";
+                        }}
+                        className="text-sm"
+                      />
+                      <p className="mt-1 text-[11px] text-[color:var(--fg-muted)]">
+                        Opens a 3:4 crop dialog, then uploads to /about/.
+                      </p>
+                    </div>
+                  </div>
+                </Field>
               </div>
             </Card>
           )}
@@ -959,6 +1085,360 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
             </>
           )}
 
+          {/* ── Beyond work (Life) ── */}
+          {activeTab === "life" && (
+            <>
+              <Card title="Section header">
+                <div className="space-y-4">
+                  <Field label="Eyebrow">
+                    <Input value={data.life.eyebrow} onChange={(v) => updateLife("eyebrow", v)} />
+                  </Field>
+                  <Field label="Title">
+                    <Input value={data.life.title} onChange={(v) => updateLife("title", v)} />
+                  </Field>
+                </div>
+              </Card>
+
+              <Card title="Life snapshots">
+                <div className="space-y-4">
+                  {data.life.snapshots.map((snap, i) => (
+                    <div
+                      key={`snap-${i}`}
+                      className="space-y-2 rounded-xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-4"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-[color:var(--fg-muted)]">Snapshot {i + 1}</span>
+                        <DangerButton
+                          onClick={() =>
+                            updateLife(
+                              "snapshots",
+                              data.life.snapshots.filter((_, j) => j !== i)
+                            )
+                          }
+                        >
+                          <Trash2 size={12} />
+                        </DangerButton>
+                      </div>
+                      <Input
+                        value={snap.title}
+                        onChange={(v) => {
+                          const next = [...data.life.snapshots];
+                          next[i] = { ...next[i], title: v };
+                          updateLife("snapshots", next);
+                        }}
+                        placeholder="Title"
+                      />
+                      <Input
+                        value={snap.note}
+                        onChange={(v) => {
+                          const next = [...data.life.snapshots];
+                          next[i] = { ...next[i], note: v };
+                          updateLife("snapshots", next);
+                        }}
+                        placeholder="Short note"
+                      />
+                      <TextArea
+                        value={snap.detail}
+                        onChange={(v) => {
+                          const next = [...data.life.snapshots];
+                          next[i] = { ...next[i], detail: v };
+                          updateLife("snapshots", next);
+                        }}
+                        placeholder="Detail"
+                        rows={3}
+                      />
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      updateLife("snapshots", [
+                        ...data.life.snapshots,
+                        { title: "", note: "", detail: "" } satisfies LifeSnapshot,
+                      ])
+                    }
+                    className="btn-secondary !py-1.5 !px-3 !text-[10px]"
+                  >
+                    <Plus size={12} /> Add snapshot
+                  </button>
+                </div>
+              </Card>
+
+              <Card title="Books">
+                <p className="mb-4 text-xs text-[color:var(--fg-muted)]">
+                  Optional ISBN loads a cover from Open Library when no upload is set. Palette classes are Tailwind
+                  gradients for the placeholder (e.g. from-indigo-600/50 via-blue-500/30 to-cyan-600/50).
+                </p>
+                <div className="space-y-6">
+                  {data.life.books.map((book, i) => (
+                    <div
+                      key={`book-${i}`}
+                      className="space-y-3 rounded-xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-4"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span className="text-xs font-bold text-[color:var(--fg-muted)]">Book {i + 1}</span>
+                        <DangerButton
+                          onClick={() =>
+                            updateLife(
+                              "books",
+                              data.life.books.filter((_, j) => j !== i)
+                            )
+                          }
+                        >
+                          <Trash2 size={12} />
+                        </DangerButton>
+                      </div>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <Field label="Title">
+                          <Input
+                            value={book.title}
+                            onChange={(v) => {
+                              const next = [...data.life.books];
+                              next[i] = { ...next[i], title: v };
+                              updateLife("books", next);
+                            }}
+                          />
+                        </Field>
+                        <Field label="Author">
+                          <Input
+                            value={book.author}
+                            onChange={(v) => {
+                              const next = [...data.life.books];
+                              next[i] = { ...next[i], author: v };
+                              updateLife("books", next);
+                            }}
+                          />
+                        </Field>
+                        <Field label="Theme label">
+                          <Input
+                            value={book.theme}
+                            onChange={(v) => {
+                              const next = [...data.life.books];
+                              next[i] = { ...next[i], theme: v };
+                              updateLife("books", next);
+                            }}
+                          />
+                        </Field>
+                        <Field label="ISBN (Open Library cover)">
+                          <Input
+                            value={book.isbn ?? ""}
+                            onChange={(v) => {
+                              const next = [...data.life.books];
+                              next[i] = { ...next[i], isbn: v };
+                              updateLife("books", next);
+                            }}
+                            placeholder="978..."
+                          />
+                        </Field>
+                        <Field label="Palette (placeholder gradient)">
+                          <Input
+                            value={book.palette}
+                            onChange={(v) => {
+                              const next = [...data.life.books];
+                              next[i] = { ...next[i], palette: v };
+                              updateLife("books", next);
+                            }}
+                          />
+                        </Field>
+                        <Field label="Cover image path">
+                          <Input
+                            value={book.coverSrc ?? ""}
+                            onChange={(v) => {
+                              const next = [...data.life.books];
+                              next[i] = { ...next[i], coverSrc: v || undefined };
+                              updateLife("books", next);
+                            }}
+                            placeholder="/books/..."
+                          />
+                        </Field>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-3">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) openBookCrop(i, f);
+                            e.target.value = "";
+                          }}
+                          className="text-sm"
+                        />
+                        <button
+                          type="button"
+                          className="btn-secondary !py-1.5 !px-3 !text-[10px]"
+                          onClick={() => {
+                            const next = [...data.life.books];
+                            next[i] = { ...next[i], coverSrc: undefined };
+                            updateLife("books", next);
+                          }}
+                        >
+                          Clear cover upload
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      updateLife("books", [
+                        ...data.life.books,
+                        {
+                          title: "",
+                          author: "",
+                          theme: "",
+                          palette: "from-slate-600/50 via-slate-500/30 to-zinc-600/50",
+                        } satisfies LifeBook,
+                      ])
+                    }
+                    className="btn-secondary !py-1.5 !px-3 !text-[10px]"
+                  >
+                    <Plus size={12} /> Add book
+                  </button>
+                </div>
+              </Card>
+
+              <Card title="Places">
+                <div className="space-y-4">
+                  {data.life.places.map((place, i) => (
+                    <div
+                      key={`place-${i}`}
+                      className="space-y-2 rounded-xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-4"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-[color:var(--fg-muted)]">Place {i + 1}</span>
+                        <DangerButton
+                          onClick={() =>
+                            updateLife(
+                              "places",
+                              data.life.places.filter((_, j) => j !== i)
+                            )
+                          }
+                        >
+                          <Trash2 size={12} />
+                        </DangerButton>
+                      </div>
+                      <Input
+                        value={place.place}
+                        onChange={(v) => {
+                          const next = [...data.life.places];
+                          next[i] = { ...next[i], place: v };
+                          updateLife("places", next);
+                        }}
+                        placeholder="Place name"
+                      />
+                      <Input
+                        value={place.context}
+                        onChange={(v) => {
+                          const next = [...data.life.places];
+                          next[i] = { ...next[i], context: v };
+                          updateLife("places", next);
+                        }}
+                        placeholder="Context"
+                      />
+                      <TextArea
+                        value={place.note}
+                        onChange={(v) => {
+                          const next = [...data.life.places];
+                          next[i] = { ...next[i], note: v };
+                          updateLife("places", next);
+                        }}
+                        placeholder="Note"
+                        rows={2}
+                      />
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      updateLife("places", [
+                        ...data.life.places,
+                        { place: "", context: "", note: "" } satisfies LifePlace,
+                      ])
+                    }
+                    className="btn-secondary !py-1.5 !px-3 !text-[10px]"
+                  >
+                    <Plus size={12} /> Add place
+                  </button>
+                </div>
+              </Card>
+
+              <Card title="Entertainment">
+                <div className="space-y-4">
+                  {data.life.entertainment.map((ent, i) => (
+                    <div
+                      key={`ent-${i}`}
+                      className="space-y-2 rounded-xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-4"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-[color:var(--fg-muted)]">Block {i + 1}</span>
+                        <DangerButton
+                          onClick={() =>
+                            updateLife(
+                              "entertainment",
+                              data.life.entertainment.filter((_, j) => j !== i)
+                            )
+                          }
+                        >
+                          <Trash2 size={12} />
+                        </DangerButton>
+                      </div>
+                      <Input
+                        value={ent.title}
+                        onChange={(v) => {
+                          const next = [...data.life.entertainment];
+                          next[i] = { ...next[i], title: v };
+                          updateLife("entertainment", next);
+                        }}
+                        placeholder="Title (e.g. Films)"
+                      />
+                      <Field label="Kind">
+                        <select
+                          className="w-full rounded-xl border border-[color:var(--border)] bg-[color:var(--bg-surface)] px-3 py-2 text-sm"
+                          value={ent.kind}
+                          onChange={(e) => {
+                            const next = [...data.life.entertainment];
+                            next[i] = { ...next[i], kind: e.target.value as LifeEntertainment["kind"] };
+                            updateLife("entertainment", next);
+                          }}
+                        >
+                          <option value="film">Film</option>
+                          <option value="music">Music</option>
+                          <option value="show">Show</option>
+                        </select>
+                      </Field>
+                      <Field label="Picks (one per line)">
+                        <TextArea
+                          value={ent.picks.join("\n")}
+                          onChange={(v) => {
+                            const next = [...data.life.entertainment];
+                            next[i] = {
+                              ...next[i],
+                              picks: v.split("\n").map((l) => l.trim()).filter(Boolean),
+                            };
+                            updateLife("entertainment", next);
+                          }}
+                          rows={4}
+                        />
+                      </Field>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      updateLife("entertainment", [
+                        ...data.life.entertainment,
+                        { title: "", kind: "film", picks: [] } satisfies LifeEntertainment,
+                      ])
+                    }
+                    className="btn-secondary !py-1.5 !px-3 !text-[10px]"
+                  >
+                    <Plus size={12} /> Add entertainment block
+                  </button>
+                </div>
+              </Card>
+            </>
+          )}
+
           {/* ── Contact ── */}
           {activeTab === "contact" && (
             <Card title="Contact Section">
@@ -980,6 +1460,16 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
           )}
         </main>
       </div>
+
+      <ImageCropDialog
+        open={!!crop}
+        imageSrc={crop?.src ?? null}
+        aspect={crop?.aspect ?? 1}
+        title={crop?.scope === "about" ? "Crop portrait (3:4)" : "Crop book cover (2:3)"}
+        onClose={closeCrop}
+        onComplete={handleCroppedFile}
+        outputFileName={crop?.scope === "about" ? "portrait.jpg" : "cover.jpg"}
+      />
     </div>
   );
 }

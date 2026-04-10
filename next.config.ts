@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
   },
   // Exclude heavy static assets from serverless function bundles
   outputFileTracingExcludes: {
-    "*": ["public/photography/**"],
+    "*": ["public/photography/**", "public/about/**", "public/books/**"],
   },
 };
 

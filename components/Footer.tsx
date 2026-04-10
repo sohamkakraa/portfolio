@@ -23,10 +23,10 @@ const iconForSocial = (label: string, href: string) => {
 export default function Footer({ name, note, socials, links = [] }: FooterProps) {
   return (
     <footer className="border-t border-[color:var(--border)]">
-      <div className="section-container py-16">
-        <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
+      <div className="section-container flex min-h-[13rem] flex-col justify-center py-20 md:min-h-[11rem]">
+        <div className="flex flex-col items-center justify-between gap-8 text-center md:flex-row md:items-center md:text-left">
           {/* Branding + note (note already carries attribution / year from content) */}
-          <div>
+          <div className="max-w-md md:max-w-none">
             <p className="text-lg font-bold tracking-tight text-[color:var(--fg)]">
               {name}
             </p>
@@ -36,7 +36,7 @@ export default function Footer({ name, note, socials, links = [] }: FooterProps)
           </div>
 
           {/* Socials, admin, Viveka */}
-          <div className="flex flex-wrap items-center gap-3 md:justify-end">
+          <div className="flex flex-wrap items-center justify-center gap-3 md:justify-end">
             {socials.map((item) => {
               const Icon = iconForSocial(item.label, item.href);
               return (
@@ -53,17 +53,7 @@ export default function Footer({ name, note, socials, links = [] }: FooterProps)
                 </a>
               );
             })}
-            {links.map((item) => (
-              <Link
-                key={`${item.href}-${item.label}`}
-                href={item.href}
-                aria-label={item.label}
-                title={item.label}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--border)] text-[color:var(--fg-muted)] transition-all hover:-translate-y-0.5 hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
-              >
-                <Settings2 size={16} />
-              </Link>
-            ))}
+
             <a
               href="https://viveka.sohamkakra.com"
               target="_blank"
