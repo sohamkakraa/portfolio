@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "10mb",
     },
   },
+  // Exclude heavy static assets from serverless function bundles
+  outputFileTracingExcludes: {
+    "*": ["public/photography/**"],
+  },
 };
 
 export default nextConfig;
