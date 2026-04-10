@@ -159,6 +159,12 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
   const [activeTab, setActiveTab] = useState<TabId>("site");
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [statusMessage, setStatusMessage] = useState("");
+  const [assetUploadHint, setAssetUploadHint] = useState<string | null>(null);
+  const [photoDropSlug, setPhotoDropSlug] = useState<string | null>(null);
+  const [aboutDropActive, setAboutDropActive] = useState(false);
+  const [bookDropIndex, setBookDropIndex] = useState<number | null>(null);
+  const [photoUploadBusy, setPhotoUploadBusy] = useState(false);
+  const assetHintTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [crop, setCrop] = useState<{
     src: string;
     aspect: number;
@@ -166,14 +172,35 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
     bookIndex?: number;
   } | null>(null);
 
-  // Load data from API on mount
+  const showAssetHint = useCallback((text: string) => {
+    if (assetHintTimer.current) clearTimeout(assetHintTimer.current);
+    setAssetUploadHint(text);
+    assetHintTimer.current = setTimeout(() => {
+      setAssetUploadHint(null);
+      assetHintTimer.current = null;
+    }, 6000);
+  }, []);
+
+  useEffect(
+    () => () => {
+      if (assetHintTimer.current) clearTimeout(assetHintTimer.current);
+    },
+    []
+  );
+
+  // Load data from API on mount (avoid cached JSON so new uploads / saves show up immediately)
   useEffect(() => {
     if (!authenticated) return;
-    fetch("/api/portfolio")
-      .then((res) => res.json())
+    fetch("/api/portfolio", { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
       .then((loaded: PortfolioData) => setData(loaded))
-      .catch(() => {});
-  }, [authenticated]);
+      .catch(() => {
+        showAssetHint("Could not load portfolio from the server. Using defaults until refresh.");
+      });
+  }, [authenticated, showAssetHint]);
 
   const handleLogin = () => {
     if (password === ADMIN_PASSWORD) {
@@ -262,13 +289,23 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
     fd.append("file", file);
     fd.append("scope", crop.scope === "about" ? "about" : "books");
     const res = await fetch("/api/upload", { method: "POST", body: fd });
-    const result = (await res.json()) as { success?: boolean; path?: string };
-    if (!result.success || !result.path) return;
+    let result: { success?: boolean; path?: string; message?: string } = {};
+    try {
+      result = (await res.json()) as typeof result;
+    } catch {
+      showAssetHint("Upload response was not valid JSON. Check the network or server logs.");
+      return;
+    }
+    if (!res.ok || !result.success || !result.path) {
+      showAssetHint(result.message || `Upload failed (${res.status}). Cropped image was not saved.`);
+      return;
+    }
     if (crop.scope === "about") {
       setData((prev) => ({
         ...prev,
         about: { ...prev.about, portraitSrc: result.path },
       }));
+      showAssetHint("Portrait uploaded. Click Save so it persists on the server.");
     } else if (crop.bookIndex !== undefined) {
       setData((prev) => {
         const books = [...prev.life.books];
@@ -276,6 +313,7 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
         if (b) books[crop.bookIndex!] = { ...b, coverSrc: result.path };
         return { ...prev, life: { ...prev.life, books } };
       });
+      showAssetHint("Book cover uploaded. Click Save so it persists on the server.");
     }
   };
 
@@ -359,36 +397,63 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
 
   // ── Image upload ──
 
-  const handleImageUpload = async (categorySlug: string, categoryIdx: number, files: FileList) => {
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
+  const handleImageUpload = async (categorySlug: string, categoryIdx: number, files: FileList | File[]) => {
+    const list = Array.from(files).filter((f) => f.type.startsWith("image/"));
+    if (!list.length) {
+      showAssetHint("Only image files are accepted (e.g. JPEG, PNG, WebP).");
+      return;
+    }
+    setPhotoUploadBusy(true);
+    const additions: PhotoItem[] = [];
+    const failures: string[] = [];
+    try {
+    for (const file of list) {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("category", categorySlug);
-
       try {
         const res = await fetch("/api/upload", { method: "POST", body: formData });
-        const result = await res.json();
-        if (result.success) {
-          const newImage: PhotoItem = {
-            id: createId(),
-            src: result.path,
-            title: file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " "),
-            description: "",
-            meta: emptyPhotoMeta(),
-          };
-          setData((prev) => {
-            const cats = [...prev.photography.categories];
-            cats[categoryIdx] = {
-              ...cats[categoryIdx],
-              images: [...cats[categoryIdx].images, newImage],
-            };
-            return { ...prev, photography: { ...prev.photography, categories: cats } };
-          });
+        const result = (await res.json().catch(() => ({}))) as {
+          success?: boolean;
+          path?: string;
+          message?: string;
+        };
+        if (!res.ok || !result.success || !result.path) {
+          failures.push(
+            `${file.name}: ${result.message || (!res.ok ? `HTTP ${res.status}` : "Server rejected upload")}`
+          );
+          continue;
         }
+        additions.push({
+          id: createId(),
+          src: result.path,
+          title: file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " "),
+          description: "",
+          meta: emptyPhotoMeta(),
+        });
       } catch {
-        // silently fail individual uploads
+        failures.push(`${file.name}: Network error`);
       }
+    }
+    if (additions.length) {
+      setData((prev) => {
+        const cats = [...prev.photography.categories];
+        const cat = cats[categoryIdx];
+        if (!cat) return prev;
+        cats[categoryIdx] = {
+          ...cat,
+          images: [...cat.images, ...additions],
+        };
+        return { ...prev, photography: { ...prev.photography, categories: cats } };
+      });
+      showAssetHint(
+        `Added ${additions.length} image(s). Click Save so they persist${failures.length ? ` (${failures.length} failed).` : "."}`
+      );
+    } else if (failures.length) {
+      showAssetHint(`Upload failed: ${failures.slice(0, 3).join(" ")}${failures.length > 3 ? " …" : ""}`);
+    }
+    } finally {
+      setPhotoUploadBusy(false);
     }
   };
 
@@ -476,6 +541,15 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
           </div>
         </div>
       </div>
+
+      {assetUploadHint ? (
+        <div
+          className="border-b border-amber-500/25 bg-amber-500/10 px-6 py-2.5 text-center text-xs font-medium text-amber-100/95"
+          role="status"
+        >
+          {assetUploadHint}
+        </div>
+      ) : null}
 
       <div className="mx-auto flex max-w-7xl gap-6 px-6 py-8">
         {/* Sidebar tabs */}
@@ -785,30 +859,69 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
                 </button>
 
                 <Field label="Portrait photo">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
                     {data.about.portraitSrc ? (
                       /* eslint-disable-next-line @next/next/no-img-element */
                       <img
+                        key={data.about.portraitSrc}
                         src={data.about.portraitSrc}
                         alt=""
-                        className="h-28 w-24 rounded-xl border border-[color:var(--border)] object-cover"
+                        className="h-28 w-24 shrink-0 rounded-xl border border-[color:var(--border)] object-cover"
                       />
                     ) : (
                       <span className="text-xs text-[color:var(--fg-muted)]">Using default /Me.jpg on site.</span>
                     )}
-                    <div>
+                    <div
+                      className={`flex min-h-[120px] flex-1 flex-col justify-center rounded-xl border-2 border-dashed px-4 py-4 transition ${
+                        aboutDropActive
+                          ? "border-[color:var(--accent)] bg-[color:var(--accent)]/10"
+                          : "border-[color:var(--border)] bg-[color:var(--bg-elevated)]"
+                      }`}
+                      onDragEnter={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setAboutDropActive(true);
+                      }}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.dataTransfer.dropEffect = "copy";
+                      }}
+                      onDragLeave={(e) => {
+                        e.preventDefault();
+                        const next = e.relatedTarget as Node | null;
+                        if (next && e.currentTarget.contains(next)) return;
+                        setAboutDropActive(false);
+                      }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setAboutDropActive(false);
+                        const f = Array.from(e.dataTransfer.files).find((file) => file.type.startsWith("image/"));
+                        if (f) openAboutCrop(f);
+                        else showAssetHint("Drop a JPEG, PNG, or WebP file for the portrait.");
+                      }}
+                    >
                       <input
+                        id="about-portrait-file"
                         type="file"
                         accept="image/jpeg,image/png,image/webp"
+                        className="hidden"
                         onChange={(e) => {
                           const f = e.target.files?.[0];
                           if (f) openAboutCrop(f);
                           e.target.value = "";
                         }}
-                        className="text-sm"
                       />
-                      <p className="mt-1 text-[11px] text-[color:var(--fg-muted)]">
-                        Opens a 3:4 crop dialog, then uploads to /about/.
+                      <p className="text-sm text-[color:var(--fg-muted)]">
+                        <label htmlFor="about-portrait-file" className="cursor-pointer font-medium text-[color:var(--accent)] hover:underline">
+                          Choose file
+                        </label>
+                        {" · "}
+                        or drag an image here
+                      </p>
+                      <p className="mt-2 text-[11px] text-[color:var(--fg-muted)]">
+                        Opens a 3:4 crop dialog, then uploads to /about/. Remember to Save.
                       </p>
                     </div>
                   </div>
@@ -981,19 +1094,58 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
                     </Field>
 
                     {/* Image upload */}
-                    <div className="rounded-xl border-2 border-dashed border-[color:var(--border)] p-6 text-center">
+                    <div
+                      className={`rounded-xl border-2 border-dashed p-6 text-center transition ${
+                        photoDropSlug === cat.slug
+                          ? "border-[color:var(--accent)] bg-[color:var(--accent)]/10"
+                          : "border-[color:var(--border)] bg-[color:var(--bg-elevated)]"
+                      } ${photoUploadBusy ? "pointer-events-none opacity-60" : ""}`}
+                      onDragEnter={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setPhotoDropSlug(cat.slug);
+                      }}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.dataTransfer.dropEffect = "copy";
+                      }}
+                      onDragLeave={(e) => {
+                        e.preventDefault();
+                        const next = e.relatedTarget as Node | null;
+                        if (next && e.currentTarget.contains(next)) return;
+                        setPhotoDropSlug((s) => (s === cat.slug ? null : s));
+                      }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setPhotoDropSlug(null);
+                        if (e.dataTransfer.files?.length) void handleImageUpload(cat.slug, ci, e.dataTransfer.files);
+                      }}
+                    >
                       <Upload size={24} className="mx-auto text-[color:var(--fg-muted)]" />
                       <p className="mt-2 text-sm text-[color:var(--fg-muted)]">
-                        Drop images or click to upload
+                        Drop images here or{" "}
+                        <label
+                          htmlFor={`photo-upload-${cat.slug}`}
+                          className="cursor-pointer font-medium text-[color:var(--accent)] hover:underline"
+                        >
+                          browse
+                        </label>
+                      </p>
+                      <p className="mt-1 text-[11px] text-[color:var(--fg-muted)]">
+                        JPEG, PNG, WebP, GIF — multiple files supported. Save when you are done.
                       </p>
                       <input
+                        id={`photo-upload-${cat.slug}`}
                         type="file"
                         accept="image/*"
                         multiple
+                        className="hidden"
                         onChange={(e) => {
-                          if (e.target.files) handleImageUpload(cat.slug, ci, e.target.files);
+                          if (e.target.files?.length) void handleImageUpload(cat.slug, ci, e.target.files);
+                          e.target.value = "";
                         }}
-                        className="mt-3 text-sm"
                       />
                     </div>
 
@@ -1009,7 +1161,7 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
                         >
                           <div className="h-16 w-20 shrink-0 overflow-hidden rounded-lg bg-[color:var(--bg)]">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={img.src} alt="" className="h-full w-full object-cover" />
+                            <img key={img.src} src={img.src} alt="" className="h-full w-full object-cover" />
                           </div>
                           <div className="flex-1 space-y-2">
                             <input
@@ -1252,20 +1404,60 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
                           />
                         </Field>
                       </div>
-                      <div className="flex flex-wrap items-center gap-3">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const f = e.target.files?.[0];
-                            if (f) openBookCrop(i, f);
-                            e.target.value = "";
+                      <div className="flex flex-col gap-2">
+                        <div
+                          className={`flex flex-wrap items-center gap-3 rounded-xl border-2 border-dashed px-3 py-3 transition ${
+                            bookDropIndex === i
+                              ? "border-[color:var(--accent)] bg-[color:var(--accent)]/10"
+                              : "border-[color:var(--border)] bg-[color:var(--bg)]"
+                          }`}
+                          onDragEnter={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setBookDropIndex(i);
                           }}
-                          className="text-sm"
-                        />
+                          onDragOver={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            e.dataTransfer.dropEffect = "copy";
+                          }}
+                          onDragLeave={(e) => {
+                            e.preventDefault();
+                            const next = e.relatedTarget as Node | null;
+                            if (next && e.currentTarget.contains(next)) return;
+                            setBookDropIndex((idx) => (idx === i ? null : idx));
+                          }}
+                          onDrop={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setBookDropIndex(null);
+                            const f = Array.from(e.dataTransfer.files).find((file) => file.type.startsWith("image/"));
+                            if (f) openBookCrop(i, f);
+                            else showAssetHint("Drop an image file for the book cover.");
+                          }}
+                        >
+                          <input
+                            id={`book-cover-${i}`}
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => {
+                              const f = e.target.files?.[0];
+                              if (f) openBookCrop(i, f);
+                              e.target.value = "";
+                            }}
+                          />
+                          <label
+                            htmlFor={`book-cover-${i}`}
+                            className="cursor-pointer text-sm font-medium text-[color:var(--accent)] hover:underline"
+                          >
+                            Choose cover
+                          </label>
+                          <span className="text-xs text-[color:var(--fg-muted)]">or drag image here (2:3 crop)</span>
+                        </div>
                         <button
                           type="button"
-                          className="btn-secondary !py-1.5 !px-3 !text-[10px]"
+                          className="self-start btn-secondary !py-1.5 !px-3 !text-[10px]"
                           onClick={() => {
                             const next = [...data.life.books];
                             next[i] = { ...next[i], coverSrc: undefined };

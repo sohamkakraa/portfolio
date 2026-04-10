@@ -41,10 +41,13 @@ function mergeStoredWithDefaults(stored: PortfolioData, defaults: PortfolioData)
       categories: defaults.photography.categories.map((defCat) => {
         const storedCat = stored.photography?.categories?.find((c) => c.slug === defCat.slug);
         if (!storedCat) return defCat;
+        const storedImages = storedCat.images;
         return {
           ...defCat,
           ...storedCat,
-          images: storedCat.images?.length > 0 ? storedCat.images : defCat.images,
+          // Only fall back to disk-scanned images when CMS never saved an `images` array.
+          // `[]` means an intentionally empty gallery; `?.length > 0` incorrectly replaced that with disk defaults.
+          images: Array.isArray(storedImages) ? storedImages : defCat.images,
         };
       }),
     },

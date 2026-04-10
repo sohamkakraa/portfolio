@@ -7,6 +7,8 @@ import {
   ArrowDown,
   ArrowUpRight,
   BookOpen,
+  ChevronDown,
+  ChevronUp,
   Compass,
   Film,
   MapPin,
@@ -16,6 +18,7 @@ import {
   ExternalLink,
   Mail,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import type { LifeEntertainment, PortfolioData } from "@/lib/portfolio-types";
 import { loadPortfolioData, mergePortfolioData } from "@/lib/portfolio-storage";
 import Nav from "@/components/Nav";
@@ -28,6 +31,29 @@ import BookCoverTile from "@/components/BookCoverTile";
 type PortfolioPageProps = {
   initialData: PortfolioData;
 };
+
+function LifeAccordionSummary({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
+  return (
+    <>
+      <span className="inline-flex items-center gap-2.5 text-sm font-bold uppercase tracking-[0.15em] text-[color:var(--fg)]">
+        <Icon size={16} className="text-[color:var(--accent)]" />
+        {label}
+      </span>
+      <span className="relative inline-flex h-5 w-5 shrink-0 items-center justify-center text-[color:var(--fg-muted)]">
+        <ChevronDown
+          size={20}
+          className="absolute transition-opacity duration-200 ease-out group-open:opacity-0"
+          aria-hidden
+        />
+        <ChevronUp
+          size={20}
+          className="absolute opacity-0 transition-opacity duration-200 ease-out group-open:opacity-100"
+          aria-hidden
+        />
+      </span>
+    </>
+  );
+}
 
 function entertainmentIcon(kind: LifeEntertainment["kind"]) {
   switch (kind) {
@@ -308,15 +334,9 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
             <div className="mt-12 space-y-4">
               {/* Life snapshots */}
               <ScrollReveal delay={100}>
-                <details open className="glass-card !rounded-[24px] overflow-hidden">
+                <details open className="group glass-card !rounded-[24px] overflow-hidden">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6 outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] [&::-webkit-details-marker]:hidden">
-                    <span className="inline-flex items-center gap-2.5 text-sm font-bold uppercase tracking-[0.15em] text-[color:var(--fg)]">
-                      <Compass size={16} className="text-[color:var(--accent)]" />
-                      Life snapshots
-                    </span>
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--fg-subtle)]">
-                      Toggle
-                    </span>
+                    <LifeAccordionSummary icon={Compass} label="Life snapshots" />
                   </summary>
                   <div className="grid gap-4 border-t border-[color:var(--border)] p-6 md:grid-cols-3">
                     {data.life.snapshots.map((moment) => (
@@ -339,15 +359,9 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
 
               {/* Books */}
               <ScrollReveal delay={200}>
-                <details className="glass-card !rounded-[24px] overflow-hidden">
+                <details className="group glass-card !rounded-[24px] overflow-hidden">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6 outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] [&::-webkit-details-marker]:hidden">
-                    <span className="inline-flex items-center gap-2.5 text-sm font-bold uppercase tracking-[0.15em] text-[color:var(--fg)]">
-                      <BookOpen size={16} className="text-[color:var(--accent)]" />
-                      Reading library
-                    </span>
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--fg-subtle)]">
-                      Toggle
-                    </span>
+                    <LifeAccordionSummary icon={BookOpen} label="Reading library" />
                   </summary>
                   <div className="border-t border-[color:var(--border)] p-6">
                     <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
@@ -372,15 +386,9 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
 
               {/* Places */}
               <ScrollReveal delay={300}>
-                <details className="glass-card !rounded-[24px] overflow-hidden">
+                <details className="group glass-card !rounded-[24px] overflow-hidden">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6 outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] [&::-webkit-details-marker]:hidden">
-                    <span className="inline-flex items-center gap-2.5 text-sm font-bold uppercase tracking-[0.15em] text-[color:var(--fg)]">
-                      <MapPin size={16} className="text-[color:var(--accent)]" />
-                      Places traveled
-                    </span>
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--fg-subtle)]">
-                      Toggle
-                    </span>
+                    <LifeAccordionSummary icon={MapPin} label="Places traveled" />
                   </summary>
                   <div className="grid gap-4 border-t border-[color:var(--border)] p-6 sm:grid-cols-2">
                     {data.life.places.map((entry) => (
@@ -405,15 +413,9 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
 
               {/* Entertainment */}
               <ScrollReveal delay={400}>
-                <details className="glass-card !rounded-[24px] overflow-hidden">
+                <details className="group glass-card !rounded-[24px] overflow-hidden">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6 outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] [&::-webkit-details-marker]:hidden">
-                    <span className="inline-flex items-center gap-2.5 text-sm font-bold uppercase tracking-[0.15em] text-[color:var(--fg)]">
-                      <Tv size={16} className="text-[color:var(--accent)]" />
-                      Entertainment picks
-                    </span>
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--fg-subtle)]">
-                      Toggle
-                    </span>
+                    <LifeAccordionSummary icon={Tv} label="Entertainment picks" />
                   </summary>
                   <div className="grid gap-4 border-t border-[color:var(--border)] p-6 md:grid-cols-3">
                     {data.life.entertainment.map((entry) => {

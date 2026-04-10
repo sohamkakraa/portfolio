@@ -21,81 +21,90 @@ const statusColor = (status?: string) => {
   }
 };
 
+const cardClassName =
+  "project-card group block text-left text-inherit no-underline outline-none focus-visible:border-[color:var(--accent)] focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)]";
+
 export default function ProjectGrid({ items }: ProjectGridProps) {
   return (
     <div className="grid gap-6 md:grid-cols-2">
-      {items.map((project, index) => (
-        <ScrollReveal key={project.id} delay={index * 100}>
-          <article className="project-card group">
-            {/* Content sits above the ::before gradient */}
-            <div className="relative z-10">
-              {/* Top row: year + status */}
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs text-[color:var(--fg-subtle)]">
-                  {project.year}
-                </span>
-                {project.status && (
-                  <span
-                    className={`rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] ${statusColor(
-                      project.status
-                    )}`}
-                  >
-                    {project.status}
-                  </span>
-                )}
-              </div>
+      {items.map((project, index) => {
+        const href = project.link?.trim() || "";
+        return (
+          <ScrollReveal key={project.id} delay={index * 100}>
+            {href ? (
+              <a
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                className={cardClassName}
+                aria-labelledby={`project-card-title-${project.id}`}
+              >
+                <ProjectCardBody project={project} linked />
+              </a>
+            ) : (
+              <article className={`${cardClassName} cursor-default`}>
+                <ProjectCardBody project={project} linked={false} />
+              </article>
+            )}
+          </ScrollReveal>
+        );
+      })}
+    </div>
+  );
+}
 
-              {/* Title */}
-              <h3 className="mt-5 text-2xl font-bold tracking-tight text-[color:var(--fg)] sm:text-3xl">
-                {project.title}
-              </h3>
+function ProjectCardBody({ project, linked }: { project: ProjectItem; linked: boolean }) {
+  return (
+    <div className="relative z-10">
+      <div className="flex items-center justify-between">
+        <span className="font-mono text-xs text-[color:var(--fg-subtle)]">{project.year}</span>
+        {project.status && (
+          <span
+            className={`rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] ${statusColor(
+              project.status
+            )}`}
+          >
+            {project.status}
+          </span>
+        )}
+      </div>
 
-              {/* Summary */}
-              <p className="mt-3 text-sm leading-relaxed text-[color:var(--fg-muted)]">
-                {project.summary}
-              </p>
+      <h3
+        id={`project-card-title-${project.id}`}
+        className="mt-5 text-2xl font-bold tracking-tight text-[color:var(--fg)] sm:text-3xl"
+      >
+        {project.title}
+      </h3>
 
-              {/* Tags */}
-              <div className="mt-5 flex flex-wrap gap-2">
-                {project.tags.map((tag) => (
-                  <span
-                    key={`${project.id}-${tag}`}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--border)] px-3 py-1 text-[10px] font-medium uppercase tracking-[0.15em] text-[color:var(--fg-muted)]"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="h-1 w-1 rounded-full bg-[color:var(--accent)]"
-                    />
-                    {tag}
-                  </span>
-                ))}
-              </div>
+      <p className="mt-3 text-sm leading-relaxed text-[color:var(--fg-muted)]">{project.summary}</p>
 
-              {/* CTA */}
-              <div className="mt-6">
-                {project.link ? (
-                  <a
-                    href={project.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--fg)] transition-colors hover:text-[color:var(--accent)]"
-                  >
-                    View project
-                    <ArrowUpRight
-                      size={16}
-                      className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                    />
-                  </a>
-                ) : (
-                  <span className="text-xs uppercase tracking-[0.2em] text-[color:var(--fg-subtle)]">
-                    Details on request
-                  </span>
-                )}
-              </div>
-            </div>
-          </article>
-        </ScrollReveal>
-      ))}
+      <div className="mt-5 flex flex-wrap gap-2">
+        {project.tags.map((tag) => (
+          <span
+            key={`${project.id}-${tag}`}
+            className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--border)] px-3 py-1 text-[10px] font-medium uppercase tracking-[0.15em] text-[color:var(--fg-muted)]"
+          >
+            <span aria-hidden="true" className="h-1 w-1 rounded-full bg-[color:var(--accent)]" />
+            {tag}
+          </span>
+        ))}
+      </div>
+
+      <div className="mt-6">
+        {linked ? (
+          <span className="inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--fg)] transition-colors group-hover:text-[color:var(--accent)]">
+            View project
+            <ArrowUpRight
+              size={16}
+              className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              aria-hidden
+              focusable="false"
+            />
+          </span>
+        ) : (
+          <span className="text-xs uppercase tracking-[0.2em] text-[color:var(--fg-subtle)]">Details on request</span>
+        )}
+      </div>
     </div>
   );
 }

@@ -276,19 +276,22 @@ export default function PhotographySection({ section }: PhotographySectionProps)
 
       {/* Grid preview */}
       {collectionImages.length ? (
-        <div key={activeSlugResolved} className="collection-fade mt-10 columns-1 gap-5 sm:columns-2 lg:columns-3">
+        <div
+          key={activeSlugResolved}
+          className="collection-fade mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+        >
           {collectionImages.slice(0, 6).map((image, index) => (
             <button
               key={image.id}
               type="button"
               onClick={() => openCollectionGallery(index)}
               onMouseEnter={() => ensureMeta(image)}
-              className="photo-card group mb-5 block w-full break-inside-avoid text-left"
+              className="photo-card group relative aspect-[3/4] w-full overflow-hidden text-left"
             >
               <LoaderImage
                 src={image.src}
                 alt={image.title}
-                className="block h-auto w-full"
+                className="absolute inset-0 h-full w-full object-cover"
                 skeletonClassName="image-loader-photo"
                 loading="lazy"
               />
@@ -414,19 +417,19 @@ export default function PhotographySection({ section }: PhotographySectionProps)
             {/* Modal body */}
             <div className="mt-0 min-h-0 overflow-y-auto p-6">
               {activeIndex === null ? (
-                <div className="columns-1 gap-5 sm:columns-2 lg:columns-3">
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                   {modalImages.map((image, index) => (
                     <button
                       key={image.id}
                       type="button"
                       onClick={() => openImageFromModal(index)}
                       onMouseEnter={() => ensureMeta(image)}
-                      className="photo-card group mb-5 block w-full break-inside-avoid text-left"
+                      className="photo-card group relative aspect-[3/4] w-full overflow-hidden text-left"
                     >
                       <LoaderImage
                         src={image.src}
                         alt={image.title}
-                        className="block h-auto w-full"
+                        className="absolute inset-0 h-full w-full object-cover"
                         skeletonClassName="image-loader-photo"
                         loading="lazy"
                       />

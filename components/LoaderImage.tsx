@@ -26,6 +26,7 @@ export default function LoaderImage({
         />
       ) : null}
       <img
+        key={typeof src === "string" ? src : String(src)}
         src={src}
         alt={alt}
         onLoad={(event) => {
