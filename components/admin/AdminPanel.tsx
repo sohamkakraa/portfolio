@@ -1071,6 +1071,16 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
                 </div>
               </Card>
 
+              <p className="rounded-xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] px-4 py-3 text-[11px] leading-relaxed text-[color:var(--fg-muted)]">
+                <span className="font-semibold text-[color:var(--fg)]">Hosting on Vercel?</span> Production servers
+                cannot write to <span className="font-mono text-[color:var(--accent)]">public/</span>. In the Vercel
+                dashboard create a <strong className="text-[color:var(--fg)]">Blob</strong> store for this project so{" "}
+                <span className="font-mono text-[color:var(--accent)]">BLOB_READ_WRITE_TOKEN</span> is set, then{" "}
+                <strong className="text-[color:var(--fg)]">redeploy</strong>. See <span className="font-mono">.env.example</span> for
+                steps. On Vercel, each upload is limited to about <strong className="text-[color:var(--fg)]">4.5MB</strong> through this
+                API.
+              </p>
+
               {data.photography.categories.map((cat, ci) => (
                 <Card key={cat.slug} title={cat.title || `Category ${ci + 1}`}>
                   <div className="space-y-4">

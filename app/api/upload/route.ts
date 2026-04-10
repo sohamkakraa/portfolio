@@ -6,15 +6,19 @@ import path from "path";
 const BLOB_CONFIGURED = Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
 const ON_VERCEL = process.env.VERCEL === "1";
 
-/** Vercel Blob supports larger payloads; local disk keeps a sane cap. */
-const MAX_BYTES = BLOB_CONFIGURED ? 12 * 1024 * 1024 : 45 * 1024 * 1024;
+/** Vercel Functions cap request bodies at 4.5MB (server upload → Blob). Local / disk can be larger. */
+const MAX_BYTES = (() => {
+  if (BLOB_CONFIGURED && ON_VERCEL) return Math.floor(4.5 * 1024 * 1024);
+  if (BLOB_CONFIGURED) return 12 * 1024 * 1024;
+  return 45 * 1024 * 1024;
+})();
 
 function uploadDisabledOnVercelResponse() {
   return NextResponse.json(
     {
       success: false,
       message:
-        "This deployment cannot save files to disk. Link a Vercel Blob store and set BLOB_READ_WRITE_TOKEN, or run the admin locally and commit files under public/.",
+        "This deployment cannot save files to disk. In Vercel: Project → Storage → create a Blob store linked to this app (adds BLOB_READ_WRITE_TOKEN), then Redeploy. See .env.example. Alternative: upload locally and git-push files under public/.",
     },
     { status: 503 }
   );
