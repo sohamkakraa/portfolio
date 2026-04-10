@@ -5,6 +5,7 @@ import { Github, Globe, Instagram, Linkedin, Mail, Settings2 } from "lucide-reac
 import type { SocialLink } from "@/lib/portfolio-types";
 
 type FooterProps = {
+  name: string;
   note: string;
   socials: SocialLink[];
   links?: SocialLink[];
@@ -19,7 +20,7 @@ const iconForSocial = (label: string, href: string) => {
   return Globe;
 };
 
-export default function Footer({ note, socials, links = [] }: FooterProps) {
+export default function Footer({ name, note, socials, links = [] }: FooterProps) {
   return (
     <footer className="border-t border-[color:var(--border)]">
       <div className="section-container py-16">
@@ -27,7 +28,7 @@ export default function Footer({ note, socials, links = [] }: FooterProps) {
           {/* Left: branding + note */}
           <div>
             <p className="text-lg font-bold tracking-tight text-[color:var(--fg)]">
-              Soham Kakra
+              {name}
             </p>
             <p className="mt-2 text-xs tracking-[0.15em] uppercase text-[color:var(--fg-muted)]">
               {note}
@@ -69,7 +70,7 @@ export default function Footer({ note, socials, links = [] }: FooterProps) {
         {/* Bottom bar */}
         <div className="mt-12 flex flex-col items-center gap-4 border-t border-[color:var(--border)] pt-8 md:flex-row md:justify-between">
           <p className="text-[11px] tracking-[0.2em] uppercase text-[color:var(--fg-subtle)]">
-            &copy; {new Date().getFullYear()} Soham Kakra. All rights reserved.
+            &copy; {new Date().getFullYear()} {name}. All rights reserved.
           </p>
           <a
             href="https://viveka.sohamkakra.com"

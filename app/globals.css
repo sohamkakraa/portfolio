@@ -115,49 +115,49 @@
   --radius-3xl: calc(var(--radius) + 16px);
 }
 
-/* ── Base ── */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* ── Base (inside @layer so Tailwind utilities can override) ── */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
 
-html {
-  scroll-behavior: smooth;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-body {
-  font-family: var(--font-sora), system-ui, -apple-system, sans-serif;
-  background: var(--bg);
-  color: var(--fg);
-  overflow-x: hidden;
-}
+  body {
+    font-family: var(--font-sora), system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    overflow-x: hidden;
+  }
 
-::selection {
-  background: var(--accent);
-  color: #fff;
-}
+  ::selection {
+    background: var(--accent);
+    color: #fff;
+  }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 
-/* ── Scrollbar ── */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--border-hover);
-  border-radius: 99px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--fg-subtle);
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-hover);
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--fg-subtle);
+  }
 }
 
 .no-scrollbar {

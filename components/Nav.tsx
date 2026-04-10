@@ -99,7 +99,7 @@ export default function Nav({ name, nav }: NavProps) {
 
       {/* Mobile menu overlay */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 flex flex-col bg-[color:var(--bg)]/95 backdrop-blur-xl md:hidden">
+        <div className="fixed inset-0 z-[100] flex flex-col bg-[color:var(--bg)]/95 backdrop-blur-xl md:hidden">
           <div className="flex h-16 items-center justify-end px-6">
             <button
               type="button"

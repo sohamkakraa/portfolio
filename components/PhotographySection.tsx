@@ -51,6 +51,18 @@ const withCategory = (photo: PhotoItem, category: PhotographyCategory): GalleryP
   categoryTitle: category.title,
 });
 
+/** Picks light or dark foreground for tab labels on category accent fills. */
+const textOnAccent = (hex: string) => {
+  const normalized = hex.replace("#", "").trim();
+  if (!/^[0-9a-fA-F]{6}$/.test(normalized)) return "#fafafa";
+  const n = parseInt(normalized, 16);
+  const r = (n >> 16) & 255;
+  const g = (n >> 8) & 255;
+  const b = n & 255;
+  const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+  return luminance > 0.55 ? "#0a0a0a" : "#fafafa";
+};
+
 export default function PhotographySection({ section }: PhotographySectionProps) {
   const categories = useMemo(
     () => section.categories.filter((category) => !category.hidden),
@@ -224,12 +236,16 @@ export default function PhotographySection({ section }: PhotographySectionProps)
                 onClick={() => selectCategory(category.slug)}
                 className={`rounded-full border px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] transition-all ${
                   active
-                    ? "border-transparent text-white shadow-lg"
+                    ? "border-transparent shadow-lg"
                     : "border-transparent text-[color:var(--fg-muted)] hover:text-[color:var(--fg)]"
                 }`}
                 style={
                   active
-                    ? { background: category.accent, boxShadow: `0 4px 20px ${category.accent}40` }
+                    ? {
+                        background: category.accent,
+                        boxShadow: `0 4px 20px ${category.accent}40`,
+                        color: textOnAccent(category.accent),
+                      }
                     : undefined
                 }
               >
@@ -361,10 +377,14 @@ export default function PhotographySection({ section }: PhotographySectionProps)
                       onClick={() => { setGalleryMode("collection"); selectCategory(category.slug); }}
                       className={`rounded-full border px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] transition ${
                         active
-                          ? "border-transparent text-white"
+                          ? "border-transparent"
                           : "border-[color:var(--border)] text-[color:var(--fg-muted)] hover:text-[color:var(--fg)]"
                       }`}
-                      style={active ? { background: category.accent } : undefined}
+                      style={
+                        active
+                          ? { background: category.accent, color: textOnAccent(category.accent) }
+                          : undefined
+                      }
                     >
                       {category.title}
                     </button>

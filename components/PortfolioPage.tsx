@@ -16,7 +16,6 @@ import {
   Tv,
   ExternalLink,
   Mail,
-  Send,
 } from "lucide-react";
 import type { PortfolioData } from "@/lib/portfolio-types";
 import { loadPortfolioData, mergePortfolioData } from "@/lib/portfolio-storage";
@@ -155,9 +154,11 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
 
   useEffect(() => {
     const stored = loadPortfolioData();
-    if (stored) {
+    if (!stored) return;
+    const id = window.setTimeout(() => {
       setData(mergePortfolioData(initialData, stored));
-    }
+    }, 0);
+    return () => window.clearTimeout(id);
   }, [initialData]);
 
   const visibleHighlights = useMemo(
@@ -171,76 +172,83 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
 
       <main>
         {/* ════════════════ HERO ════════════════ */}
-        <section id="top" className="relative flex min-h-screen items-center overflow-hidden">
+        <section id="top" className="relative min-h-[100dvh] overflow-hidden">
           {/* Background effects */}
-          <div className="hero-gradient-mesh" />
-          <div className="hero-grid-lines" />
-          <div className="hero-vignette" />
+          <div className="hero-gradient-mesh pointer-events-none" aria-hidden="true" />
+          <div className="hero-grid-lines pointer-events-none" aria-hidden="true" />
+          <div className="hero-vignette pointer-events-none" aria-hidden="true" />
 
-          <div className="relative z-10 section-container w-full py-32 md:py-40">
-            <div className="max-w-4xl">
-              {/* Eyebrow */}
-              <p className="animate-hero-text section-label">
-                {data.hero.eyebrow}
-              </p>
+          <div className="relative z-10 flex min-h-[100dvh] flex-col">
+            <div className="section-container flex min-h-0 flex-1 flex-col pt-28 md:pt-32">
+              <div className="flex min-h-0 flex-1 flex-col justify-center py-12 md:py-16">
+                <div className="max-w-4xl">
+                  {/* Eyebrow */}
+                  <p className="animate-hero-text section-label">
+                    {data.hero.eyebrow}
+                  </p>
 
-              {/* Title */}
-              <h1 className="mt-6">
-                <span className="animate-hero-text animate-hero-text-delay-1 block text-[clamp(2.5rem,7vw,5.5rem)] font-bold leading-[1.05] tracking-[-0.04em] text-[color:var(--fg)]">
-                  {data.hero.titleLine1}
-                </span>
-                <span className="animate-hero-text animate-hero-text-delay-2 block text-[clamp(2.5rem,7vw,5.5rem)] font-bold leading-[1.05] tracking-[-0.04em] text-gradient">
-                  {data.hero.titleLine2}
-                </span>
-              </h1>
+                  {/* Title */}
+                  <h1 className="mt-6">
+                    <span className="animate-hero-text animate-hero-text-delay-1 block text-[clamp(2.5rem,7vw,5.5rem)] font-bold leading-[1.05] tracking-[-0.04em] text-[color:var(--fg)]">
+                      {data.hero.titleLine1}
+                    </span>
+                    <span className="animate-hero-text animate-hero-text-delay-2 block text-[clamp(2.5rem,7vw,5.5rem)] font-bold leading-[1.05] tracking-[-0.04em] text-gradient">
+                      {data.hero.titleLine2}
+                    </span>
+                  </h1>
 
-              {/* Subtitle */}
-              <p className="animate-hero-text animate-hero-text-delay-3 mt-8 max-w-2xl text-lg leading-relaxed text-[color:var(--fg-muted)] md:text-xl">
-                {data.hero.subtitle}
-              </p>
+                  {/* Subtitle */}
+                  <p className="animate-hero-text animate-hero-text-delay-3 mt-8 max-w-2xl text-lg leading-relaxed text-[color:var(--fg-muted)] md:text-xl">
+                    {data.hero.subtitle}
+                  </p>
 
-              {/* CTAs */}
-              <div className="animate-hero-text animate-hero-text-delay-4 mt-10 flex flex-wrap items-center gap-4">
-                <Link href={data.hero.ctaPrimary.href} className="btn-primary">
-                  <span>{data.hero.ctaPrimary.label}</span>
-                  <ArrowDown size={16} />
-                </Link>
-                <Link href={data.hero.ctaSecondary.href} className="btn-secondary">
-                  <span>{data.hero.ctaSecondary.label}</span>
-                </Link>
-                <a
-                  href="https://viveka.sohamkakra.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn-accent"
-                >
-                  <span>Viveka</span>
-                  <ExternalLink size={14} />
-                </a>
+                  {/* CTAs */}
+                  <div className="animate-hero-text animate-hero-text-delay-4 mt-10 flex flex-wrap items-center gap-4">
+                    <Link href={data.hero.ctaPrimary.href} className="btn-primary">
+                      <span>{data.hero.ctaPrimary.label}</span>
+                      <ArrowDown size={16} />
+                    </Link>
+                    <Link href={data.hero.ctaSecondary.href} className="btn-secondary">
+                      <span>{data.hero.ctaSecondary.label}</span>
+                    </Link>
+                    <a
+                      href="https://viveka.sohamkakra.com"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn-accent"
+                    >
+                      <span>Viveka</span>
+                      <ExternalLink size={14} />
+                    </a>
+                  </div>
+
+                  {/* Badges */}
+                  <div className="animate-hero-text animate-hero-text-delay-5 mt-12 flex flex-wrap gap-3">
+                    {data.hero.badges.map((badge) => (
+                      <span
+                        key={badge}
+                        className="inline-flex items-center gap-2 rounded-full border border-[color:var(--border)] bg-[color:var(--bg-surface)]/50 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.15em] text-[color:var(--fg-muted)]"
+                      >
+                        <span
+                          aria-hidden="true"
+                          className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]"
+                        />
+                        {badge}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
 
-              {/* Badges */}
-              <div className="animate-hero-text animate-hero-text-delay-5 mt-12 flex flex-wrap gap-3">
-                {data.hero.badges.map((badge) => (
-                  <span
-                    key={badge}
-                    className="inline-flex items-center gap-2 rounded-full border border-[color:var(--border)] bg-[color:var(--bg-surface)]/50 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.15em] text-[color:var(--fg-muted)]"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]"
-                    />
-                    {badge}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Scroll indicator */}
-            <div className="absolute bottom-12 left-1/2 -translate-x-1/2">
-              <div className="scroll-indicator flex flex-col items-center gap-2 text-[color:var(--fg-subtle)]">
-                <span className="text-[10px] uppercase tracking-[0.3em]">Scroll</span>
-                <ArrowDown size={14} />
+              {/* Scroll indicator — pinned to lower viewport, not content height */}
+              <div
+                className="flex shrink-0 justify-center pb-10 pt-4 max-[480px]:pb-[max(2.5rem,env(safe-area-inset-bottom))]"
+                aria-hidden="true"
+              >
+                <div className="scroll-indicator flex flex-col items-center gap-2 text-[color:var(--fg-subtle)]">
+                  <span className="text-[10px] uppercase tracking-[0.3em]">Scroll</span>
+                  <ArrowDown size={14} />
+                </div>
               </div>
             </div>
           </div>
@@ -405,7 +413,7 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
               {/* Life snapshots */}
               <ScrollReveal delay={100}>
                 <details open className="glass-card !rounded-[24px] overflow-hidden">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6 outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] [&::-webkit-details-marker]:hidden">
                     <span className="inline-flex items-center gap-2.5 text-sm font-bold uppercase tracking-[0.15em] text-[color:var(--fg)]">
                       <Compass size={16} className="text-[color:var(--accent)]" />
                       Life snapshots
@@ -436,7 +444,7 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
               {/* Books */}
               <ScrollReveal delay={200}>
                 <details className="glass-card !rounded-[24px] overflow-hidden">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6 outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] [&::-webkit-details-marker]:hidden">
                     <span className="inline-flex items-center gap-2.5 text-sm font-bold uppercase tracking-[0.15em] text-[color:var(--fg)]">
                       <BookOpen size={16} className="text-[color:var(--accent)]" />
                       Reading library
@@ -475,7 +483,7 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
               {/* Places */}
               <ScrollReveal delay={300}>
                 <details className="glass-card !rounded-[24px] overflow-hidden">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6 outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] [&::-webkit-details-marker]:hidden">
                     <span className="inline-flex items-center gap-2.5 text-sm font-bold uppercase tracking-[0.15em] text-[color:var(--fg)]">
                       <MapPin size={16} className="text-[color:var(--accent)]" />
                       Places traveled
@@ -508,7 +516,7 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
               {/* Entertainment */}
               <ScrollReveal delay={400}>
                 <details className="glass-card !rounded-[24px] overflow-hidden">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6 outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] [&::-webkit-details-marker]:hidden">
                     <span className="inline-flex items-center gap-2.5 text-sm font-bold uppercase tracking-[0.15em] text-[color:var(--fg)]">
                       <Tv size={16} className="text-[color:var(--accent)]" />
                       Entertainment picks
@@ -581,7 +589,12 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
         </section>
       </main>
 
-      <Footer note={data.footer.note} socials={data.site.socials} links={data.footer.links} />
+      <Footer
+        name={data.site.name}
+        note={data.footer.note}
+        socials={data.site.socials}
+        links={data.footer.links}
+      />
     </div>
   );
 }
