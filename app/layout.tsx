@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Sora, Space_Mono } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/react";
 import ThemeProvider from "@/components/ThemeProvider";
 
 const sora = Sora({
@@ -52,6 +53,7 @@ export default function RootLayout({
           <div className="grain" aria-hidden="true" />
           {children}
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
