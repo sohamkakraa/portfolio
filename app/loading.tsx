@@ -1,23 +1,11 @@
 export default function Loading() {
   return (
-    <div className="page-loader min-h-screen w-full">
-      <div className="page-loader-backdrop" />
-      <div className="page-loader-grid" />
-      <div className="page-loader-noise" />
-
-      <div className="page-loader-content">
-        <div className="page-loader-orbit" aria-hidden="true">
-          <span className="page-loader-ring page-loader-ring-a" />
-          <span className="page-loader-ring page-loader-ring-b" />
-          <span className="page-loader-core" />
-          <span className="page-loader-dot page-loader-dot-a" />
-          <span className="page-loader-dot page-loader-dot-b" />
-        </div>
-
-        <p className="page-loader-label">Preparing Portfolio Experience</p>
-        <div className="page-loader-bar" aria-hidden="true">
-          <span className="page-loader-bar-fill" />
-        </div>
+    <div className="page-loader" style={{ minHeight: "100vh" }}>
+      <div className="flex flex-col items-center gap-6">
+        <div className="page-loader-ring" />
+        <p className="text-[10px] uppercase tracking-[0.4em] text-[color:var(--fg-muted)]">
+          Loading
+        </p>
       </div>
     </div>
   );

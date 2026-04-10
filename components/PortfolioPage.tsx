@@ -4,13 +4,27 @@ import { useEffect, useMemo, useState } from "react";
 import type { ComponentType } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { BookOpen, Compass, Film, MapPin, Music, Sparkles, Tv } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUpRight,
+  BookOpen,
+  Compass,
+  Film,
+  MapPin,
+  Music,
+  Sparkles,
+  Tv,
+  ExternalLink,
+  Mail,
+  Send,
+} from "lucide-react";
 import type { PortfolioData } from "@/lib/portfolio-types";
 import { loadPortfolioData, mergePortfolioData } from "@/lib/portfolio-storage";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import ProjectGrid from "@/components/ProjectGrid";
 import PhotographySection from "@/components/PhotographySection";
+import ScrollReveal from "@/components/ui/ScrollReveal";
 
 type PortfolioPageProps = {
   initialData: PortfolioData;
@@ -67,31 +81,31 @@ const bookshelf: BookEntry[] = [
     title: "Designing Data-Intensive Applications",
     author: "Martin Kleppmann",
     theme: "Systems",
-    palette: "from-sky-500/35 via-cyan-400/25 to-blue-700/35",
+    palette: "from-indigo-600/50 via-blue-500/30 to-cyan-600/50",
   },
   {
     title: "Clean Architecture",
     author: "Robert C. Martin",
     theme: "Engineering",
-    palette: "from-emerald-500/35 via-teal-400/25 to-cyan-700/35",
+    palette: "from-emerald-600/50 via-teal-500/30 to-cyan-600/50",
   },
   {
     title: "Deep Learning",
     author: "Goodfellow, Bengio, Courville",
     theme: "AI",
-    palette: "from-violet-500/30 via-indigo-400/25 to-blue-700/35",
+    palette: "from-violet-600/50 via-purple-500/30 to-indigo-600/50",
   },
   {
     title: "Thinking, Fast and Slow",
     author: "Daniel Kahneman",
     theme: "Decision-making",
-    palette: "from-amber-500/35 via-orange-400/25 to-red-700/35",
+    palette: "from-amber-600/50 via-orange-500/30 to-red-600/50",
   },
   {
     title: "Atomic Habits",
     author: "James Clear",
     theme: "Execution",
-    palette: "from-lime-500/35 via-emerald-400/25 to-green-700/35",
+    palette: "from-lime-600/50 via-emerald-500/30 to-green-600/50",
   },
 ];
 
@@ -142,7 +156,6 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
   useEffect(() => {
     const stored = loadPortfolioData();
     if (stored) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setData(mergePortfolioData(initialData, stored));
     }
   }, [initialData]);
@@ -153,331 +166,417 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
   );
 
   return (
-    <div className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
+    <div className="min-h-screen bg-[color:var(--bg)] text-[color:var(--fg)]">
       <Nav name={data.site.name} nav={data.site.nav} />
 
       <main>
-        <section id="top" className="hero-surface relative overflow-hidden">
-          <div className="hero-aurora absolute inset-0" />
-          <div className="hero-grid absolute inset-0" />
-          <div className="hero-orb hero-orb-a" />
-          <div className="hero-orb hero-orb-b" />
-          <div className="hero-noise absolute inset-0" />
+        {/* ════════════════ HERO ════════════════ */}
+        <section id="top" className="relative flex min-h-screen items-center overflow-hidden">
+          {/* Background effects */}
+          <div className="hero-gradient-mesh" />
+          <div className="hero-grid-lines" />
+          <div className="hero-vignette" />
 
-          <div className="relative mx-auto flex min-h-[calc(100svh-4.5rem)] max-w-6xl items-center px-6 py-24">
-            <div className="grid w-full gap-12 lg:grid-cols-[1.1fr_0.7fr] lg:items-center">
-              <div>
-                <p className="text-[11px] uppercase tracking-[0.4em] text-[color:var(--muted)]">
-                  {data.hero.eyebrow}
-                </p>
-                <h1 className="mt-4 text-4xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-6xl md:text-7xl">
-                  <span className="block">{data.hero.titleLine1}</span>
-                  <span className="block bg-[linear-gradient(110deg,#0a63ff,#5ad1ff)] bg-clip-text text-transparent">
-                    {data.hero.titleLine2}
-                  </span>
-                </h1>
-                <p className="text-balance mt-6 max-w-2xl text-base leading-relaxed text-[color:var(--muted)] sm:text-lg">
-                  {data.hero.subtitle}
-                </p>
+          <div className="relative z-10 section-container w-full py-32 md:py-40">
+            <div className="max-w-4xl">
+              {/* Eyebrow */}
+              <p className="animate-hero-text section-label">
+                {data.hero.eyebrow}
+              </p>
 
-                <div className="mt-8 flex flex-wrap gap-3">
-                  <Link
-                    href={data.hero.ctaPrimary.href}
-                    className="btn-primary rounded-full px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.28em]"
-                  >
-                    {data.hero.ctaPrimary.label}
-                  </Link>
-                  <Link
-                    href={data.hero.ctaSecondary.href}
-                    className="btn-secondary rounded-full px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.28em]"
-                  >
-                    {data.hero.ctaSecondary.label}
-                  </Link>
-                </div>
+              {/* Title */}
+              <h1 className="mt-6">
+                <span className="animate-hero-text animate-hero-text-delay-1 block text-[clamp(2.5rem,7vw,5.5rem)] font-bold leading-[1.05] tracking-[-0.04em] text-[color:var(--fg)]">
+                  {data.hero.titleLine1}
+                </span>
+                <span className="animate-hero-text animate-hero-text-delay-2 block text-[clamp(2.5rem,7vw,5.5rem)] font-bold leading-[1.05] tracking-[-0.04em] text-gradient">
+                  {data.hero.titleLine2}
+                </span>
+              </h1>
 
-                <div className="mt-10 flex flex-wrap gap-3">
-                  {data.hero.badges.map((badge) => (
-                    <span
-                      key={badge}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-[color:color-mix(in_srgb,var(--border)_65%,transparent)] bg-[color:color-mix(in_srgb,var(--surface)_68%,transparent)] px-3 py-1.5 text-[10px] uppercase tracking-[0.22em] text-[color:var(--muted)]"
-                    >
-                      <span
-                        aria-hidden="true"
-                        className="h-1 w-1 rounded-full bg-[color:color-mix(in_srgb,var(--muted)_65%,transparent)]"
-                      />
-                      {badge}
-                    </span>
-                  ))}
-                </div>
+              {/* Subtitle */}
+              <p className="animate-hero-text animate-hero-text-delay-3 mt-8 max-w-2xl text-lg leading-relaxed text-[color:var(--fg-muted)] md:text-xl">
+                {data.hero.subtitle}
+              </p>
+
+              {/* CTAs */}
+              <div className="animate-hero-text animate-hero-text-delay-4 mt-10 flex flex-wrap items-center gap-4">
+                <Link href={data.hero.ctaPrimary.href} className="btn-primary">
+                  <span>{data.hero.ctaPrimary.label}</span>
+                  <ArrowDown size={16} />
+                </Link>
+                <Link href={data.hero.ctaSecondary.href} className="btn-secondary">
+                  <span>{data.hero.ctaSecondary.label}</span>
+                </Link>
+                <a
+                  href="https://viveka.sohamkakra.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn-accent"
+                >
+                  <span>Viveka</span>
+                  <ExternalLink size={14} />
+                </a>
               </div>
 
-              <div className="space-y-6">
-                <div className="glass-panel rounded-[32px] p-6">
-                  <p className="text-[11px] uppercase tracking-[0.32em] text-[color:var(--muted)]">
-                    Current focus
-                  </p>
-                  <h2 className="mt-4 text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
-                    {data.site.role}
-                  </h2>
-                  <p className="mt-3 text-sm leading-relaxed text-[color:var(--muted)]">
-                    Building AI-powered products that connect research rigor, strong engineering, and clear UX.
-                  </p>
-                  <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-[color:var(--muted)]">
-                    <span>{data.site.location}</span>
-                    <span>Open to select collaborations</span>
-                  </div>
-                </div>
-
-                <div className="section-card hover-rise rounded-[28px] p-6">
-                  <p className="text-[11px] uppercase tracking-[0.32em] text-[color:var(--muted)]">
-                    Contact
-                  </p>
-                  <p className="mt-4 text-sm leading-relaxed text-[color:var(--foreground)]">{data.site.email}</p>
-                  <a
-                    href={`mailto:${data.site.email}`}
-                    className="mt-6 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.26em] text-[color:var(--foreground)]"
+              {/* Badges */}
+              <div className="animate-hero-text animate-hero-text-delay-5 mt-12 flex flex-wrap gap-3">
+                {data.hero.badges.map((badge) => (
+                  <span
+                    key={badge}
+                    className="inline-flex items-center gap-2 rounded-full border border-[color:var(--border)] bg-[color:var(--bg-surface)]/50 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.15em] text-[color:var(--fg-muted)]"
                   >
-                    Send a note
-                    <span aria-hidden="true">↗</span>
-                  </a>
-                </div>
+                    <span
+                      aria-hidden="true"
+                      className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]"
+                    />
+                    {badge}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Scroll indicator */}
+            <div className="absolute bottom-12 left-1/2 -translate-x-1/2">
+              <div className="scroll-indicator flex flex-col items-center gap-2 text-[color:var(--fg-subtle)]">
+                <span className="text-[10px] uppercase tracking-[0.3em]">Scroll</span>
+                <ArrowDown size={14} />
               </div>
             </div>
           </div>
         </section>
 
-        <section id="highlights" className="scroll-mt-24">
-          <div className="mx-auto max-w-6xl px-6 py-20">
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-              <div>
-                <p className="text-[11px] uppercase tracking-[0.3em] text-[color:var(--muted)]">
-                  {data.highlights.title}
-                </p>
-                <h2 className="mt-4 text-3xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-4xl">
-                  {data.highlights.description}
-                </h2>
+        {/* ════════════════ HIGHLIGHTS ════════════════ */}
+        <section id="highlights" className="scroll-mt-24 py-24">
+          <div className="section-container">
+            <ScrollReveal>
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                  <p className="section-label">{data.highlights.title}</p>
+                  <h2 className="section-title mt-4">{data.highlights.description}</h2>
+                </div>
               </div>
-            </div>
+            </ScrollReveal>
 
-            <div className="mt-10 grid gap-6 md:grid-cols-3">
-              {visibleHighlights.map((item) => (
-                <article key={item.title} className="section-card hover-rise rounded-3xl p-6">
-                  <h3 className="text-xl font-semibold text-[color:var(--foreground)]">{item.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-[color:var(--muted)]">{item.description}</p>
-                </article>
+            <div className="mt-12 grid gap-6 md:grid-cols-3">
+              {visibleHighlights.map((item, i) => (
+                <ScrollReveal key={item.title} delay={i * 100}>
+                  <article className="glass-card p-8 h-full">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[color:var(--accent)]/10">
+                      <Sparkles size={18} className="text-[color:var(--accent)]" />
+                    </div>
+                    <h3 className="mt-5 text-lg font-bold tracking-tight text-[color:var(--fg)]">
+                      {item.title}
+                    </h3>
+                    <p className="mt-3 text-sm leading-relaxed text-[color:var(--fg-muted)]">
+                      {item.description}
+                    </p>
+                  </article>
+                </ScrollReveal>
               ))}
             </div>
           </div>
         </section>
 
-        <section id="about" className="scroll-mt-24">
-          <div className="mx-auto max-w-6xl px-6 py-20">
-            <div className="section-card rounded-[36px] p-8 sm:p-10 md:p-14">
-              <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-                <div className="relative overflow-hidden rounded-[28px] border border-[color:var(--border)] bg-[color:var(--surface-elevated)]">
-                  <Image
-                    src="/Me.jpg"
-                    alt={`${data.site.name} portrait`}
-                    width={1200}
-                    height={1600}
-                    className="h-full max-h-[480px] w-full object-cover"
-                    priority
-                  />
-                </div>
+        <div className="section-container">
+          <div className="section-divider" />
+        </div>
 
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.32em] text-[color:var(--muted)]">{data.about.title}</p>
-                  <h2 className="mt-4 text-3xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-4xl">
-                    {data.about.subtitle}
-                  </h2>
-                  <p className="mt-5 text-base leading-relaxed text-[color:var(--muted)]">{data.about.body}</p>
+        {/* ════════════════ ABOUT ════════════════ */}
+        <section id="about" className="scroll-mt-24 py-24">
+          <div className="section-container">
+            <ScrollReveal>
+              <div className="overflow-hidden rounded-[32px] border border-[color:var(--border)] bg-[color:var(--bg-surface)]">
+                <div className="grid gap-0 lg:grid-cols-[0.8fr_1.2fr]">
+                  {/* Image */}
+                  <div className="relative min-h-[400px] overflow-hidden bg-[color:var(--bg-elevated)]">
+                    <Image
+                      src="/Me.jpg"
+                      alt={`${data.site.name} portrait`}
+                      fill
+                      className="object-cover"
+                      priority
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[color:var(--bg-surface)] opacity-30 lg:opacity-60" />
+                  </div>
 
-                  <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                    {data.about.highlights.map((item) => (
-                      <div
-                        key={item}
-                        className="flex items-center gap-3 rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-soft)] px-4 py-3"
+                  {/* Content */}
+                  <div className="p-8 sm:p-10 lg:p-14">
+                    <p className="section-label">{data.about.title}</p>
+                    <h2 className="section-title mt-4">{data.about.subtitle}</h2>
+                    <p className="mt-6 text-base leading-[1.8] text-[color:var(--fg-muted)]">
+                      {data.about.body}
+                    </p>
+
+                    <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                      {data.about.highlights.map((item) => (
+                        <div
+                          key={item}
+                          className="flex items-start gap-3 rounded-2xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-4"
+                        >
+                          <Sparkles
+                            size={14}
+                            className="mt-0.5 shrink-0 text-[color:var(--accent)]"
+                          />
+                          <span className="text-xs leading-relaxed text-[color:var(--fg-muted)]">
+                            {item}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-8 flex flex-wrap gap-3">
+                      <a href={`mailto:${data.site.email}`} className="btn-primary">
+                        <Mail size={14} />
+                        <span>Get in touch</span>
+                      </a>
+                      <a
+                        href="https://viveka.sohamkakra.com"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn-secondary"
                       >
-                        <Sparkles size={14} className="text-[color:var(--accent)]" />
-                        <span className="text-xs uppercase tracking-[0.22em] text-[color:var(--muted)]">{item}</span>
-                      </div>
-                    ))}
+                        <span>Read Viveka</span>
+                        <ExternalLink size={14} />
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </ScrollReveal>
           </div>
         </section>
 
-        <section id="projects" className="scroll-mt-24">
-          <div className="mx-auto max-w-6xl px-6 py-20">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-              <div>
-                <p className="text-[11px] uppercase tracking-[0.3em] text-[color:var(--muted)]">{data.projects.title}</p>
-                <h2 className="mt-4 text-3xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-4xl">
-                  {data.projects.description}
-                </h2>
-              </div>
-              <Link
-                href="#contact"
-                className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[color:var(--foreground)]"
-              >
-                Contact ↗
-              </Link>
-            </div>
+        <div className="section-container">
+          <div className="section-divider" />
+        </div>
 
-            <div className="mt-10">
+        {/* ════════════════ PROJECTS ════════════════ */}
+        <section id="projects" className="scroll-mt-24 py-24">
+          <div className="section-container">
+            <ScrollReveal>
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                  <p className="section-label">{data.projects.title}</p>
+                  <h2 className="section-title mt-4">{data.projects.description}</h2>
+                </div>
+                <Link
+                  href="#contact"
+                  className="flex items-center gap-2 text-sm font-semibold text-[color:var(--fg)] transition hover:text-[color:var(--accent)]"
+                >
+                  Let&apos;s collaborate
+                  <ArrowUpRight size={16} />
+                </Link>
+              </div>
+            </ScrollReveal>
+
+            <div className="mt-12">
               <ProjectGrid items={data.projects.items} />
             </div>
           </div>
         </section>
 
-        <section id="photography" className="scroll-mt-24">
-          <div className="mx-auto max-w-6xl px-6 py-20">
+        <div className="section-container">
+          <div className="section-divider" />
+        </div>
+
+        {/* ════════════════ PHOTOGRAPHY ════════════════ */}
+        <section id="photography" className="scroll-mt-24 py-24">
+          <div className="section-container">
             <PhotographySection section={data.photography} />
           </div>
         </section>
 
-        <section id="life" className="scroll-mt-24">
-          <div className="mx-auto max-w-6xl px-6 py-20">
-            <div className="flex flex-col gap-4">
-              <p className="text-[11px] uppercase tracking-[0.3em] text-[color:var(--muted)]">Beyond work</p>
-              <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-4xl">
+        <div className="section-container">
+          <div className="section-divider" />
+        </div>
+
+        {/* ════════════════ LIFE ════════════════ */}
+        <section id="life" className="scroll-mt-24 py-24">
+          <div className="section-container">
+            <ScrollReveal>
+              <p className="section-label">Beyond work</p>
+              <h2 className="section-title mt-4">
                 Life, books, places, and entertainment I return to.
               </h2>
-            </div>
+            </ScrollReveal>
 
-            <div className="mt-8 space-y-4">
-              <details open className="section-card rounded-3xl p-6">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
-                  <span className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.22em] text-[color:var(--foreground)]">
-                    <Compass size={15} />
-                    Life snapshots
-                  </span>
-                  <span className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--muted)]">Expand</span>
-                </summary>
-                <div className="mt-5 grid gap-4 border-t border-[color:var(--border)] pt-5 md:grid-cols-3">
-                  {lifeMoments.map((moment) => (
-                    <article
-                      key={moment.title}
-                      className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-elevated)] p-4"
-                    >
-                      <p className="text-sm font-semibold text-[color:var(--foreground)]">{moment.title}</p>
-                      <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-[color:var(--muted)]">{moment.note}</p>
-                      <p className="mt-3 text-sm leading-relaxed text-[color:var(--muted)]">{moment.detail}</p>
-                    </article>
-                  ))}
-                </div>
-              </details>
-
-              <details className="section-card rounded-3xl p-6">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
-                  <span className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.22em] text-[color:var(--foreground)]">
-                    <BookOpen size={15} />
-                    Reading library
-                  </span>
-                  <span className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--muted)]">Expand</span>
-                </summary>
-                <div className="mt-5 border-t border-[color:var(--border)] pt-5">
-                  <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
-                    {bookshelf.map((book) => (
-                      <article key={book.title} className="group">
-                        <div
-                          className={`relative aspect-[2/3] overflow-hidden rounded-2xl border border-[color:var(--border)] bg-gradient-to-br ${book.palette} p-4 shadow-[0_14px_35px_rgba(15,20,35,0.14)]`}
-                        >
-                          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(255,255,255,0.35),transparent_45%)]" />
-                          <div className="relative flex h-full flex-col justify-between">
-                            <p className="text-[10px] uppercase tracking-[0.22em] text-white/80">{book.theme}</p>
-                            <div>
-                              <h3 className="text-sm font-semibold leading-tight text-white">{book.title}</h3>
-                              <p className="mt-2 text-xs text-white/80">{book.author}</p>
-                            </div>
-                          </div>
-                        </div>
+            <div className="mt-12 space-y-4">
+              {/* Life snapshots */}
+              <ScrollReveal delay={100}>
+                <details open className="glass-card !rounded-[24px] overflow-hidden">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6">
+                    <span className="inline-flex items-center gap-2.5 text-sm font-bold uppercase tracking-[0.15em] text-[color:var(--fg)]">
+                      <Compass size={16} className="text-[color:var(--accent)]" />
+                      Life snapshots
+                    </span>
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--fg-subtle)]">
+                      Toggle
+                    </span>
+                  </summary>
+                  <div className="grid gap-4 border-t border-[color:var(--border)] p-6 md:grid-cols-3">
+                    {lifeMoments.map((moment) => (
+                      <article
+                        key={moment.title}
+                        className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-5"
+                      >
+                        <p className="text-sm font-bold text-[color:var(--fg)]">{moment.title}</p>
+                        <p className="mt-2 text-[10px] uppercase tracking-[0.2em] text-[color:var(--accent)]">
+                          {moment.note}
+                        </p>
+                        <p className="mt-3 text-sm leading-relaxed text-[color:var(--fg-muted)]">
+                          {moment.detail}
+                        </p>
                       </article>
                     ))}
                   </div>
-                </div>
-              </details>
+                </details>
+              </ScrollReveal>
 
-              <details className="section-card rounded-3xl p-6">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
-                  <span className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.22em] text-[color:var(--foreground)]">
-                    <MapPin size={15} />
-                    Places traveled
-                  </span>
-                  <span className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--muted)]">Expand</span>
-                </summary>
-                <div className="mt-5 grid gap-4 border-t border-[color:var(--border)] pt-5 sm:grid-cols-2">
-                  {travelLog.map((entry) => (
-                    <article
-                      key={entry.place}
-                      className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-elevated)] p-4"
-                    >
-                      <p className="text-base font-semibold tracking-tight text-[color:var(--foreground)]">{entry.place}</p>
-                      <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-[color:var(--muted)]">{entry.context}</p>
-                      <p className="mt-3 text-sm leading-relaxed text-[color:var(--muted)]">{entry.note}</p>
-                    </article>
-                  ))}
-                </div>
-              </details>
+              {/* Books */}
+              <ScrollReveal delay={200}>
+                <details className="glass-card !rounded-[24px] overflow-hidden">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6">
+                    <span className="inline-flex items-center gap-2.5 text-sm font-bold uppercase tracking-[0.15em] text-[color:var(--fg)]">
+                      <BookOpen size={16} className="text-[color:var(--accent)]" />
+                      Reading library
+                    </span>
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--fg-subtle)]">
+                      Toggle
+                    </span>
+                  </summary>
+                  <div className="border-t border-[color:var(--border)] p-6">
+                    <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+                      {bookshelf.map((book) => (
+                        <article key={book.title} className="group">
+                          <div
+                            className={`relative aspect-[2/3] overflow-hidden rounded-2xl border border-[color:var(--border)] bg-gradient-to-br ${book.palette} p-4 shadow-lg transition-transform hover:-translate-y-1`}
+                          >
+                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(255,255,255,0.2),transparent_45%)]" />
+                            <div className="relative flex h-full flex-col justify-between">
+                              <p className="text-[10px] uppercase tracking-[0.2em] text-white/70">
+                                {book.theme}
+                              </p>
+                              <div>
+                                <h3 className="text-sm font-bold leading-tight text-white">
+                                  {book.title}
+                                </h3>
+                                <p className="mt-2 text-xs text-white/70">{book.author}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  </div>
+                </details>
+              </ScrollReveal>
 
-              <details className="section-card rounded-3xl p-6">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
-                  <span className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.22em] text-[color:var(--foreground)]">
-                    <Tv size={15} />
-                    Entertainment picks
-                  </span>
-                  <span className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--muted)]">Expand</span>
-                </summary>
-                <div className="mt-5 grid gap-4 border-t border-[color:var(--border)] pt-5 md:grid-cols-3">
-                  {entertainmentPicks.map((entry) => (
-                    <article
-                      key={entry.title}
-                      className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-elevated)] p-4"
-                    >
-                      <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.22em] text-[color:var(--foreground)]">
-                        <entry.icon size={14} />
-                        {entry.title}
-                      </p>
-                      <ul className="mt-4 space-y-2 text-sm text-[color:var(--muted)]">
-                        {entry.picks.map((pick) => (
-                          <li key={pick} className="inline-flex items-start gap-2">
-                            <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />
-                            <span>{pick}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </article>
-                  ))}
-                </div>
-              </details>
+              {/* Places */}
+              <ScrollReveal delay={300}>
+                <details className="glass-card !rounded-[24px] overflow-hidden">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6">
+                    <span className="inline-flex items-center gap-2.5 text-sm font-bold uppercase tracking-[0.15em] text-[color:var(--fg)]">
+                      <MapPin size={16} className="text-[color:var(--accent)]" />
+                      Places traveled
+                    </span>
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--fg-subtle)]">
+                      Toggle
+                    </span>
+                  </summary>
+                  <div className="grid gap-4 border-t border-[color:var(--border)] p-6 sm:grid-cols-2">
+                    {travelLog.map((entry) => (
+                      <article
+                        key={entry.place}
+                        className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-5"
+                      >
+                        <p className="text-base font-bold tracking-tight text-[color:var(--fg)]">
+                          {entry.place}
+                        </p>
+                        <p className="mt-2 text-[10px] uppercase tracking-[0.2em] text-[color:var(--accent)]">
+                          {entry.context}
+                        </p>
+                        <p className="mt-3 text-sm leading-relaxed text-[color:var(--fg-muted)]">
+                          {entry.note}
+                        </p>
+                      </article>
+                    ))}
+                  </div>
+                </details>
+              </ScrollReveal>
+
+              {/* Entertainment */}
+              <ScrollReveal delay={400}>
+                <details className="glass-card !rounded-[24px] overflow-hidden">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6">
+                    <span className="inline-flex items-center gap-2.5 text-sm font-bold uppercase tracking-[0.15em] text-[color:var(--fg)]">
+                      <Tv size={16} className="text-[color:var(--accent)]" />
+                      Entertainment picks
+                    </span>
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--fg-subtle)]">
+                      Toggle
+                    </span>
+                  </summary>
+                  <div className="grid gap-4 border-t border-[color:var(--border)] p-6 md:grid-cols-3">
+                    {entertainmentPicks.map((entry) => (
+                      <article
+                        key={entry.title}
+                        className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-5"
+                      >
+                        <p className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.15em] text-[color:var(--fg)]">
+                          <entry.icon size={14} className="text-[color:var(--accent)]" />
+                          {entry.title}
+                        </p>
+                        <ul className="mt-4 space-y-2.5 text-sm text-[color:var(--fg-muted)]">
+                          {entry.picks.map((pick) => (
+                            <li key={pick} className="flex items-start gap-2.5">
+                              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent)]" />
+                              <span>{pick}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </article>
+                    ))}
+                  </div>
+                </details>
+              </ScrollReveal>
             </div>
           </div>
         </section>
 
-        <section id="contact" className="scroll-mt-24">
-          <div className="mx-auto max-w-6xl px-6 pb-24 pt-10">
-            <div className="section-card rounded-[36px] p-10 md:p-14">
-              <p className="text-[11px] uppercase tracking-[0.32em] text-[color:var(--muted)]">{data.contact.title}</p>
-              <h2 className="mt-5 text-3xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-4xl">
-                {data.contact.description}
-              </h2>
-              <div className="mt-8 flex flex-wrap items-center gap-3">
-                <a
-                  href={`mailto:${data.contact.email}`}
-                  className="btn-secondary rounded-full px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.28em]"
-                >
-                  {data.contact.email}
-                </a>
-                <Link
-                  href="#top"
-                  className="rounded-full border border-[color:var(--border)] bg-[color:var(--surface-soft)] px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[color:var(--foreground)]"
-                >
-                  Back to top
-                </Link>
+        <div className="section-container">
+          <div className="section-divider" />
+        </div>
+
+        {/* ════════════════ CONTACT ════════════════ */}
+        <section id="contact" className="scroll-mt-24 py-24">
+          <div className="section-container">
+            <ScrollReveal>
+              <div className="relative overflow-hidden rounded-[32px] border border-[color:var(--border)] bg-[color:var(--bg-surface)] p-10 md:p-16">
+                {/* Gradient mesh for contact */}
+                <div className="absolute inset-0 opacity-40">
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_20%_50%,rgba(99,102,241,0.15),transparent)]" />
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_60%_at_80%_30%,rgba(168,85,247,0.1),transparent)]" />
+                </div>
+
+                <div className="relative z-10">
+                  <p className="section-label">{data.contact.title}</p>
+                  <h2 className="section-title mt-4 max-w-3xl">
+                    {data.contact.description}
+                  </h2>
+
+                  <div className="mt-10 flex flex-wrap items-center gap-4">
+                    <a href={`mailto:${data.contact.email}`} className="btn-primary">
+                      <Mail size={16} />
+                      <span>{data.contact.email}</span>
+                    </a>
+                    <Link href="#top" className="btn-secondary">
+                      <span>Back to top</span>
+                    </Link>
+                  </div>
+                </div>
               </div>
-            </div>
+            </ScrollReveal>
           </div>
         </section>
       </main>

@@ -1,7 +1,12 @@
 import { getDefaultPortfolioData } from "@/lib/portfolio-data";
-import AdminClient from "@/components/admin/AdminClient";
+import AdminPanel from "@/components/admin/AdminPanel";
+
+export const metadata = {
+  title: "Admin · Soham Kakra",
+  robots: "noindex, nofollow",
+};
 
 export default function AdminPage() {
   const data = getDefaultPortfolioData();
-  return <AdminClient defaultData={data} />;
+  return <AdminPanel defaultData={data} />;
 }

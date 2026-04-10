@@ -13,6 +13,7 @@ import {
 import type { PhotoItem, PhotoMeta, PhotographyCategory, PhotographySection as PhotographySectionType } from "@/lib/portfolio-types";
 import { readExifMeta } from "@/lib/photo-metadata";
 import LoaderImage from "@/components/LoaderImage";
+import ScrollReveal from "@/components/ui/ScrollReveal";
 
 type PhotographySectionProps = {
   section: PhotographySectionType;
@@ -50,19 +51,6 @@ const withCategory = (photo: PhotoItem, category: PhotographyCategory): GalleryP
   categoryTitle: category.title,
 });
 
-const getReadableTextColor = (accent: string) => {
-  const raw = accent.trim().replace("#", "");
-  if (!/^[0-9A-Fa-f]{3}$|^[0-9A-Fa-f]{6}$/.test(raw)) {
-    return "var(--foreground)";
-  }
-  const hex = raw.length === 3 ? raw.split("").map((char) => `${char}${char}`).join("") : raw;
-  const r = parseInt(hex.slice(0, 2), 16);
-  const g = parseInt(hex.slice(2, 4), 16);
-  const b = parseInt(hex.slice(4, 6), 16);
-  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  return luminance > 0.6 ? "#0f1727" : "#f8fbff";
-};
-
 export default function PhotographySection({ section }: PhotographySectionProps) {
   const categories = useMemo(
     () => section.categories.filter((category) => !category.hidden),
@@ -77,33 +65,26 @@ export default function PhotographySection({ section }: PhotographySectionProps)
   const metaRef = useRef(metaBySrc);
   const loadingRef = useRef(loadingMeta);
 
-  useEffect(() => {
-    metaRef.current = metaBySrc;
-  }, [metaBySrc]);
+  useEffect(() => { metaRef.current = metaBySrc; }, [metaBySrc]);
+  useEffect(() => { loadingRef.current = loadingMeta; }, [loadingMeta]);
 
-  useEffect(() => {
-    loadingRef.current = loadingMeta;
-  }, [loadingMeta]);
-
-  const activeSlugResolved = categories.some((category) => category.slug === activeSlug)
+  const activeSlugResolved = categories.some((c) => c.slug === activeSlug)
     ? activeSlug
     : categories[0]?.slug ?? "";
-  const activeCategory = categories.find((category) => category.slug === activeSlugResolved) || categories[0];
+  const activeCategory = categories.find((c) => c.slug === activeSlugResolved) || categories[0];
 
   const collectionImages = useMemo(
     () =>
       activeCategory
-        ? activeCategory.images
-            .filter((image) => !image.hidden)
-            .map((image) => withCategory(image, activeCategory))
+        ? activeCategory.images.filter((i) => !i.hidden).map((i) => withCategory(i, activeCategory))
         : [],
     [activeCategory]
   );
 
   const allImages = useMemo(
     () =>
-      categories.flatMap((category) =>
-        category.images.filter((image) => !image.hidden).map((image) => withCategory(image, category))
+      categories.flatMap((c) =>
+        c.images.filter((i) => !i.hidden).map((i) => withCategory(i, c))
       ),
     [categories]
   );
@@ -127,27 +108,20 @@ export default function PhotographySection({ section }: PhotographySectionProps)
     (index: number) => {
       setActiveIndex(index);
       const photo = modalImages[index];
-      if (photo) {
-        void ensureMeta(photo);
-      }
+      if (photo) void ensureMeta(photo);
     },
     [ensureMeta, modalImages]
   );
 
   useEffect(() => {
     if (!isOpen) return;
-    const handleKeyDown = (event: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (!modalImages.length) return;
-      if (event.key === "Escape") {
-        setIsOpen(false);
-        setActiveIndex(null);
-      }
-      if (event.key === "ArrowRight") {
-        if (normalizedActiveIndex === null) return;
+      if (e.key === "Escape") { setIsOpen(false); setActiveIndex(null); }
+      if (e.key === "ArrowRight" && normalizedActiveIndex !== null) {
         openImageFromModal((normalizedActiveIndex + 1) % modalImages.length);
       }
-      if (event.key === "ArrowLeft") {
-        if (normalizedActiveIndex === null) return;
+      if (e.key === "ArrowLeft" && normalizedActiveIndex !== null) {
         openImageFromModal((normalizedActiveIndex - 1 + modalImages.length) % modalImages.length);
       }
     };
@@ -159,9 +133,7 @@ export default function PhotographySection({ section }: PhotographySectionProps)
     if (!isOpen) return;
     const { overflow } = document.body.style;
     document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = overflow;
-    };
+    return () => { document.body.style.overflow = overflow; };
   }, [isOpen]);
 
   const openCollectionGallery = (startIndex: number | null = null) => {
@@ -170,9 +142,7 @@ export default function PhotographySection({ section }: PhotographySectionProps)
     setIsOpen(true);
     if (startIndex !== null) {
       const photo = collectionImages[startIndex];
-      if (photo) {
-        void ensureMeta(photo);
-      }
+      if (photo) void ensureMeta(photo);
     }
   };
 
@@ -186,9 +156,7 @@ export default function PhotographySection({ section }: PhotographySectionProps)
     (slug: string) => {
       setActiveSlug(slug);
       setActiveIndex(null);
-      if (galleryMode === "collection" && isOpen) {
-        setGalleryMode("collection");
-      }
+      if (galleryMode === "collection" && isOpen) setGalleryMode("collection");
     },
     [galleryMode, isOpen]
   );
@@ -196,17 +164,17 @@ export default function PhotographySection({ section }: PhotographySectionProps)
   const shiftCollection = useCallback(
     (direction: -1 | 1) => {
       if (!categories.length) return;
-      const currentIndex = categories.findIndex((category) => category.slug === activeSlugResolved);
-      const safeIndex = currentIndex >= 0 ? currentIndex : 0;
-      const nextIndex = (safeIndex + direction + categories.length) % categories.length;
-      selectCategory(categories[nextIndex].slug);
+      const idx = categories.findIndex((c) => c.slug === activeSlugResolved);
+      const safe = idx >= 0 ? idx : 0;
+      const next = (safe + direction + categories.length) % categories.length;
+      selectCategory(categories[next].slug);
     },
     [activeSlugResolved, categories, selectCategory]
   );
 
   if (!activeCategory) {
     return (
-      <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface-soft)] p-6 text-sm text-[color:var(--muted)]">
+      <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--bg-surface)] p-6 text-sm text-[color:var(--fg-muted)]">
         Add photography categories in the admin panel to populate this section.
       </div>
     );
@@ -216,37 +184,37 @@ export default function PhotographySection({ section }: PhotographySectionProps)
 
   return (
     <div>
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <p className="text-[11px] uppercase tracking-[0.3em] text-[color:var(--muted)]">
-            {section.title}
-          </p>
-          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-4xl">
-            {section.description}
-          </h2>
+      {/* Header */}
+      <ScrollReveal>
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="section-label">{section.title}</p>
+            <h2 className="section-title mt-4">{section.description}</h2>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() => openCollectionGallery()}
+              className="btn-secondary !py-2.5 !px-5 !text-[11px]"
+            >
+              <Images size={14} />
+              {activeCategory.title}
+            </button>
+            <button
+              type="button"
+              onClick={openAllGallery}
+              className="btn-primary !py-2.5 !px-5 !text-[11px]"
+            >
+              <Grid3X3 size={14} />
+              <span>Full gallery</span>
+            </button>
+          </div>
         </div>
-        <div className="flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={() => openCollectionGallery()}
-            className="btn-secondary inline-flex items-center gap-2 rounded-full px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.28em]"
-          >
-            <Images size={14} />
-            {activeCategory.title}
-          </button>
-          <button
-            type="button"
-            onClick={openAllGallery}
-            className="btn-primary inline-flex items-center gap-2 rounded-full px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.28em]"
-          >
-            <Grid3X3 size={14} />
-            Full gallery
-          </button>
-        </div>
-      </div>
+      </ScrollReveal>
 
+      {/* Category tabs */}
       <div className="mt-8 flex items-center gap-3">
-        <div className="no-scrollbar flex flex-1 items-center gap-2 overflow-x-auto rounded-full border border-[color:var(--border)] bg-[color:var(--surface-soft)] p-2">
+        <div className="no-scrollbar flex flex-1 items-center gap-2 overflow-x-auto rounded-full border border-[color:var(--border)] bg-[color:var(--bg-surface)] p-2">
           {categories.map((category) => {
             const active = activeSlugResolved === category.slug;
             return (
@@ -254,18 +222,14 @@ export default function PhotographySection({ section }: PhotographySectionProps)
                 key={category.slug}
                 type="button"
                 onClick={() => selectCategory(category.slug)}
-                className={`rounded-full border px-4 py-2 text-[11px] uppercase tracking-[0.26em] transition ${
+                className={`rounded-full border px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] transition-all ${
                   active
-                    ? ""
-                    : "border-transparent text-[color:var(--muted)] hover:border-[color:var(--border)] hover:text-[color:var(--foreground)]"
+                    ? "border-transparent text-white shadow-lg"
+                    : "border-transparent text-[color:var(--fg-muted)] hover:text-[color:var(--fg)]"
                 }`}
                 style={
                   active
-                    ? {
-                        background: category.accent,
-                        color: getReadableTextColor(category.accent),
-                        borderColor: "transparent",
-                      }
+                    ? { background: category.accent, boxShadow: `0 4px 20px ${category.accent}40` }
                     : undefined
                 }
               >
@@ -278,7 +242,7 @@ export default function PhotographySection({ section }: PhotographySectionProps)
           <button
             type="button"
             onClick={() => shiftCollection(-1)}
-            className="btn-secondary inline-flex h-10 w-10 items-center justify-center rounded-full"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--border)] text-[color:var(--fg-muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
             aria-label="Previous collection"
           >
             <ChevronLeft size={16} />
@@ -286,7 +250,7 @@ export default function PhotographySection({ section }: PhotographySectionProps)
           <button
             type="button"
             onClick={() => shiftCollection(1)}
-            className="btn-secondary inline-flex h-10 w-10 items-center justify-center rounded-full"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--border)] text-[color:var(--fg-muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
             aria-label="Next collection"
           >
             <ChevronRight size={16} />
@@ -294,38 +258,35 @@ export default function PhotographySection({ section }: PhotographySectionProps)
         </div>
       </div>
 
+      {/* Grid preview */}
       {collectionImages.length ? (
-        <div key={activeSlugResolved} className="collection-fade mt-10 columns-1 gap-4 sm:columns-2 lg:columns-3">
+        <div key={activeSlugResolved} className="collection-fade mt-10 columns-1 gap-5 sm:columns-2 lg:columns-3">
           {collectionImages.slice(0, 6).map((image, index) => (
             <button
               key={image.id}
               type="button"
               onClick={() => openCollectionGallery(index)}
               onMouseEnter={() => ensureMeta(image)}
-              className="group relative mb-4 block w-full break-inside-avoid overflow-hidden rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface-soft)] text-left shadow-[0_18px_40px_rgba(15,20,35,0.12)]"
+              className="photo-card group mb-5 block w-full break-inside-avoid text-left"
             >
               <LoaderImage
                 src={image.src}
                 alt={image.title}
-                className="block h-auto w-full transition duration-500 group-hover:scale-105"
+                className="block h-auto w-full"
                 skeletonClassName="image-loader-photo"
                 loading="lazy"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 transition duration-300 group-hover:opacity-100" />
-              <div className="absolute bottom-4 left-4 right-4 translate-y-2 text-white opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                <p className="text-sm font-semibold">{image.title}</p>
-                <p className="mt-2 text-xs text-white/80">{image.description}</p>
-                <div className="mt-3 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.2em] text-white/70">
+              <div className="photo-overlay" />
+              <div className="photo-info">
+                <p className="text-sm font-bold text-white">{image.title}</p>
+                <p className="mt-1 text-xs text-white/70">{image.description}</p>
+                <div className="mt-3 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.15em] text-white/60">
                   {(() => {
                     const meta = resolveMeta(image, metaBySrc);
                     const specs = buildSpecLine(meta);
-                    if (specs.length) {
-                      return specs.map((spec) => <span key={`${image.id}-${spec}`}>{spec}</span>);
-                    }
+                    if (specs.length) return specs.map((s) => <span key={`${image.id}-${s}`}>{s}</span>);
                     return (
-                      <span>
-                        {loadingMeta[image.src] ? "Loading metadata" : "Add metadata in admin"}
-                      </span>
+                      <span>{loadingMeta[image.src] ? "Loading metadata" : "View details"}</span>
                     );
                   })()}
                 </div>
@@ -334,98 +295,76 @@ export default function PhotographySection({ section }: PhotographySectionProps)
           ))}
         </div>
       ) : (
-        <div className="mt-10 rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface-soft)] p-8 text-sm text-[color:var(--muted)]">
+        <div className="mt-10 rounded-3xl border border-[color:var(--border)] bg-[color:var(--bg-surface)] p-8 text-sm text-[color:var(--fg-muted)]">
           No images yet. Add files to{" "}
-          <span className="font-mono">/public/photography/{activeCategory.slug}</span> or use the admin panel to add
-          image entries.
+          <span className="font-mono text-[color:var(--accent)]">/public/photography/{activeCategory.slug}</span>{" "}
+          or use the admin panel.
         </div>
       )}
 
-      {isOpen ? (
-        <div className="fixed inset-0 z-[80] overflow-y-auto bg-black/55 p-4 backdrop-blur-sm">
+      {/* ── Lightbox Modal ── */}
+      {isOpen && (
+        <div className="fixed inset-0 z-[80] overflow-y-auto bg-black/80 p-4 backdrop-blur-md">
           <div
             className="absolute inset-0"
-            onClick={() => {
-              setIsOpen(false);
-              setActiveIndex(null);
-            }}
+            onClick={() => { setIsOpen(false); setActiveIndex(null); }}
           />
-          <div className="relative z-10 mx-auto my-4 flex max-h-[calc(100dvh-2rem)] w-full max-w-6xl flex-col overflow-hidden rounded-[36px] border border-[color:var(--border)] bg-[color:var(--surface-elevated)] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
-            <div className="shrink-0 border-b border-[color:var(--border)] pb-6">
+          <div className="relative z-10 mx-auto my-4 flex max-h-[calc(100dvh-2rem)] w-full max-w-6xl flex-col overflow-hidden rounded-[28px] border border-[color:var(--border)] bg-[color:var(--bg-surface)] shadow-2xl">
+            {/* Modal header */}
+            <div className="shrink-0 border-b border-[color:var(--border)] p-6">
               <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div>
-                  <p className="text-[11px] uppercase tracking-[0.32em] text-[color:var(--muted)]">
+                  <p className="section-label">
                     {galleryMode === "all" ? "All collections" : activeCategory.title}
                   </p>
-                  <h3 className="mt-3 text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                  <h3 className="mt-2 text-xl font-bold tracking-tight text-[color:var(--fg)]">
                     {galleryMode === "all"
                       ? "Browse every collection in one view."
                       : activeCategory.description}
                   </h3>
-                  <p className="mt-2 text-sm text-[color:var(--muted)]">{modalImages.length} images</p>
+                  <p className="mt-1 text-sm text-[color:var(--fg-muted)]">{modalImages.length} images</p>
                 </div>
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    onClick={() => {
-                      setGalleryMode("collection");
-                      setActiveIndex(null);
-                    }}
-                    className="btn-secondary inline-flex items-center gap-2 rounded-full px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em]"
+                    onClick={() => { setGalleryMode("collection"); setActiveIndex(null); }}
+                    className="btn-secondary !py-2 !px-3.5 !text-[10px]"
                   >
-                    <Images size={14} />
-                    Collection
+                    <Images size={13} /> Collection
                   </button>
                   <button
                     type="button"
-                    onClick={() => {
-                      setGalleryMode("all");
-                      setActiveIndex(null);
-                    }}
-                    className="btn-secondary inline-flex items-center gap-2 rounded-full px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em]"
+                    onClick={() => { setGalleryMode("all"); setActiveIndex(null); }}
+                    className="btn-secondary !py-2 !px-3.5 !text-[10px]"
                   >
-                    <Grid3X3 size={14} />
-                    All
+                    <Grid3X3 size={13} /> All
                   </button>
                   <button
                     type="button"
-                    onClick={() => {
-                      setIsOpen(false);
-                      setActiveIndex(null);
-                    }}
-                    className="btn-secondary inline-flex h-9 w-9 items-center justify-center rounded-full"
-                    aria-label="Close gallery"
+                    onClick={() => { setIsOpen(false); setActiveIndex(null); }}
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--border)] text-[color:var(--fg-muted)] hover:text-[color:var(--fg)]"
+                    aria-label="Close"
                   >
                     <X size={15} />
                   </button>
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2">
+              {/* Category pills inside modal */}
+              <div className="mt-4 flex flex-wrap items-center gap-2">
                 {categories.map((category) => {
                   const active = activeSlugResolved === category.slug && galleryMode === "collection";
                   return (
                     <button
                       key={`modal-${category.slug}`}
                       type="button"
-                      onClick={() => {
-                        setGalleryMode("collection");
-                        selectCategory(category.slug);
-                      }}
-                      className={`rounded-full border px-3 py-1.5 text-[10px] uppercase tracking-[0.24em] ${
+                      onClick={() => { setGalleryMode("collection"); selectCategory(category.slug); }}
+                      className={`rounded-full border px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] transition ${
                         active
-                          ? ""
-                          : "border-[color:var(--border)] text-[color:var(--muted)] hover:text-[color:var(--foreground)]"
+                          ? "border-transparent text-white"
+                          : "border-[color:var(--border)] text-[color:var(--fg-muted)] hover:text-[color:var(--fg)]"
                       }`}
-                      style={
-                        active
-                          ? {
-                              background: category.accent,
-                              color: getReadableTextColor(category.accent),
-                              borderColor: "transparent",
-                            }
-                          : undefined
-                      }
+                      style={active ? { background: category.accent } : undefined}
                     >
                       {category.title}
                     </button>
@@ -434,23 +373,17 @@ export default function PhotographySection({ section }: PhotographySectionProps)
                 <div className="ml-auto flex gap-2">
                   <button
                     type="button"
-                    onClick={() => {
-                      setGalleryMode("collection");
-                      shiftCollection(-1);
-                    }}
-                    className="btn-secondary inline-flex h-8 w-8 items-center justify-center rounded-full"
-                    aria-label="Previous collection"
+                    onClick={() => { setGalleryMode("collection"); shiftCollection(-1); }}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--border)] text-[color:var(--fg-muted)]"
+                    aria-label="Previous"
                   >
                     <ChevronLeft size={14} />
                   </button>
                   <button
                     type="button"
-                    onClick={() => {
-                      setGalleryMode("collection");
-                      shiftCollection(1);
-                    }}
-                    className="btn-secondary inline-flex h-8 w-8 items-center justify-center rounded-full"
-                    aria-label="Next collection"
+                    onClick={() => { setGalleryMode("collection"); shiftCollection(1); }}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--border)] text-[color:var(--fg-muted)]"
+                    aria-label="Next"
                   >
                     <ChevronRight size={14} />
                   </button>
@@ -458,53 +391,40 @@ export default function PhotographySection({ section }: PhotographySectionProps)
               </div>
             </div>
 
-            <div className="mt-6 min-h-0 overflow-y-auto pr-1">
+            {/* Modal body */}
+            <div className="mt-0 min-h-0 overflow-y-auto p-6">
               {activeIndex === null ? (
-                <div className="columns-1 gap-4 sm:columns-2 lg:columns-3">
+                <div className="columns-1 gap-5 sm:columns-2 lg:columns-3">
                   {modalImages.map((image, index) => (
                     <button
                       key={image.id}
                       type="button"
                       onClick={() => openImageFromModal(index)}
                       onMouseEnter={() => ensureMeta(image)}
-                      className="group relative mb-4 block w-full break-inside-avoid overflow-hidden rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface-soft)] text-left shadow-[0_18px_40px_rgba(15,20,35,0.12)]"
+                      className="photo-card group mb-5 block w-full break-inside-avoid text-left"
                     >
                       <LoaderImage
                         src={image.src}
                         alt={image.title}
-                        className="block h-auto w-full transition duration-500 group-hover:scale-105"
+                        className="block h-auto w-full"
                         skeletonClassName="image-loader-photo"
                         loading="lazy"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 transition duration-300 group-hover:opacity-100" />
-                      <div className="absolute bottom-4 left-4 right-4 translate-y-2 text-white opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                        <p className="text-sm font-semibold">{image.title}</p>
-                        <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-white/75">
+                      <div className="photo-overlay" />
+                      <div className="photo-info">
+                        <p className="text-sm font-bold text-white">{image.title}</p>
+                        <p className="mt-1 text-[10px] uppercase tracking-[0.15em] text-white/60">
                           {image.categoryTitle}
                         </p>
-                        <p className="mt-2 text-xs text-white/80">{image.description}</p>
-                        <div className="mt-3 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.2em] text-white/70">
-                          {(() => {
-                            const meta = resolveMeta(image, metaBySrc);
-                            const specs = buildSpecLine(meta);
-                            if (specs.length) {
-                              return specs.map((spec) => <span key={`${image.id}-${spec}`}>{spec}</span>);
-                            }
-                            return (
-                              <span>
-                                {loadingMeta[image.src] ? "Loading metadata" : "Add metadata in admin"}
-                              </span>
-                            );
-                          })()}
-                        </div>
                       </div>
                     </button>
                   ))}
                 </div>
               ) : (
                 <div className="grid gap-6 lg:grid-cols-[1.3fr_0.7fr]">
-                  <div className="relative flex min-h-[360px] items-center justify-center overflow-hidden rounded-[28px] border border-[color:var(--border)] bg-black">
-                    {currentImage ? (
+                  {/* Image viewer */}
+                  <div className="relative flex min-h-[360px] items-center justify-center overflow-hidden rounded-[20px] border border-[color:var(--border)] bg-black">
+                    {currentImage && (
                       <LoaderImage
                         src={currentImage.src}
                         alt={currentImage.title}
@@ -512,31 +432,32 @@ export default function PhotographySection({ section }: PhotographySectionProps)
                         skeletonClassName="image-loader-viewer"
                         loading="eager"
                       />
-                    ) : null}
+                    )}
                     <button
                       type="button"
                       onClick={() => setActiveIndex(null)}
-                      className="btn-secondary absolute left-4 top-4 inline-flex items-center gap-2 rounded-full px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.24em]"
+                      className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-black/50 px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/80 backdrop-blur transition hover:text-white"
                     >
-                      <Grid3X3 size={13} />
-                      Back to grid
+                      <Grid3X3 size={12} /> Grid
                     </button>
                   </div>
 
+                  {/* Details */}
                   <div className="flex flex-col justify-between">
                     <div>
-                      <p className="text-[11px] uppercase tracking-[0.32em] text-[color:var(--muted)]">
+                      <p className="text-[10px] uppercase tracking-[0.3em] text-[color:var(--accent)]">
                         {currentImage?.categoryTitle}
                       </p>
-                      <h4 className="mt-3 text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                      <h4 className="mt-3 text-2xl font-bold tracking-tight text-[color:var(--fg)]">
                         {currentImage?.title}
                       </h4>
-                      <p className="mt-3 text-sm leading-relaxed text-[color:var(--muted)]">
+                      <p className="mt-3 text-sm leading-relaxed text-[color:var(--fg-muted)]">
                         {currentImage?.description}
                       </p>
                     </div>
 
-                    <div className="mt-6 space-y-3 rounded-[24px] border border-[color:var(--border)] bg-[color:var(--surface-soft)] p-5 text-sm text-[color:var(--foreground)]">
+                    {/* EXIF data */}
+                    <div className="mt-6 space-y-2.5 rounded-[20px] border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-5">
                       {(() => {
                         const meta = currentImage ? resolveMeta(currentImage, metaBySrc) : null;
                         const entries: Array<[string, string | undefined]> = [
@@ -549,18 +470,18 @@ export default function PhotographySection({ section }: PhotographySectionProps)
                           ["Date", meta?.date],
                           ["Location", meta?.location],
                         ];
-
                         return entries.map(([label, value]) => (
                           <div key={label} className="flex items-center justify-between gap-4">
-                            <span className="text-[11px] uppercase tracking-[0.26em] text-[color:var(--muted)]">
+                            <span className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--fg-subtle)]">
                               {label}
                             </span>
-                            <span className="text-sm text-[color:var(--foreground)]">{value || "—"}</span>
+                            <span className="text-sm text-[color:var(--fg)]">{value || "—"}</span>
                           </div>
                         ));
                       })()}
                     </div>
 
+                    {/* Nav */}
                     <div className="mt-6 flex items-center justify-between">
                       <button
                         type="button"
@@ -568,10 +489,9 @@ export default function PhotographySection({ section }: PhotographySectionProps)
                           if (normalizedActiveIndex === null) return;
                           openImageFromModal((normalizedActiveIndex - 1 + modalImages.length) % modalImages.length);
                         }}
-                        className="btn-secondary inline-flex items-center gap-2 rounded-full px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em]"
+                        className="btn-secondary !py-2 !px-4 !text-[10px]"
                       >
-                        <ArrowLeft size={13} />
-                        Prev
+                        <ArrowLeft size={13} /> Prev
                       </button>
                       <button
                         type="button"
@@ -579,25 +499,25 @@ export default function PhotographySection({ section }: PhotographySectionProps)
                           if (normalizedActiveIndex === null) return;
                           openImageFromModal((normalizedActiveIndex + 1) % modalImages.length);
                         }}
-                        className="btn-primary inline-flex items-center gap-2 rounded-full px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em]"
+                        className="btn-primary !py-2 !px-4 !text-[10px]"
                       >
-                        Next
-                        <ArrowRight size={13} />
+                        <span>Next</span> <ArrowRight size={13} />
                       </button>
                     </div>
                   </div>
 
+                  {/* Thumbstrip */}
                   <div className="lg:col-span-2">
-                    <div className="mt-6 flex gap-3 overflow-x-auto pb-2">
+                    <div className="mt-4 flex gap-3 overflow-x-auto pb-2">
                       {modalImages.map((image, index) => (
                         <button
                           key={`thumb-${image.id}`}
                           type="button"
                           onClick={() => openImageFromModal(index)}
-                          className={`relative h-20 w-28 shrink-0 overflow-hidden rounded-2xl border ${
+                          className={`relative h-20 w-28 shrink-0 overflow-hidden rounded-xl border transition ${
                             index === normalizedActiveIndex
-                              ? "border-[color:var(--accent)]"
-                              : "border-[color:var(--border)]"
+                              ? "border-[color:var(--accent)] shadow-lg"
+                              : "border-[color:var(--border)] opacity-60 hover:opacity-100"
                           }`}
                         >
                           <LoaderImage
@@ -616,7 +536,7 @@ export default function PhotographySection({ section }: PhotographySectionProps)
             </div>
           </div>
         </div>
-      ) : null}
+      )}
     </div>
   );
 }

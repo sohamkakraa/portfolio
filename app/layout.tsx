@@ -16,20 +16,24 @@ const spaceMono = Space_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Soham Kakra",
+    default: "Soham Kakra — AI Engineer & Visual Storyteller",
     template: "%s · Soham Kakra",
   },
-  description: "A minimal, cinematic portfolio of product work and photography.",
-  metadataBase: new URL("https://example.com"),
+  description:
+    "Portfolio of Soham Kakra — AI/ML engineer, full-stack builder, and photographer crafting data products that feel human.",
+  metadataBase: new URL("https://sohamkakra.com"),
   openGraph: {
-    title: "Soham Kakra",
-    description: "A minimal, cinematic portfolio of product work and photography.",
+    title: "Soham Kakra — AI Engineer & Visual Storyteller",
+    description:
+      "AI/ML engineer, full-stack builder, and photographer crafting data products that feel human.",
     type: "website",
+    url: "https://sohamkakra.com",
   },
   twitter: {
     card: "summary_large_image",
     title: "Soham Kakra",
-    description: "A minimal, cinematic portfolio of product work and photography.",
+    description:
+      "AI/ML engineer, full-stack builder, and photographer crafting data products that feel human.",
   },
 };
 
@@ -39,12 +43,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="dark">
       <body
         suppressHydrationWarning
         className={`${sora.variable} ${spaceMono.variable} antialiased`}
       >
         <ThemeProvider>
+          <div className="grain" aria-hidden="true" />
           {children}
         </ThemeProvider>
       </body>
