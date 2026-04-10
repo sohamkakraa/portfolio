@@ -29,7 +29,7 @@ export default function LoaderImage({
         src={src}
         alt={alt}
         onLoad={(event) => {
-          setLoadedSrc(src);
+          setLoadedSrc(typeof src === "string" ? src : undefined);
           onLoad?.(event);
         }}
         className={`${className || ""} transition-opacity duration-500 ${
