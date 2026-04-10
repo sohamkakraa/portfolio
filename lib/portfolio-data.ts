@@ -120,14 +120,14 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
       "A curated mix of AI, analytics, and product engineering work across healthcare, fintech, and autonomous decision systems.",
     items: [
       {
-        id: "medvault",
-        title: "MedVault",
+        id: "uma",
+        title: "UMA",
         summary:
           "A privacy-first medical record workspace that converts fragmented documents into structured patient timelines with clear retrieval.",
         tags: ["Healthcare", "Next.js", "Data UX"],
         year: "2025",
         status: "Prototype",
-        link: "https://github.com/sohamkakraa",
+        link: "https://uma-taupe-rho.vercel.app",
       },
       {
         id: "tabscape",
