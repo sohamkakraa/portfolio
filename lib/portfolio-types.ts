@@ -46,7 +46,7 @@ export type AboutSection = {
   subtitle: string;
   body: string;
   highlights: string[];
-  /** Public path under /public, e.g. /about/portrait.jpg */
+  /** Path under /public (e.g. /about/portrait.jpg) or absolute URL (e.g. Vercel Blob). */
   portraitSrc?: string;
 };
 
