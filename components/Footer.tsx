@@ -25,7 +25,7 @@ export default function Footer({ name, note, socials, links = [] }: FooterProps)
     <footer className="border-t border-[color:var(--border)]">
       <div className="section-container py-16">
         <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
-          {/* Left: branding + note */}
+          {/* Branding + note (note already carries attribution / year from content) */}
           <div>
             <p className="text-lg font-bold tracking-tight text-[color:var(--fg)]">
               {name}
@@ -35,8 +35,8 @@ export default function Footer({ name, note, socials, links = [] }: FooterProps)
             </p>
           </div>
 
-          {/* Right: socials + admin */}
-          <div className="flex flex-wrap items-center gap-3">
+          {/* Socials, admin, Viveka */}
+          <div className="flex flex-wrap items-center gap-3 md:justify-end">
             {socials.map((item) => {
               const Icon = iconForSocial(item.label, item.href);
               return (
@@ -64,22 +64,15 @@ export default function Footer({ name, note, socials, links = [] }: FooterProps)
                 <Settings2 size={16} />
               </Link>
             ))}
+            <a
+              href="https://viveka.sohamkakra.com"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-10 items-center rounded-full border border-[color:var(--border)] px-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[color:var(--fg-muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+            >
+              Viveka
+            </a>
           </div>
-        </div>
-
-        {/* Bottom bar */}
-        <div className="mt-12 flex flex-col items-center gap-4 border-t border-[color:var(--border)] pt-8 md:flex-row md:justify-between">
-          <p className="text-[11px] tracking-[0.2em] uppercase text-[color:var(--fg-subtle)]">
-            &copy; {new Date().getFullYear()} {name}. All rights reserved.
-          </p>
-          <a
-            href="https://viveka.sohamkakra.com"
-            target="_blank"
-            rel="noreferrer"
-            className="text-[11px] tracking-[0.2em] uppercase text-[color:var(--fg-subtle)] transition hover:text-[color:var(--accent)]"
-          >
-            viveka.sohamkakra.com
-          </a>
         </div>
       </div>
     </footer>
