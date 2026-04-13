@@ -72,12 +72,23 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
   const [data, setData] = useState<PortfolioData>(initialData);
 
   useEffect(() => {
+    // 1. Immediately apply any localStorage overrides (fast, no network)
     const stored = loadPortfolioData();
-    if (!stored) return;
-    const id = window.setTimeout(() => {
+    if (stored) {
       setData(mergePortfolioData(initialData, stored));
-    }, 0);
-    return () => window.clearTimeout(id);
+    }
+
+    // 2. Fetch latest CMS data from server (picks up Redis-persisted edits)
+    fetch("/api/portfolio")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((serverData: PortfolioData | null) => {
+        if (serverData) {
+          setData(serverData);
+        }
+      })
+      .catch(() => {
+        // Network error — keep localStorage / initial data
+      });
   }, [initialData]);
 
   const visibleHighlights = useMemo(
