@@ -119,10 +119,10 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
 
                   {/* Title */}
                   <h1 className="mt-6">
-                    <span className="animate-hero-text animate-hero-text-delay-1 block text-[clamp(2.5rem,7vw,5.5rem)] font-bold leading-[1.05] tracking-[-0.04em] text-[color:var(--fg)]">
+                    <span className="animate-hero-text animate-hero-text-delay-1 block text-[clamp(2rem,7vw,5.5rem)] font-bold leading-[1.05] tracking-[-0.04em] text-[color:var(--fg)]">
                       {data.hero.titleLine1}
                     </span>
-                    <span className="animate-hero-text animate-hero-text-delay-2 block text-[clamp(2.5rem,7vw,5.5rem)] font-bold leading-[1.05] tracking-[-0.04em] text-gradient">
+                    <span className="animate-hero-text animate-hero-text-delay-2 block text-[clamp(2rem,7vw,5.5rem)] font-bold leading-[1.05] tracking-[-0.04em] text-gradient">
                       {data.hero.titleLine2}
                     </span>
                   </h1>
@@ -155,11 +155,11 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
                   </div>
 
                   {/* Badges */}
-                  <div className="animate-hero-text animate-hero-text-delay-5 mt-12 flex flex-wrap gap-3">
+                  <div className="animate-hero-text animate-hero-text-delay-5 mt-12 flex flex-wrap gap-2 md:gap-3">
                     {data.hero.badges.map((badge) => (
                       <span
                         key={badge}
-                        className="inline-flex items-center gap-2 rounded-full border border-[color:var(--border)] bg-[color:var(--bg-surface)]/50 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.15em] text-[color:var(--fg-muted)]"
+                        className="inline-flex items-center gap-2 rounded-full border border-[color:var(--border)] bg-[color:var(--bg-surface)]/50 px-3 py-1.5 text-[10px] md:px-4 md:py-2 md:text-[11px] font-medium uppercase tracking-[0.15em] text-[color:var(--fg-muted)]"
                       >
                         <span
                           aria-hidden="true"
@@ -198,10 +198,10 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
               </div>
             </ScrollReveal>
 
-            <div className="mt-12 grid gap-6 md:grid-cols-3">
+            <div className="mt-12 grid gap-4 md:gap-6 md:grid-cols-3">
               {visibleHighlights.map((item, i) => (
                 <ScrollReveal key={item.title} delay={i * 100}>
-                  <article className="glass-card p-8 h-full">
+                  <article className="glass-card p-6 md:p-8 h-full">
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[color:var(--accent)]/10">
                       <Sparkles size={18} className="text-[color:var(--accent)]" />
                     </div>
@@ -229,7 +229,7 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
               <div className="overflow-hidden rounded-[32px] border border-[color:var(--border)] bg-[color:var(--bg-surface)]">
                 <div className="grid gap-0 lg:grid-cols-[0.8fr_1.2fr]">
                   {/* Image */}
-                  <div className="relative min-h-[400px] overflow-hidden bg-[color:var(--bg-elevated)]">
+                  <div className="relative min-h-[280px] sm:min-h-[350px] lg:min-h-[400px] overflow-hidden bg-[color:var(--bg-elevated)]">
                     <Image
                       src={data.about.portraitSrc || "/Me.jpg"}
                       alt={`${data.site.name} portrait`}
@@ -242,7 +242,7 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
                   </div>
 
                   {/* Content */}
-                  <div className="p-8 sm:p-10 lg:p-14">
+                  <div className="p-6 sm:p-8 lg:p-14">
                     <p className="section-label">{data.about.title}</p>
                     <h2 className="section-title mt-4">{data.about.subtitle}</h2>
                     <p className="mt-6 text-base leading-[1.8] text-[color:var(--fg-muted)]">
@@ -346,14 +346,14 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
               {/* Life snapshots */}
               <ScrollReveal delay={100}>
                 <details open className="group glass-card !rounded-[24px] overflow-hidden">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6 outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] [&::-webkit-details-marker]:hidden">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 sm:p-6 outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] [&::-webkit-details-marker]:hidden">
                     <LifeAccordionSummary icon={Compass} label="Life snapshots" />
                   </summary>
-                  <div className="grid gap-4 border-t border-[color:var(--border)] p-6 md:grid-cols-3">
+                  <div className="grid gap-3 sm:gap-4 border-t border-[color:var(--border)] p-4 sm:p-6 md:grid-cols-3">
                     {data.life.snapshots.map((moment) => (
                       <article
                         key={moment.title}
-                        className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-5"
+                        className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-4 md:p-5"
                       >
                         <p className="text-sm font-bold text-[color:var(--fg)]">{moment.title}</p>
                         <p className="mt-2 text-[10px] uppercase tracking-[0.2em] text-[color:var(--accent)]">
@@ -371,11 +371,11 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
               {/* Books */}
               <ScrollReveal delay={200}>
                 <details className="group glass-card !rounded-[24px] overflow-hidden">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6 outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] [&::-webkit-details-marker]:hidden">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 sm:p-6 outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] [&::-webkit-details-marker]:hidden">
                     <LifeAccordionSummary icon={BookOpen} label="Reading library" />
                   </summary>
-                  <div className="border-t border-[color:var(--border)] p-6">
-                    <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
+                  <div className="border-t border-[color:var(--border)] p-4 sm:p-6">
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 lg:gap-6 lg:grid-cols-5">
                       {data.life.books.map((book) => (
                         <article key={book.title} className="group">
                           <BookCoverTile book={book} />
@@ -398,14 +398,14 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
               {/* Places */}
               <ScrollReveal delay={300}>
                 <details className="group glass-card !rounded-[24px] overflow-hidden">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6 outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] [&::-webkit-details-marker]:hidden">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 sm:p-6 outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] [&::-webkit-details-marker]:hidden">
                     <LifeAccordionSummary icon={MapPin} label="Places traveled" />
                   </summary>
                   <div className="grid gap-4 border-t border-[color:var(--border)] p-6 sm:grid-cols-2">
                     {data.life.places.map((entry) => (
                       <article
                         key={entry.place}
-                        className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-5"
+                        className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-4 md:p-5"
                       >
                         <p className="text-base font-bold tracking-tight text-[color:var(--fg)]">
                           {entry.place}
@@ -425,16 +425,16 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
               {/* Entertainment */}
               <ScrollReveal delay={400}>
                 <details className="group glass-card !rounded-[24px] overflow-hidden">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-6 outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] [&::-webkit-details-marker]:hidden">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 sm:p-6 outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] [&::-webkit-details-marker]:hidden">
                     <LifeAccordionSummary icon={Tv} label="Entertainment picks" />
                   </summary>
-                  <div className="grid gap-4 border-t border-[color:var(--border)] p-6 md:grid-cols-3">
+                  <div className="grid gap-3 sm:gap-4 border-t border-[color:var(--border)] p-4 sm:p-6 md:grid-cols-3">
                     {data.life.entertainment.map((entry) => {
                       const Icon = entertainmentIcon(entry.kind);
                       return (
                       <article
                         key={entry.title}
-                        className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-5"
+                        className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-4 md:p-5"
                       >
                         <p className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.15em] text-[color:var(--fg)]">
                           <Icon size={14} className="text-[color:var(--accent)]" />

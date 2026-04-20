@@ -47,7 +47,7 @@ export default function Footer({ name, note, socials, links = [] }: FooterProps)
                   rel="noreferrer"
                   aria-label={item.label}
                   title={item.label}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--border)] text-[color:var(--fg-muted)] transition-all hover:-translate-y-0.5 hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--border)] text-[color:var(--fg-muted)] transition-all hover:-translate-y-0.5 hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
                 >
                   <Icon size={16} />
                 </a>
