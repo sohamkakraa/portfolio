@@ -17,6 +17,8 @@ import ScrollReveal from "@/components/ui/ScrollReveal";
 
 type PhotographySectionProps = {
   section: PhotographySectionType;
+  /** Max images to show per category in the preview grid. Defaults to 6. */
+  maxPreview?: number;
 };
 
 type GalleryMode = "collection" | "all";
@@ -63,7 +65,7 @@ const textOnAccent = (hex: string) => {
   return luminance > 0.55 ? "#0a0a0a" : "#fafafa";
 };
 
-export default function PhotographySection({ section }: PhotographySectionProps) {
+export default function PhotographySection({ section, maxPreview = 6 }: PhotographySectionProps) {
   const categories = useMemo(
     () => section.categories.filter((category) => !category.hidden),
     [section.categories]
@@ -280,7 +282,7 @@ export default function PhotographySection({ section }: PhotographySectionProps)
           key={activeSlugResolved}
           className="collection-fade mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 lg:gap-5"
         >
-          {collectionImages.slice(0, 6).map((image, index) => (
+          {collectionImages.slice(0, maxPreview).map((image, index) => (
             <button
               key={image.id}
               type="button"

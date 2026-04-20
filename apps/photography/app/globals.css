@@ -1,0 +1,198 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --bg: #050505;
+  --bg-surface: #0a0a0a;
+  --bg-elevated: #111111;
+  --fg: #fafafa;
+  --fg-muted: #888888;
+  --fg-subtle: #555555;
+  --accent: #818cf8;
+  --border: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(255, 255, 255, 0.12);
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    overflow-x: hidden;
+  }
+  ::selection {
+    background: var(--accent);
+    color: #fff;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 99px; }
+}
+
+/* ── Grain overlay ── */
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+}
+
+/* ── Full-bleed image ── */
+.full-bleed {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+.full-bleed img,
+.full-bleed canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── Category hero overlay ── */
+.category-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(5, 5, 5, 0.3) 0%,
+    transparent 30%,
+    transparent 50%,
+    rgba(5, 5, 5, 0.85) 100%
+  );
+}
+
+/* ── Scroll-driven reveal ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Masonry-ish grid ── */
+.photo-grid {
+  column-count: 1;
+  column-gap: 12px;
+}
+@media (min-width: 640px) {
+  .photo-grid {
+    column-count: 2;
+    column-gap: 16px;
+  }
+}
+@media (min-width: 1024px) {
+  .photo-grid {
+    column-count: 3;
+    column-gap: 20px;
+  }
+}
+.photo-grid > * {
+  break-inside: avoid;
+  margin-bottom: 12px;
+}
+@media (min-width: 640px) {
+  .photo-grid > * {
+    margin-bottom: 16px;
+  }
+}
+@media (min-width: 1024px) {
+  .photo-grid > * {
+    margin-bottom: 20px;
+  }
+}
+
+/* ── Photo hover ── */
+.photo-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.photo-item:hover {
+  transform: scale(1.01);
+}
+.photo-item img {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.photo-item:hover img {
+  transform: scale(1.06);
+}
+.photo-item .photo-hover-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.photo-item:hover .photo-hover-overlay {
+  opacity: 1;
+}
+
+/* ── Video canvas ── */
+.video-canvas-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--bg-surface);
+}
+.video-canvas-container canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ── Lightbox ── */
+.lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ── Smooth scrolling progress bar ── */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: var(--accent);
+  z-index: 100;
+  transition: width 0.1s linear;
+}
+
+/* ── Animation keyframes ── */
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slide-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse-ring { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+
+.animate-fade-in { animation: fade-in 0.6s ease forwards; }
+.animate-slide-up { animation: slide-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; }

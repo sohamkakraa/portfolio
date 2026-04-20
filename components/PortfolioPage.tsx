@@ -326,7 +326,25 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
         {/* ════════════════ PHOTOGRAPHY ════════════════ */}
         <section id="photography" className="scroll-mt-24 py-24">
           <div className="section-container">
-            <PhotographySection section={data.photography} />
+            <PhotographySection section={data.photography} maxPreview={3} />
+
+            {/* CTA to full photography diary */}
+            <ScrollReveal>
+              <div className="mt-12 flex flex-col items-center text-center">
+                <p className="text-sm text-[color:var(--fg-muted)]">
+                  This is just a preview. The full collection lives on its own site.
+                </p>
+                <a
+                  href="https://photography.sohamkakra.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn-primary mt-6"
+                >
+                  <span>Explore full gallery</span>
+                  <ArrowUpRight size={14} />
+                </a>
+              </div>
+            </ScrollReveal>
           </div>
         </section>
 
