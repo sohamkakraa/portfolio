@@ -20,7 +20,7 @@ import sharp from "sharp";
 
 const MAX_WIDTH = 2000;
 const QUALITY = 85;
-const SUPPORTED = new Set([".jpg", ".jpeg", ".png", ".tiff", ".tif", ".bmp", ".avif", ".heic", ".heif"]);
+const SUPPORTED = new Set([".jpg", ".jpeg", ".png", ".tiff", ".tif", ".bmp", ".avif", ".heic", ".heif", ".dng", ".cr2", ".nef", ".arw", ".orf", ".rw2", ".webp"]);
 
 const inputDir = process.argv[2];
 const outputDir = process.argv[3] || `${inputDir}-webp`;
