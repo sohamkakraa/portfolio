@@ -17,6 +17,8 @@ import ScrollReveal from "@/components/ui/ScrollReveal";
 
 type PhotographySectionProps = {
   section: PhotographySectionType;
+  /** Max images to show per category in the preview grid. Defaults to 6. */
+  maxPreview?: number;
 };
 
 type GalleryMode = "collection" | "all";
@@ -63,7 +65,7 @@ const textOnAccent = (hex: string) => {
   return luminance > 0.55 ? "#0a0a0a" : "#fafafa";
 };
 
-export default function PhotographySection({ section }: PhotographySectionProps) {
+export default function PhotographySection({ section, maxPreview = 6 }: PhotographySectionProps) {
   const categories = useMemo(
     () => section.categories.filter((category) => !category.hidden),
     [section.categories]
@@ -234,7 +236,7 @@ export default function PhotographySection({ section }: PhotographySectionProps)
                 key={category.slug}
                 type="button"
                 onClick={() => selectCategory(category.slug)}
-                className={`rounded-full border px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] transition-all ${
+                className={`shrink-0 rounded-full border px-3 py-2.5 text-[10px] sm:px-4 sm:text-[11px] font-semibold uppercase tracking-[0.2em] transition-all ${
                   active
                     ? "border-transparent shadow-lg"
                     : "border-transparent text-[color:var(--fg-muted)] hover:text-[color:var(--fg)]"
@@ -278,9 +280,9 @@ export default function PhotographySection({ section }: PhotographySectionProps)
       {collectionImages.length ? (
         <div
           key={activeSlugResolved}
-          className="collection-fade mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+          className="collection-fade mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 lg:gap-5"
         >
-          {collectionImages.slice(0, 6).map((image, index) => (
+          {collectionImages.slice(0, maxPreview).map((image, index) => (
             <button
               key={image.id}
               type="button"
@@ -323,14 +325,14 @@ export default function PhotographySection({ section }: PhotographySectionProps)
 
       {/* ── Lightbox Modal ── */}
       {isOpen && (
-        <div className="fixed inset-0 z-[80] overflow-y-auto bg-black/80 p-4 backdrop-blur-md">
+        <div className="fixed inset-0 z-[80] overflow-y-auto bg-black/80 p-2 sm:p-4 backdrop-blur-md" style={{ paddingTop: 'max(0.5rem, env(safe-area-inset-top))', paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
           <div
             className="absolute inset-0"
             onClick={() => { setIsOpen(false); setActiveIndex(null); }}
           />
-          <div className="relative z-10 mx-auto my-4 flex max-h-[calc(100dvh-2rem)] w-full max-w-6xl flex-col overflow-hidden rounded-[28px] border border-[color:var(--border)] bg-[color:var(--bg-surface)] shadow-2xl">
+          <div className="relative z-10 mx-auto my-0 sm:my-4 flex max-h-[calc(100dvh-1rem)] sm:max-h-[calc(100dvh-2rem)] w-full max-w-6xl flex-col overflow-hidden rounded-2xl sm:rounded-[28px] border border-[color:var(--border)] bg-[color:var(--bg-surface)] shadow-2xl">
             {/* Modal header */}
-            <div className="shrink-0 border-b border-[color:var(--border)] p-6">
+            <div className="shrink-0 border-b border-[color:var(--border)] p-4 sm:p-6">
               <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div>
                   <p className="section-label">

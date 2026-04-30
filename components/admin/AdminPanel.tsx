@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
+  Bot,
   Camera,
   Check,
   Compass,
@@ -38,6 +39,8 @@ import type {
   ProjectItem,
 } from "@/lib/portfolio-types";
 import ImageCropDialog from "@/components/admin/ImageCropDialog";
+import AIChatPanel from "@/components/admin/AIChatPanel";
+import { extractExif } from "@/lib/photo-meta";
 
 type AdminPanelProps = {
   defaultData: PortfolioData;
@@ -53,6 +56,7 @@ const TABS = [
   { id: "photography", label: "Photography", icon: Camera },
   { id: "life", label: "Beyond work", icon: Compass },
   { id: "contact", label: "Contact", icon: Settings },
+  { id: "ai", label: "AI Assistant", icon: Bot },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
@@ -168,6 +172,7 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
   const [aboutDropActive, setAboutDropActive] = useState(false);
   const [bookDropIndex, setBookDropIndex] = useState<number | null>(null);
   const [photoUploadBusy, setPhotoUploadBusy] = useState(false);
+  const [photoUploadStatus, setPhotoUploadStatus] = useState<string | null>(null);
   const assetHintTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [crop, setCrop] = useState<{
     src: string;
@@ -473,62 +478,108 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
     const additions: PhotoItem[] = [];
     const failures: string[] = [];
     try {
-    for (const file of list) {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("category", categorySlug);
-      try {
-        const res = await fetch("/api/upload", {
-          method: "POST",
-          headers: csrfToken ? { "X-CSRF-Token": csrfToken } : {},
-          body: formData,
-        });
-        const raw = await res.text();
-        let result: { success?: boolean; path?: string; message?: string } = {};
+      for (let fi = 0; fi < list.length; fi++) {
+        const file = list[fi]!;
+        setPhotoUploadStatus(`Uploading ${fi + 1}/${list.length}: ${file.name}…`);
+
+        // 1. Upload file
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("category", categorySlug);
+        let uploadedPath: string | null = null;
         try {
-          result = raw ? (JSON.parse(raw) as typeof result) : {};
+          const res = await fetch("/api/upload", {
+            method: "POST",
+            headers: csrfToken ? { "X-CSRF-Token": csrfToken } : {},
+            body: formData,
+          });
+          const raw = await res.text();
+          let result: { success?: boolean; path?: string; message?: string } = {};
+          try {
+            result = raw ? (JSON.parse(raw) as typeof result) : {};
+          } catch {
+            failures.push(
+              `${file.name}: Bad response (${res.status}). ${raw.slice(0, 100).replace(/\s+/g, " ").trim() || res.statusText}`
+            );
+            continue;
+          }
+          if (!res.ok || !result.success || !result.path) {
+            failures.push(
+              `${file.name}: ${result.message || (!res.ok ? `HTTP ${res.status}` : "Server rejected upload")}`
+            );
+            continue;
+          }
+          uploadedPath = result.path;
         } catch {
-          failures.push(
-            `${file.name}: Bad response (${res.status}). ${raw.slice(0, 100).replace(/\s+/g, " ").trim() || res.statusText}`
-          );
+          failures.push(`${file.name}: Network error`);
           continue;
         }
-        if (!res.ok || !result.success || !result.path) {
-          failures.push(
-            `${file.name}: ${result.message || (!res.ok ? `HTTP ${res.status}` : "Server rejected upload")}`
-          );
-          continue;
+
+        // 2. Extract EXIF client-side
+        setPhotoUploadStatus(`Reading metadata ${fi + 1}/${list.length}: ${file.name}…`);
+        const exifMeta = await extractExif(file);
+
+        // 3. AI analysis for title, description, and any missing location
+        let title = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+        let description = "";
+        let location = exifMeta.location ?? "";
+
+        if (csrfToken) {
+          try {
+            setPhotoUploadStatus(`Analyzing ${fi + 1}/${list.length}: ${file.name}…`);
+            const aiForm = new FormData();
+            aiForm.append("file", file);
+            aiForm.append("meta", JSON.stringify(exifMeta));
+            aiForm.append("category", categorySlug);
+            const aiRes = await fetch("/api/ai/photo-analyze", {
+              method: "POST",
+              headers: { "X-CSRF-Token": csrfToken },
+              body: aiForm,
+            });
+            if (aiRes.ok) {
+              const aiData = await aiRes.json() as {
+                title?: string; description?: string; location?: string; skipped?: boolean;
+              };
+              if (!aiData.skipped) {
+                if (aiData.title) title = aiData.title;
+                if (aiData.description) description = aiData.description;
+                if (aiData.location) location = aiData.location;
+              }
+            }
+          } catch {
+            // AI failure is non-fatal — proceed with EXIF-only metadata
+          }
         }
+
         additions.push({
           id: createId(),
-          src: result.path,
-          title: file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " "),
-          description: "",
-          meta: emptyPhotoMeta(),
+          src: uploadedPath,
+          title,
+          description,
+          meta: {
+            ...exifMeta,
+            location: location || undefined,
+          },
         });
-      } catch {
-        failures.push(`${file.name}: Network error`);
       }
-    }
-    if (additions.length) {
-      setData((prev) => {
-        const cats = [...prev.photography.categories];
-        const cat = cats[categoryIdx];
-        if (!cat) return prev;
-        cats[categoryIdx] = {
-          ...cat,
-          images: [...cat.images, ...additions],
-        };
-        return { ...prev, photography: { ...prev.photography, categories: cats } };
-      });
-      showAssetHint(
-        `Added ${additions.length} image(s). Click Save so they persist${failures.length ? ` (${failures.length} failed).` : "."}`
-      );
-    } else if (failures.length) {
-      showAssetHint(`Upload failed: ${failures.slice(0, 3).join(" ")}${failures.length > 3 ? " …" : ""}`);
-    }
+
+      if (additions.length) {
+        setData((prev) => {
+          const cats = [...prev.photography.categories];
+          const cat = cats[categoryIdx];
+          if (!cat) return prev;
+          cats[categoryIdx] = { ...cat, images: [...cat.images, ...additions] };
+          return { ...prev, photography: { ...prev.photography, categories: cats } };
+        });
+        showAssetHint(
+          `Added ${additions.length} image(s) with metadata. Click Save to persist.${failures.length ? ` (${failures.length} failed)` : ""}`
+        );
+      } else if (failures.length) {
+        showAssetHint(`Upload failed: ${failures.slice(0, 3).join(" ")}${failures.length > 3 ? " …" : ""}`);
+      }
     } finally {
       setPhotoUploadBusy(false);
+      setPhotoUploadStatus(null);
     }
   };
 
@@ -1240,19 +1291,28 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
                         if (e.dataTransfer.files?.length) void handleImageUpload(cat.slug, ci, e.dataTransfer.files);
                       }}
                     >
-                      <Upload size={24} className="mx-auto text-[color:var(--fg-muted)]" />
-                      <p className="mt-2 text-sm text-[color:var(--fg-muted)]">
-                        Drop images here or{" "}
-                        <label
-                          htmlFor={`photo-upload-${cat.slug}`}
-                          className="cursor-pointer font-medium text-[color:var(--accent)] hover:underline"
-                        >
-                          browse
-                        </label>
-                      </p>
-                      <p className="mt-1 text-[11px] text-[color:var(--fg-muted)]">
-                        JPEG, PNG, WebP, GIF — multiple files supported. Save when you are done.
-                      </p>
+                      {photoUploadBusy && photoUploadStatus ? (
+                        <>
+                          <Loader2 size={24} className="mx-auto animate-spin text-[color:var(--accent)]" />
+                          <p className="mt-2 text-sm text-[color:var(--accent)]">{photoUploadStatus}</p>
+                        </>
+                      ) : (
+                        <>
+                          <Upload size={24} className="mx-auto text-[color:var(--fg-muted)]" />
+                          <p className="mt-2 text-sm text-[color:var(--fg-muted)]">
+                            Drop images here or{" "}
+                            <label
+                              htmlFor={`photo-upload-${cat.slug}`}
+                              className="cursor-pointer font-medium text-[color:var(--accent)] hover:underline"
+                            >
+                              browse
+                            </label>
+                          </p>
+                          <p className="mt-1 text-[11px] text-[color:var(--fg-muted)]">
+                            JPEG, PNG, WebP — EXIF + AI metadata extracted automatically.
+                          </p>
+                        </>
+                      )}
                       <input
                         id={`photo-upload-${cat.slug}`}
                         type="file"
@@ -1768,6 +1828,14 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
                 </Field>
               </div>
             </Card>
+          )}
+
+          {activeTab === "ai" && (
+            <AIChatPanel
+              data={data}
+              csrfToken={csrfToken ?? ""}
+              onDataChange={(next) => setData(next)}
+            />
           )}
         </main>
       </div>
