@@ -216,6 +216,30 @@ async function main() {
     }
   }
 
+  // ── Write photography manifest ────────────────────────────────────────────
+  // Regenerate data/photography-manifest.json from public/photography-webp/
+  // so portfolio-data.ts knows what photos exist without filesystem scanning.
+
+  if (!DRY_RUN) {
+    const manifestCategories = {};
+    for (const folder of folders) {
+      const slug = FOLDER_TO_SLUG[folder] ?? folder;
+      const webpFolder = path.join(WEBP_DIR, folder);
+      if (!fs.existsSync(webpFolder)) continue;
+      const files = fs.readdirSync(webpFolder)
+        .filter((f) => f.endsWith(".webp"))
+        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+      if (files.length) manifestCategories[slug] = files;
+    }
+    const manifestPath = path.resolve("data/photography-manifest.json");
+    fs.mkdirSync(path.dirname(manifestPath), { recursive: true });
+    fs.writeFileSync(manifestPath, JSON.stringify(
+      { generated: new Date().toISOString(), categories: manifestCategories }, null, 2
+    ));
+    const total = Object.values(manifestCategories).reduce((s, a) => s + a.length, 0);
+    console.log(`  Manifest:    data/photography-manifest.json  (${total} photos across ${Object.keys(manifestCategories).length} categories)`);
+  }
+
   console.log(`\n── Summary ─────────────────────────────────────────────────────`);
   if (totalCompressed) console.log(`  Compressed:  ${totalCompressed} files`);
   console.log(`  Uploaded:    ${totalUploaded} files  (${(totalBytes / 1024 / 1024).toFixed(1)} MB)`);

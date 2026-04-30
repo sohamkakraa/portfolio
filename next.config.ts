@@ -14,7 +14,7 @@ const securityHeaders = [
       "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline'",
       // data: for SVG grain overlay; blob: for image previews; openlibrary for book covers
-      "img-src 'self' data: blob: https://covers.openlibrary.org https://*.public.blob.vercel-storage.com",
+      "img-src 'self' data: blob: https://covers.openlibrary.org https://*.public.blob.vercel-storage.com https://photography.sohamkakra.com",
       "connect-src 'self'",
       "font-src 'self'",
       "frame-ancestors 'none'",
@@ -25,6 +25,16 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "photography.sohamkakra.com" }],
+        destination: "https://sohamkakra.com/#photography",
+        permanent: false,
+      },
+    ];
+  },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },

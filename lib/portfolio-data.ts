@@ -16,6 +16,22 @@ const SLUG_TO_FOLDER: Record<string, string> = Object.fromEntries(
   Object.entries(FOLDER_TO_SLUG).map(([k, v]) => [v, k])
 );
 
+// Pre-generated manifest from public/photography-webp/ (committed to git).
+// Keys are category slugs; values are sorted .webp filenames.
+// Regenerate with: node scripts/sync-photos.mjs (writes data/photography-manifest.json)
+interface PhotoManifest { generated: string; categories: Record<string, string[]> }
+let _manifest: PhotoManifest | null = null;
+function getManifest(): PhotoManifest | null {
+  if (_manifest !== null) return _manifest;
+  try {
+    const p = path.join(process.cwd(), "data", "photography-manifest.json");
+    _manifest = JSON.parse(fs.readFileSync(p, "utf-8")) as PhotoManifest;
+  } catch {
+    _manifest = { generated: "", categories: {} };
+  }
+  return _manifest;
+}
+
 const CATEGORY_SEEDS: Omit<PhotographyCategory, "images">[] = [
   {
     slug: "wildlife",
@@ -312,7 +328,21 @@ const numericSort = (a: string, b: string) => a.localeCompare(b, undefined, { nu
 const buildPhotoItems = (slug: string): PhotoItem[] => {
   const folder = SLUG_TO_FOLDER[slug] ?? slug;
 
-  // 1. Prefer already-converted WebP from photography-webp/
+  // 1. Manifest (committed to git) — works in production and dev
+  const manifest = getManifest();
+  const manifestFiles = manifest?.categories?.[slug];
+  if (manifestFiles?.length) {
+    return manifestFiles.map((file, i) => ({
+      id: `${slug}-${i + 1}`,
+      src: R2_BASE
+        ? `${R2_BASE}/photography/${slug}/${encodeURIComponent(file)}`
+        : `/photography-webp/${folder}/${file}`,
+      title: titleFromFilename(file, `${slug} ${i + 1}`),
+      description: "",
+    }));
+  }
+
+  // 2. Live filesystem scan of photography-webp/ (dev, no manifest yet)
   const webpDir = path.join(process.cwd(), "public", "photography-webp", folder);
   if (fs.existsSync(webpDir)) {
     const webpFiles = fs.readdirSync(webpDir).filter((f) => f.endsWith(".webp")).sort(numericSort);
@@ -328,22 +358,19 @@ const buildPhotoItems = (slug: string): PhotoItem[] => {
     }
   }
 
-  // 2. Fallback: web-compatible originals in photography/
+  // 3. Last resort: web-compatible originals in photography/
   const origDir = path.join(process.cwd(), "public", "photography", folder);
   if (!fs.existsSync(origDir)) return [];
-  const origFiles = fs
+  return fs
     .readdirSync(origDir)
     .filter((f) => WEB_EXTENSIONS.has(path.extname(f).toLowerCase()))
-    .sort(numericSort);
-
-  return origFiles.map((file, i) => ({
-    id: `${slug}-${i + 1}`,
-    src: R2_BASE
-      ? `${R2_BASE}/photography/${slug}/${encodeURIComponent(file)}`
-      : `/photography/${folder}/${file}`,
-    title: titleFromFilename(file, `${slug} ${i + 1}`),
-    description: "",
-  }));
+    .sort(numericSort)
+    .map((file, i) => ({
+      id: `${slug}-${i + 1}`,
+      src: `/photography/${folder}/${file}`,
+      title: titleFromFilename(file, `${slug} ${i + 1}`),
+      description: "",
+    }));
 };
 
 export const getDefaultPortfolioData = (): PortfolioData => {
