@@ -580,7 +580,7 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
         </aside>
 
         {/* Mobile tabs */}
-        <div className="fixed bottom-0 left-0 right-0 z-40 flex gap-1 overflow-x-auto border-t border-[color:var(--border)] bg-[color:var(--bg)] p-2 lg:hidden">
+        <div className="fixed bottom-0 left-0 right-0 z-40 flex gap-1 overflow-x-auto border-t border-[color:var(--border)] bg-[color:var(--bg)] p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] lg:hidden">
           {TABS.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
@@ -1212,6 +1212,7 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
                                 updateCategory(ci, "images", images);
                               }}
                               className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-[color:var(--border)] text-[color:var(--fg-muted)]"
+                              aria-label={img.hidden ? "Show image" : "Hide image"}
                               title={img.hidden ? "Show" : "Hide"}
                             >
                               {img.hidden ? <EyeOff size={12} /> : <Eye size={12} />}
@@ -1223,6 +1224,7 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
                                 updateCategory(ci, "images", images);
                               }}
                               className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-red-500/20 text-red-400"
+                              aria-label="Remove image"
                             >
                               <Trash2 size={12} />
                             </button>

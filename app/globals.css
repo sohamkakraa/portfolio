@@ -11,7 +11,7 @@
   --bg-glass: rgba(12, 12, 12, 0.72);
   --fg: #fafafa;
   --fg-muted: #888888;
-  --fg-subtle: #555555;
+  --fg-subtle: #767676;
   --accent: #818cf8;
   --accent-hover: #6366f1;
   --accent-glow: rgba(129, 140, 248, 0.25);
@@ -57,7 +57,7 @@
   --bg-glass: rgba(255, 255, 255, 0.72);
   --fg: #0a0a0a;
   --fg-muted: #6b6b6b;
-  --fg-subtle: #999999;
+  --fg-subtle: #6b6b6b;
   --accent: #6366f1;
   --accent-hover: #4f46e5;
   --accent-glow: rgba(99, 102, 241, 0.2);
@@ -633,6 +633,88 @@
 /* ── Collection fade ── */
 .collection-fade {
   animation: slide-up 0.4s ease forwards;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .hero-gradient-mesh,
+  .hero-gradient-mesh::after {
+    animation: none;
+  }
+
+  .animate-hero-text,
+  .animate-hero-text-delay-1,
+  .animate-hero-text-delay-2,
+  .animate-hero-text-delay-3,
+  .animate-hero-text-delay-4,
+  .animate-hero-text-delay-5 {
+    animation: none;
+    opacity: 1;
+  }
+
+  .scroll-indicator {
+    animation: none;
+  }
+
+  .page-loader-ring {
+    animation: none;
+  }
+
+  .image-loader-skeleton {
+    animation: none;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .collection-fade {
+    animation: none;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .stagger-children > * {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .glass-card {
+    transition: border-color 0.1s;
+  }
+  .glass-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-primary:hover,
+  .btn-secondary:hover,
+  .btn-accent:hover {
+    transform: none;
+  }
+
+  .project-card {
+    transition: border-color 0.1s;
+  }
+  .project-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .photo-card img,
+  .photo-card:hover img {
+    transition: none;
+    transform: none;
+  }
+
+  .hover-rise,
+  .hover-rise:hover {
+    transition: none;
+    transform: none;
+    box-shadow: none;
+  }
 }
 
 /* ── Text balance ── */

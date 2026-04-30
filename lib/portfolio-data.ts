@@ -155,26 +155,6 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
         status: "Live",
         link: "https://github.com/sohamkakraa",
       },
-      {
-        id: "forme",
-        title: "FORME",
-        summary:
-          "An AI-powered bespoke wardrobe builder that generates a digital avatar from body measurements, lets users design garments through a visual studio or natural language, and connects them with global retailers and local tailors.",
-        tags: ["AI", "Fashion Tech", "Generative Design"],
-        year: "2026",
-        status: "Prototype",
-        link: "",
-      },
-      {
-        id: "sage-advisory",
-        title: "Sage Advisory",
-        summary:
-          "A professional website for a Dubai-based tax advisory agency, delivering clear service communication and client-facing credibility for the UAE market.",
-        tags: ["Web", "Professional Services", "UAE"],
-        year: "2025",
-        status: "Live",
-        link: "https://sagetaxconsultancy.com",
-      },
     ],
   },
   life: {

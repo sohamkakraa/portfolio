@@ -26,7 +26,7 @@ const cardClassName =
 
 export default function ProjectGrid({ items }: ProjectGridProps) {
   return (
-    <div className="grid gap-4 md:gap-6 md:grid-cols-2">
+    <div className="grid gap-6 md:grid-cols-2">
       {items.map((project, index) => {
         const href = project.link?.trim() || "";
         return (

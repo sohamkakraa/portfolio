@@ -87,7 +87,7 @@ export default function Nav({ name, nav }: NavProps) {
               <button
                 type="button"
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--border)] text-[color:var(--fg)]"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--border)] text-[color:var(--fg)]"
                 aria-label="Toggle menu"
               >
                 {mobileOpen ? <X size={18} /> : <Menu size={18} />}
@@ -99,12 +99,12 @@ export default function Nav({ name, nav }: NavProps) {
 
       {/* Mobile menu overlay */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-[100] flex flex-col bg-[color:var(--bg)]/95 pt-[max(0px,env(safe-area-inset-top))] pb-[max(0px,env(safe-area-inset-bottom))] backdrop-blur-xl md:hidden">
+        <div className="fixed inset-0 z-[100] flex flex-col bg-[color:var(--bg)]/95 backdrop-blur-xl md:hidden">
           <div className="flex h-16 items-center justify-end px-6">
             <button
               type="button"
               onClick={() => setMobileOpen(false)}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--border)] text-[color:var(--fg)]"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--border)] text-[color:var(--fg)]"
               aria-label="Close menu"
             >
               <X size={18} />

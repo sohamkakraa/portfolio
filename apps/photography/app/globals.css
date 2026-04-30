@@ -60,7 +60,7 @@
 .full-bleed {
   position: relative;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
 }
 .full-bleed img,
@@ -194,5 +194,30 @@
 @keyframes slide-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes pulse-ring { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
 
-.animate-fade-in { animation: fade-in 0.6s ease forwards; }
-.animate-slide-up { animation: slide-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.animate-fade-in { animation: fade-in 0.6s ease both; }
+.animate-slide-up { animation: slide-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) both; }
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .animate-fade-in,
+  .animate-slide-up {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .photo-item:hover {
+    transform: none;
+  }
+  .photo-item img,
+  .photo-item:hover img {
+    transition: none;
+    transform: none;
+  }
+}
