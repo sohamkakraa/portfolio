@@ -2,7 +2,19 @@ import fs from "fs";
 import path from "path";
 import type { PortfolioData, PhotographyCategory, PhotoItem } from "@/lib/portfolio-types";
 
-const IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".webp", ".avif", ".JPG", ".JPEG"];
+// Web-displayable formats only (no RAW)
+const WEB_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"]);
+
+// R2 base URL (no trailing slash). When set, all photo srcs point to R2.
+const R2_BASE = process.env.R2_PUBLIC_URL?.replace(/\/$/, "") ?? "";
+
+// Some disk folder names differ from the category slug used in the CMS.
+const FOLDER_TO_SLUG: Record<string, string> = {
+  Startrails: "light-trails",
+};
+const SLUG_TO_FOLDER: Record<string, string> = Object.fromEntries(
+  Object.entries(FOLDER_TO_SLUG).map(([k, v]) => [v, k])
+);
 
 const CATEGORY_SEEDS: Omit<PhotographyCategory, "images">[] = [
   {
@@ -291,30 +303,46 @@ const titleFromFilename = (filename: string, fallback: string) => {
   if (!spaced) return fallback;
   return spaced
     .split(" ")
-    .map((part) => (part ? part[0].toUpperCase() + part.slice(1).toLowerCase() : ""))
+    .map((part) => (part ? part[0]!.toUpperCase() + part.slice(1).toLowerCase() : ""))
     .join(" ");
 };
 
-const listImages = (slug: string) => {
-  const folderPath = path.join(process.cwd(), "public", "photography", slug);
-  if (!fs.existsSync(folderPath)) return [];
-  return fs
-    .readdirSync(folderPath)
-    .filter((file) => IMAGE_EXTENSIONS.some((ext) => file.endsWith(ext)))
-    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
-};
+const numericSort = (a: string, b: string) => a.localeCompare(b, undefined, { numeric: true });
 
 const buildPhotoItems = (slug: string): PhotoItem[] => {
-  const files = listImages(slug);
-  if (!files.length) {
-    return [];
+  const folder = SLUG_TO_FOLDER[slug] ?? slug;
+
+  // 1. Prefer already-converted WebP from photography-webp/
+  const webpDir = path.join(process.cwd(), "public", "photography-webp", folder);
+  if (fs.existsSync(webpDir)) {
+    const webpFiles = fs.readdirSync(webpDir).filter((f) => f.endsWith(".webp")).sort(numericSort);
+    if (webpFiles.length) {
+      return webpFiles.map((file, i) => ({
+        id: `${slug}-${i + 1}`,
+        src: R2_BASE
+          ? `${R2_BASE}/photography/${slug}/${encodeURIComponent(file)}`
+          : `/photography-webp/${folder}/${file}`,
+        title: titleFromFilename(file, `${slug} ${i + 1}`),
+        description: "",
+      }));
+    }
   }
 
-  return files.map((file, index) => ({
-    id: `${slug}-${index + 1}`,
-    src: `/photography/${slug}/${file}`,
-    title: titleFromFilename(file, `${slug} ${index + 1}`),
-    description: "Add a short description for this image.",
+  // 2. Fallback: web-compatible originals in photography/
+  const origDir = path.join(process.cwd(), "public", "photography", folder);
+  if (!fs.existsSync(origDir)) return [];
+  const origFiles = fs
+    .readdirSync(origDir)
+    .filter((f) => WEB_EXTENSIONS.has(path.extname(f).toLowerCase()))
+    .sort(numericSort);
+
+  return origFiles.map((file, i) => ({
+    id: `${slug}-${i + 1}`,
+    src: R2_BASE
+      ? `${R2_BASE}/photography/${slug}/${encodeURIComponent(file)}`
+      : `/photography/${folder}/${file}`,
+    title: titleFromFilename(file, `${slug} ${i + 1}`),
+    description: "",
   }));
 };
 

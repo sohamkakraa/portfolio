@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "photos:compress": "node scripts/compress-images.mjs public/photography public/photography-webp",
+    "photos:sync": "node scripts/sync-photos.mjs",
+    "photos:sync-force": "node scripts/sync-photos.mjs --force"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.91.1",
