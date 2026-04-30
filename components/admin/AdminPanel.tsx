@@ -13,6 +13,7 @@ import {
   Layout,
   Loader2,
   Lock,
+  LogOut,
   Plus,
   Save,
   Settings,
@@ -40,9 +41,8 @@ import ImageCropDialog from "@/components/admin/ImageCropDialog";
 
 type AdminPanelProps = {
   defaultData: PortfolioData;
+  initialAuthenticated?: boolean;
 };
-
-const ADMIN_PASSWORD = "soham2026";
 
 const TABS = [
   { id: "site", label: "Site", icon: Globe },
@@ -150,10 +150,14 @@ function DangerButton({ onClick, children }: { onClick: () => void; children: Re
 
 /* ── Main Admin Panel ── */
 
-export default function AdminPanel({ defaultData }: AdminPanelProps) {
-  const [authenticated, setAuthenticated] = useState(false);
+export default function AdminPanel({ defaultData, initialAuthenticated = false }: AdminPanelProps) {
+  const [authenticated, setAuthenticated] = useState(initialAuthenticated);
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [csrfToken, setCsrfToken] = useState<string | null>(null);
+  const [sessionExpiresInDays, setSessionExpiresInDays] = useState<number | null>(null);
 
   const [data, setData] = useState<PortfolioData>(defaultData);
   const [activeTab, setActiveTab] = useState<TabId>("site");
@@ -202,13 +206,65 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
       });
   }, [authenticated, showAssetHint]);
 
-  const handleLogin = () => {
-    if (password === ADMIN_PASSWORD) {
-      setAuthenticated(true);
-      setPasswordError(false);
-    } else {
+  // Fetch CSRF token from the existing session cookie (runs when authenticated but token not yet in state)
+  useEffect(() => {
+    if (!authenticated || csrfToken) return;
+    fetch("/api/auth")
+      .then((res) => (res.ok ? res.json() : null))
+      .then(
+        (d: { valid?: boolean; csrfToken?: string; expiresInDays?: number } | null) => {
+          if (d?.valid && d.csrfToken) {
+            setCsrfToken(d.csrfToken);
+            setSessionExpiresInDays(d.expiresInDays ?? null);
+          } else if (d && !d.valid) {
+            setAuthenticated(false);
+          }
+        }
+      )
+      .catch(() => {});
+  }, [authenticated, csrfToken]);
+
+  const handleLogin = async () => {
+    setLoginLoading(true);
+    setLoginError(null);
+    try {
+      const res = await fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      const body = (await res.json()) as {
+        ok?: boolean;
+        csrfToken?: string;
+        expiresInDays?: number;
+        error?: string;
+      };
+      if (res.ok && body.csrfToken) {
+        setCsrfToken(body.csrfToken);
+        setSessionExpiresInDays(body.expiresInDays ?? null);
+        setAuthenticated(true);
+        setPassword("");
+        setPasswordError(false);
+      } else {
+        setLoginError(body.error ?? "Incorrect password.");
+        setPasswordError(true);
+      }
+    } catch {
+      setLoginError("Could not reach the server.");
       setPasswordError(true);
+    } finally {
+      setLoginLoading(false);
     }
+  };
+
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
+    setAuthenticated(false);
+    setCsrfToken(null);
+    setSessionExpiresInDays(null);
+    setPassword("");
+    setPasswordError(false);
+    setLoginError(null);
   };
 
   const handleSave = async () => {
@@ -216,7 +272,10 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
     try {
       const res = await fetch("/api/portfolio", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(csrfToken ? { "X-CSRF-Token": csrfToken } : {}),
+        },
         body: JSON.stringify(data),
       });
       if (res.ok) {
@@ -288,7 +347,11 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
     const fd = new FormData();
     fd.append("file", file);
     fd.append("scope", crop.scope === "about" ? "about" : "books");
-    const res = await fetch("/api/upload", { method: "POST", body: fd });
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      headers: csrfToken ? { "X-CSRF-Token": csrfToken } : {},
+      body: fd,
+    });
     const raw = await res.text();
     let result: { success?: boolean; path?: string; message?: string } = {};
     try {
@@ -415,7 +478,11 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
       formData.append("file", file);
       formData.append("category", categorySlug);
       try {
-        const res = await fetch("/api/upload", { method: "POST", body: formData });
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          headers: csrfToken ? { "X-CSRF-Token": csrfToken } : {},
+          body: formData,
+        });
         const raw = await res.text();
         let result: { success?: boolean; path?: string; message?: string } = {};
         try {
@@ -486,16 +553,28 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
             <input
               type="password"
               value={password}
-              onChange={(e) => { setPassword(e.target.value); setPasswordError(false); }}
-              onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setPasswordError(false);
+                setLoginError(null);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !loginLoading) void handleLogin();
+              }}
               placeholder="Password"
               className={`w-full ${passwordError ? "!border-red-500" : ""}`}
             />
             {passwordError && (
-              <p className="text-xs text-red-400">Incorrect password. Try again.</p>
+              <p className="text-xs text-red-400">{loginError ?? "Incorrect password."}</p>
             )}
-            <button type="button" onClick={handleLogin} className="btn-primary w-full justify-center">
-              <span>Enter</span>
+            <button
+              type="button"
+              onClick={() => { void handleLogin(); }}
+              disabled={loginLoading}
+              className="btn-primary w-full justify-center disabled:opacity-60"
+            >
+              {loginLoading && <Loader2 size={14} className="animate-spin" />}
+              <span>{loginLoading ? "Signing in…" : "Enter"}</span>
             </button>
           </div>
         </div>
@@ -534,6 +613,11 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
                 {statusMessage}
               </span>
             )}
+            {sessionExpiresInDays !== null && (
+              <span className="hidden text-[10px] text-[color:var(--fg-subtle)] sm:inline">
+                Session · {sessionExpiresInDays}d left
+              </span>
+            )}
             <a
               href="/"
               target="_blank"
@@ -542,7 +626,22 @@ export default function AdminPanel({ defaultData }: AdminPanelProps) {
             >
               <Eye size={12} /> Preview
             </a>
-            <button type="button" onClick={handleSave} className="btn-primary !py-2 !px-5 !text-[10px]">
+            <button
+              type="button"
+              onClick={() => { void handleLogout(); }}
+              className="btn-secondary !py-2 !px-4 !text-[10px]"
+              aria-label="Sign out"
+            >
+              <LogOut size={12} />
+              <span className="hidden sm:inline">Sign out</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={!csrfToken}
+              className="btn-primary !py-2 !px-5 !text-[10px] disabled:opacity-60"
+              title={csrfToken ? undefined : "Verifying session…"}
+            >
               <Save size={12} />
               <span>Save</span>
             </button>

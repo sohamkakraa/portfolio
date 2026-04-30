@@ -2,6 +2,7 @@ import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
+import { verifyAdminSession } from "@/lib/auth";
 
 const BLOB_CONFIGURED = Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
 const ON_VERCEL = process.env.VERCEL === "1";
@@ -36,6 +37,15 @@ function explainFsError(err: unknown): string {
 }
 
 export async function POST(request: Request) {
+  const session = await verifyAdminSession(request.headers.get("cookie"));
+  if (!session) {
+    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+  }
+  const csrf = request.headers.get("x-csrf-token");
+  if (!csrf || csrf !== session.csrfToken) {
+    return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 });
+  }
+
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File | null;

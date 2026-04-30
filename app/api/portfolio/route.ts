@@ -8,6 +8,7 @@ import {
   readPortfolioFromRedis,
   writePortfolioToRedis,
 } from "@/lib/portfolio-redis";
+import { verifyAdminSession } from "@/lib/auth";
 
 const DATA_PATH = path.join(process.cwd(), "data", "portfolio.json");
 
@@ -83,6 +84,15 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
+  const session = await verifyAdminSession(request.headers.get("cookie"));
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const csrf = request.headers.get("x-csrf-token");
+  if (!csrf || csrf !== session.csrfToken) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   try {
     const body = (await request.json()) as PortfolioData;
 
