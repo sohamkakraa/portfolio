@@ -1,0 +1,14 @@
+# Large local photo originals — served from Cloudflare R2 in production
+public/photography
+public/photography-webp
+
+# Orphaned sub-app (deleted, files still on disk)
+apps/
+
+# Local CMS state and runtime uploads
+data/portfolio.json
+public/about
+public/books
+
+# Scripts not needed at runtime
+scripts/
