@@ -94,8 +94,8 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
       })
       .finally(() => setLoading(false));
 
-    // Minimum display time so the animation completes at least one loop
-    const minTimer = setTimeout(() => setLoading(false), 2500);
+    // 60 frames at 24fps = 2500ms. Add 800ms buffer for preload + fade.
+    const minTimer = setTimeout(() => setLoading(false), 3300);
     return () => clearTimeout(minTimer);
   }, [initialData]);
 
