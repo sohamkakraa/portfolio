@@ -9,7 +9,9 @@
     "lint": "eslint",
     "photos:compress": "node scripts/compress-images.mjs public/photography public/photography-webp",
     "photos:sync": "node scripts/sync-photos.mjs",
-    "photos:sync-force": "node scripts/sync-photos.mjs --force"
+    "photos:sync-force": "node scripts/sync-photos.mjs --force",
+    "photos:rank": "node scripts/rank-photos.mjs --incremental",
+    "photos:rank-force": "node scripts/rank-photos.mjs --force"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.91.1",

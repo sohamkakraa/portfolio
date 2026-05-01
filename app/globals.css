@@ -256,6 +256,11 @@
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px var(--accent-glow);
 }
 
+details.glass-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 /* ── Buttons ── */
 .btn-primary {
   display: inline-flex;

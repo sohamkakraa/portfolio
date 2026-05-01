@@ -280,7 +280,7 @@ export default function PhotographySection({ section, maxPreview = 6 }: Photogra
       {collectionImages.length ? (
         <div
           key={activeSlugResolved}
-          className="collection-fade mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 lg:gap-5"
+          className="collection-fade mt-10 grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 lg:gap-5"
         >
           {collectionImages.slice(0, maxPreview).map((image, index) => (
             <button
@@ -419,7 +419,7 @@ export default function PhotographySection({ section, maxPreview = 6 }: Photogra
             {/* Modal body */}
             <div className="mt-0 min-h-0 overflow-y-auto p-6">
               {activeIndex === null ? (
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-2 gap-3 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3">
                   {modalImages.map((image, index) => (
                     <button
                       key={image.id}

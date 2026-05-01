@@ -67,11 +67,13 @@ export default function LoadingScreen({ visible, onComplete }: Props) {
     let lastDrawnFrame = -1;
 
     const draw = (ts: number) => {
+      const idx = frameIdxRef.current;
+      // Stop advancing once we've played through all frames exactly once
+      if (idx >= FRAME_COUNT) return;
       rafRef.current = requestAnimationFrame(draw);
       if (ts - lastTsRef.current < FRAME_MS) return;
       lastTsRef.current = ts;
 
-      const idx = frameIdxRef.current;
       const img = framesRef.current[idx];
 
       if (img?.complete && img.naturalWidth > 0) {
@@ -88,8 +90,8 @@ export default function LoadingScreen({ visible, onComplete }: Props) {
         ctx.drawImage(img, dx, dy, dw, dh);
         lastDrawnFrame = idx;
       }
-      // Advance even if frame wasn't ready — it'll catch up next tick
-      frameIdxRef.current = (idx + 1) % FRAME_COUNT;
+      // Advance; clamp at FRAME_COUNT to stop after one full play
+      frameIdxRef.current = idx + 1;
       void lastDrawnFrame; // suppress lint
     };
 

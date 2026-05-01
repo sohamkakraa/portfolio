@@ -75,6 +75,11 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
   const [loaderMounted, setLoaderMounted] = useState(true);
 
   useEffect(() => {
+    // Both fetch AND minimum timer must complete before dismissing the loader.
+    let fetchDone = false;
+    let timerDone = false;
+    const tryDismiss = () => { if (fetchDone && timerDone) setLoading(false); };
+
     // 1. Immediately apply any localStorage overrides (fast, no network)
     const stored = loadPortfolioData();
     if (stored) {
@@ -85,17 +90,15 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
     fetch("/api/portfolio")
       .then((res) => (res.ok ? res.json() : null))
       .then((serverData: PortfolioData | null) => {
-        if (serverData) {
-          setData(serverData);
-        }
+        if (serverData) setData(serverData);
       })
       .catch(() => {
         // Network error — keep localStorage / initial data
       })
-      .finally(() => setLoading(false));
+      .finally(() => { fetchDone = true; tryDismiss(); });
 
-    // 60 frames at 24fps = 2500ms per loop. Show two full loops + fade buffer.
-    const minTimer = setTimeout(() => setLoading(false), 5200);
+    // 60 frames at 24fps = 2500ms. Add 400ms buffer so the logo is fully visible before fade.
+    const minTimer = setTimeout(() => { timerDone = true; tryDismiss(); }, 2900);
     return () => clearTimeout(minTimer);
   }, [initialData]);
 
@@ -264,7 +267,7 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
                       priority
                       sizes="(max-width: 1024px) 100vw, 40vw"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[color:var(--bg-surface)] opacity-30 lg:opacity-60" />
+                    <div className="absolute inset-0 bg-gradient-to-b lg:bg-gradient-to-r from-transparent to-[color:var(--bg-surface)] opacity-50 lg:opacity-60" />
                   </div>
 
                   {/* Content */}

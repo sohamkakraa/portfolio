@@ -1,0 +1,682 @@
+{
+  "light-trails/Lightrail 1.webp": {
+    "rank": 8,
+    "description": "Crescent moon presides over neon-lit industrial harbor at twilight.",
+    "location": "Port or industrial waterfront, likely Northern Europe or Scandinavia"
+  },
+  "light-trails/Startrail 1.webp": {
+    "rank": 7,
+    "description": "Celestial streaks arc across darkness, Earth's rotation painted in white fire.",
+    "location": null
+  },
+  "light-trails/Startrail 10.webp": {
+    "rank": 7,
+    "description": "Molten lava cascades against starlit night, raw volcanic fury captured.",
+    "location": "Hawaii or similar volcanic region"
+  },
+  "light-trails/Startrail 11.webp": {
+    "rank": 6,
+    "description": "Earth's horizon glows beneath a nebula-red star cluster and streaking lights.",
+    "location": null
+  },
+  "light-trails/Startrail 2.webp": {
+    "rank": 7,
+    "description": "Stars wheel overhead while red transmission towers anchor the earthbound horizon.",
+    "location": null
+  },
+  "light-trails/Startrail 3.webp": {
+    "rank": 8,
+    "description": "Celestial vortex spirals above desolate terrain and distant transmission lines.",
+    "location": "Iceland or high-latitude Arctic region"
+  },
+  "light-trails/Startrail 4.webp": {
+    "rank": 6,
+    "description": "Silhouetted figures suspended between golden light streams in darkness.",
+    "location": null
+  },
+  "light-trails/Startrail 5.webp": {
+    "rank": 7,
+    "description": "Three runners pause beneath starlight as red taillights streak past.",
+    "location": null
+  },
+  "light-trails/Startrail 6.webp": {
+    "rank": 6,
+    "description": "Neon elephant silhouette dances against star-scattered darkness.",
+    "location": null
+  },
+  "light-trails/Startrail 7.webp": {
+    "rank": 7,
+    "description": "Molten wire sphere hovers suspended against infinite starfield darkness.",
+    "location": null
+  },
+  "light-trails/Startrail 8.webp": {
+    "rank": 7,
+    "description": "Neon heart glows solitary against star-scattered desert darkness.",
+    "location": null
+  },
+  "light-trails/Startrail 9.webp": {
+    "rank": 6,
+    "description": "Glowing neon coil commands attention against a starlit void above.",
+    "location": null
+  },
+  "astrophotography/Cresent Moon.webp": {
+    "rank": 7,
+    "description": "Lunar craters catch sharp relief against the void of night sky.",
+    "location": null
+  },
+  "astrophotography/First Milky Way.webp": {
+    "rank": 6,
+    "description": "The Milky Way's dusty core stretches diagonally across a star-studded void.",
+    "location": null
+  },
+  "astrophotography/Grahan Village.webp": {
+    "rank": 5,
+    "description": "Wispy clouds catch fading light above a darkened treeline at dusk.",
+    "location": null
+  },
+  "astrophotography/Humpi.webp": {
+    "rank": 4,
+    "description": "Ancient boulder-strewn hillside under twilight's muted, hazy sky.",
+    "location": "Hampi, Karnataka, India"
+  },
+  "astrophotography/Humpta Pass.webp": {
+    "rank": 7,
+    "description": "Milky Way emerges above a canyon, crimson headlamp illuminating the vast darkness below.",
+    "location": "Humpta Pass, Himachal Pradesh, India"
+  },
+  "astrophotography/IMG_7033.webp": {
+    "rank": 8,
+    "description": "Milky Way's luminous spine rises above silhouetted peaks, anchored by red headlamp glow.",
+    "location": "High altitude mountain range, possibly Andes or Himalayas"
+  },
+  "astrophotography/Lunar Night.webp": {
+    "rank": 7,
+    "description": "Luminous lunar disk reveals cratered surface against obsidian void.",
+    "location": null
+  },
+  "astrophotography/Moon in the Day.webp": {
+    "rank": 7,
+    "description": "Lunar surface gleams stark and crystalline against deepening twilight blue.",
+    "location": null
+  },
+  "astrophotography/Nagaru Night Sky.webp": {
+    "rank": 5,
+    "description": "Milky Way arcs above shadowed peaks, a solitary light glimmers below.",
+    "location": "Nagaru region, likely Nepal or Himalayas"
+  },
+  "astrophotography/Sar Pass 1.webp": {
+    "rank": 5,
+    "description": "Snow-capped peaks silhouette against deepening twilight's fading blue gradient.",
+    "location": "Sar Pass, Himachal Pradesh, India"
+  },
+  "astrophotography/Sar Pass 2.webp": {
+    "rank": 3,
+    "description": "Underexposed mountain silhouettes against starlit sky, lacking detail and contrast.",
+    "location": "Sar Pass, Himachal Pradesh, India"
+  },
+  "astrophotography/Sar Pass 3.webp": {
+    "rank": 3,
+    "description": "Daytime sky with wispy clouds over distant treeline silhouette.",
+    "location": "Sar Pass, Himachal Pradesh, India"
+  },
+  "astrophotography/Sar Pass 4.webp": {
+    "rank": 3,
+    "description": "Silhouetted ridge frames sparse stars in underexposed night sky.",
+    "location": "Sar Pass, Himachal Pradesh, India"
+  },
+  "astrophotography/Sar Pass 5.webp": {
+    "rank": 4,
+    "description": "Stars pierce darkness above silhouetted mountain ridge, underexposed and atmospheric.",
+    "location": "Sar Pass, Himachal Pradesh, India"
+  },
+  "astrophotography/Sar Pass 6.webp": {
+    "rank": 4,
+    "description": "Silhouetted treeline frames a twilight sky with faint stellar glow.",
+    "location": "Sar Pass, Himachal Pradesh, India"
+  },
+  "astrophotography/Starry Night.webp": {
+    "rank": 7,
+    "description": "Power lines pierce the twilight horizon beneath an awakening star field.",
+    "location": "High desert region, possibly southwestern United States or similar arid landscape"
+  },
+  "astrophotography/Sunset.webp": {
+    "rank": 7,
+    "description": "Colossal sun hangs above industrial silhouette in amber stillness.",
+    "location": null
+  },
+  "astrophotography/Tosh Village.webp": {
+    "rank": 4,
+    "description": "Distant village lights pierce the darkness beneath a star-scattered mountain sky.",
+    "location": "Tosh Village, Himachal Pradesh, India"
+  },
+  "automobile/Classic Car.webp": {
+    "rank": 8,
+    "description": "Legendary Cobra gleams in museum light, racing stripes catching golden glow.",
+    "location": "Porsche Museum or similar automotive museum"
+  },
+  "automobile/Masi Airfield.webp": {
+    "rank": 7,
+    "description": "Single-engine Cessna rests on vast tidal flats beneath crystalline sky.",
+    "location": "Masi Airfield, Kenya"
+  },
+  "automobile/Mustang 1.webp": {
+    "rank": 8,
+    "description": "Neon-soaked muscle car emerges from purple darkness in cinematic stillness.",
+    "location": null
+  },
+  "automobile/Mustang 2.webp": {
+    "rank": 8,
+    "description": "Silhouetted figures frame a Mustang beneath a starlit desert sky.",
+    "location": "Dubai, United Arab Emirates"
+  },
+  "automobile/Mustang 3.webp": {
+    "rank": 8,
+    "description": "Iconic Mustang badge gleams beside sculptural taillights burning crimson.",
+    "location": null
+  },
+  "automobile/Mustang 4.webp": {
+    "rank": 7,
+    "description": "Crimson Mustang gleams under moody teal light, poised and powerful.",
+    "location": "Dubai, United Arab Emirates"
+  },
+  "automobile/Mustang Interior.webp": {
+    "rank": 8,
+    "description": "Golden hour bathes a Mustang's steering wheel in warm, cinematic light.",
+    "location": null
+  },
+  "automobile/Mustang Logo.webp": {
+    "rank": 6,
+    "description": "Sunlit Mustang emblem casts sharp shadow across weathered wooden surface.",
+    "location": null
+  },
+  "cityscapes/Amsterdam 1.webp": {
+    "rank": 8,
+    "description": "Autumn gilds a canal-side street where stone bridges frame unhurried European life.",
+    "location": "Amsterdam, Netherlands"
+  },
+  "cityscapes/Amsterdam 2.webp": {
+    "rank": 8,
+    "description": "Golden autumn gilds a Dutch canal town beneath twin spires.",
+    "location": "Amsterdam, Netherlands"
+  },
+  "cityscapes/Amsterdam 3.webp": {
+    "rank": 8,
+    "description": "Autumn frames a narrow Dutch townhouse above moored canal boats.",
+    "location": "Amsterdam, Netherlands"
+  },
+  "cityscapes/Amsterdam 4.webp": {
+    "rank": 8,
+    "description": "Autumn's amber glow ignites a dark canal passage beneath iron bridges.",
+    "location": "Amsterdam, Netherlands"
+  },
+  "cityscapes/Amsterdam 5.webp": {
+    "rank": 8,
+    "description": "Golden bridge lights bleed into dark waters, electric night reflections.",
+    "location": "Amsterdam, Netherlands"
+  },
+  "cityscapes/Burj Al Arab.webp": {
+    "rank": 7,
+    "description": "Illuminated sail-shaped tower pierces darkness over still Arabian waters.",
+    "location": "Burj Al Arab, Dubai, United Arab Emirates"
+  },
+  "cityscapes/Burj Khalifa 1.webp": {
+    "rank": 8,
+    "description": "Full moon hovers ethereally behind Burj Khalifa's silhouette, bathing Dubai in amber stillness.",
+    "location": "Downtown Dubai, United Arab Emirates"
+  },
+  "cityscapes/Burj Khalifa 2.webp": {
+    "rank": 7,
+    "description": "Golden spire pierces grey twilight in solitary architectural grace.",
+    "location": "Burj Khalifa, Dubai, United Arab Emirates"
+  },
+  "cityscapes/Creek Harbour.webp": {
+    "rank": 7,
+    "description": "Pirate vessel anchors before glittering downtown skyline under hazy clouds.",
+    "location": "Miami, Florida, USA"
+  },
+  "cityscapes/Eindhoven.webp": {
+    "rank": 7,
+    "description": "Moon rises over Eindhoven's Art Deco towers in rose-tinted twilight.",
+    "location": "Eindhoven, Netherlands"
+  },
+  "cityscapes/Emirates.webp": {
+    "rank": 6,
+    "description": "Emirates A380 ascends through crystalline sky with propeller blur overhead.",
+    "location": null
+  },
+  "cityscapes/Expo2020 1.webp": {
+    "rank": 7,
+    "description": "Geometric bronze petals frame sky, casting intricate shadows downward.",
+    "location": "Expo 2020, Dubai, United Arab Emirates"
+  },
+  "cityscapes/Expo2020 2.webp": {
+    "rank": 8,
+    "description": "Water cascades against darkened dam face beneath rose-touched clouds.",
+    "location": "Expo 2020, Dubai, United Arab Emirates"
+  },
+  "cityscapes/Florence.webp": {
+    "rank": 8,
+    "description": "Florentine Renaissance splendor: marble facade and terracotta dome pierce cloudless azure.",
+    "location": "Florence Cathedral (Duomo of Santa Maria del Fiore), Florence, Italy"
+  },
+  "cityscapes/Rome 2.webp": {
+    "rank": 7,
+    "description": "Ancient Roman ruins frame Renaissance domes bathed in golden afternoon light.",
+    "location": "Roman Forum, Rome, Italy"
+  },
+  "cityscapes/Rome 3.webp": {
+    "rank": 8,
+    "description": "Ancient Rome's layered history: ruins embrace Renaissance domes in golden afternoon light.",
+    "location": "Roman Forum area, Rome, Italy"
+  },
+  "cityscapes/Rome 4.webp": {
+    "rank": 7,
+    "description": "Ancient Colosseum glows honey-gold beneath crystalline Roman sky.",
+    "location": "Colosseum, Rome, Italy"
+  },
+  "cityscapes/Rome.webp": {
+    "rank": 7,
+    "description": "Ancient Roman amphitheater stands defiant against modern urban sprawl below.",
+    "location": "Colosseum, Rome, Italy"
+  },
+  "cityscapes/SuperMoon.webp": {
+    "rank": 7,
+    "description": "Luminous supermoon hangs above a nocturnal urban skyline, casting amber warmth.",
+    "location": "Chicago, Illinois, United States"
+  },
+  "events/Amit Trivedi 1.webp": {
+    "rank": 8,
+    "description": "Bespectacled performer commands the stage beneath ethereal blue projections.",
+    "location": null
+  },
+  "events/Amit Trivedi 2.webp": {
+    "rank": 7,
+    "description": "Charismatic performer commands stage beneath luminous blue abstract backdrop.",
+    "location": null
+  },
+  "events/Amit Trivedi 3.webp": {
+    "rank": 7,
+    "description": "Bearded speaker in glasses commands blue-lit stage with animated passion.",
+    "location": null
+  },
+  "events/Amit Trivedi 4.webp": {
+    "rank": 8,
+    "description": "Musician's focused intensity illuminates through amber stage light and shadow.",
+    "location": null
+  },
+  "events/Amit Trivedi 5.webp": {
+    "rank": 8,
+    "description": "Suited performer commands stage with microphone beneath neon-lit digital backdrop.",
+    "location": null
+  },
+  "events/Coldplay 1.webp": {
+    "rank": 5,
+    "description": "Warm stage lights and smoke envelop musicians amid a sea of phone-wielding concert spectators.",
+    "location": null
+  },
+  "events/Coldplay 2.webp": {
+    "rank": 6,
+    "description": "Smoke-wreathed performance captures intimate arena concert energy and crowd connection.",
+    "location": null
+  },
+  "events/Concert 1.webp": {
+    "rank": 7,
+    "description": "Red-lit guitarist commands stage with focused intensity and polished style.",
+    "location": null
+  },
+  "events/Concert 2.webp": {
+    "rank": 8,
+    "description": "Performer commands stage with raised fist, bathed in crimson intensity.",
+    "location": null
+  },
+  "events/Concert 3.webp": {
+    "rank": 7,
+    "description": "Performer commands the stage with raised arms under dramatic crimson spotlights.",
+    "location": null
+  },
+  "events/Concert 4.webp": {
+    "rank": 7,
+    "description": "Drummer commands stage with raised stick, bathed in purple concert light.",
+    "location": null
+  },
+  "events/SEL 1.webp": {
+    "rank": 6,
+    "description": "Bearded performer commands darkened stage with microphone and gestured intensity.",
+    "location": null
+  },
+  "events/SEL 2.webp": {
+    "rank": 7,
+    "description": "Passionate speaker commands stage with expressive gesture beneath dramatic lighting.",
+    "location": null
+  },
+  "events/SEL 3.webp": {
+    "rank": 6,
+    "description": "Guitarist locked in concentration beneath geometric stage design and blue wash.",
+    "location": null
+  },
+  "events/SEL 4.webp": {
+    "rank": 7,
+    "description": "Silhouetted hands capture purple-lit stage chaos in real time.",
+    "location": null
+  },
+  "events/SEL 5.webp": {
+    "rank": 7,
+    "description": "Performer commands stage with raised hand, purple light bathing the moment.",
+    "location": null
+  },
+  "events/SEL 6.webp": {
+    "rank": 7,
+    "description": "Performer commands stage under molten sunset lighting, gesturing toward invisible audience.",
+    "location": null
+  },
+  "events/SEL 7.webp": {
+    "rank": 8,
+    "description": "Guitarist commands stage under ethereal particle-lit backdrop, locked in performance.",
+    "location": null
+  },
+  "landscape/Amboseli 1.webp": {
+    "rank": 7,
+    "description": "Skeletal tree stands defiant against darkening sky, witness to environmental decay.",
+    "location": "Amboseli National Park, Kenya"
+  },
+  "landscape/Amboseli 2.webp": {
+    "rank": 7,
+    "description": "A distant elephant herd grazes beneath turbulent skies in vast savanna solitude.",
+    "location": "Amboseli National Park, Kenya"
+  },
+  "landscape/Amboseli 3.webp": {
+    "rank": 7,
+    "description": "Migrating birds trace arcs across a contemplative wetland horizon.",
+    "location": "Amboseli National Park, Kenya"
+  },
+  "landscape/Austria.webp": {
+    "rank": 7,
+    "description": "Alpine lake nestles beneath mist-shrouded peaks in verdant mountain embrace.",
+    "location": "Hallstatt region, Salzkammergut, Austria"
+  },
+  "landscape/B961C014-E111-42FA-BE7B-7E5788E6812C.webp": {
+    "rank": 7,
+    "description": "Migratory birds arc across a serene wetland under brooding skies.",
+    "location": "Shannon Callows or similar Irish wetland system"
+  },
+  "landscape/Capri 2.webp": {
+    "rank": 8,
+    "description": "Faraglioni stacks pierce the Mediterranean, weathered limestone sentinels framing turquoise depths.",
+    "location": "Faraglioni, Capri, Italy"
+  },
+  "landscape/Chandartal Lake.webp": {
+    "rank": 7,
+    "description": "Barren peaks frame a glacial lake nestled in austere mountain solitude.",
+    "location": "Chandartal Lake, Himachal Pradesh, India"
+  },
+  "landscape/Cricular Rainbow.webp": {
+    "rank": 7,
+    "description": "A luminous halo crowns the sun, framed by towering forest sentinels.",
+    "location": null
+  },
+  "landscape/DSC_0091 2.webp": {
+    "rank": 7,
+    "description": "Molten sun sinks between silhouetted ridges in amber stillness.",
+    "location": null
+  },
+  "landscape/DSC_0289.webp": {
+    "rank": 7,
+    "description": "Cascading water tumbles over weathered stone in soft, misty motion.",
+    "location": null
+  },
+  "landscape/Flowers 1.webp": {
+    "rank": 7,
+    "description": "Alpine flowers frame a glacial river cutting through austere mountain stone.",
+    "location": "Alps, likely Switzerland or Austria"
+  },
+  "landscape/Flowers 2.webp": {
+    "rank": 7,
+    "description": "Marigold petals glow amber against soft, blurred garden verdure.",
+    "location": null
+  },
+  "landscape/Flowers 3.webp": {
+    "rank": 6,
+    "description": "Clustered coral berries glow against soft green foliage and warm blur.",
+    "location": null
+  },
+  "landscape/Georgia.webp": {
+    "rank": 7,
+    "description": "Wind-sculpted pine silhouette blazes against a rose-streaked twilight sky.",
+    "location": "Georgia (Caucasus region)"
+  },
+  "landscape/Himalayas 1.webp": {
+    "rank": 7,
+    "description": "Coniferous forests embrace a snow-capped peak beneath gathering clouds.",
+    "location": "Himalayas, India or Nepal"
+  },
+  "landscape/Himalayas 10.webp": {
+    "rank": 8,
+    "description": "Jagged peaks pierce cloud-laden sky, snow-carved ridges commanding wilderness vastness.",
+    "location": "Himalayan Mountains, likely Himachal Pradesh or Uttarakhand, India"
+  },
+  "landscape/Himalayas 11.webp": {
+    "rank": 8,
+    "description": "Jagged Himalayan peaks pierce through snow, rock dark against white silence.",
+    "location": "Himalayas, India/Nepal"
+  },
+  "landscape/Himalayas 12.webp": {
+    "rank": 8,
+    "description": "Snow-capped peaks pierce clouds above a forested valley ravine.",
+    "location": "Himalayas, likely Himachal Pradesh or Uttarakhand, India"
+  },
+  "landscape/Himalayas 13.webp": {
+    "rank": 7,
+    "description": "Snow-capped peak pierces scattered clouds above distant foothills.",
+    "location": "Himalayas, India or Nepal"
+  },
+  "landscape/Himalayas 14.webp": {
+    "rank": 8,
+    "description": "Sharp peaks pierce clouds in a dance of snow and shadow.",
+    "location": "Himalayas, likely Karakoram Range, Pakistan/China"
+  },
+  "landscape/Himalayas 15.webp": {
+    "rank": 8,
+    "description": "Mist-veiled conifer slopes reveal layered mountain wilderness in ethereal stillness.",
+    "location": "Himalayas, likely Kashmir or Himachal Pradesh, India"
+  },
+  "landscape/Himalayas 16.webp": {
+    "rank": 8,
+    "description": "Mist cascades down sheer cliffs while ancient forests cradle a mountain stream below.",
+    "location": "Uttarkashi District, Himalayas, India"
+  },
+  "landscape/Himalayas 17.webp": {
+    "rank": 7,
+    "description": "Silhouetted conifers pierce azure sky with sculptural, windswept grace.",
+    "location": "Himalayan region, India"
+  },
+  "landscape/Himalayas 2.webp": {
+    "rank": 7,
+    "description": "Snow-crowned peak emerges through coniferous mist and foreground blur.",
+    "location": "Himalayas, India or Nepal"
+  },
+  "landscape/Himalayas 3.webp": {
+    "rank": 7,
+    "description": "Snow-capped peaks emerge from coniferous forests beneath crystalline alpine sky.",
+    "location": "Himalayas, India"
+  },
+  "landscape/Himalayas 4.webp": {
+    "rank": 8,
+    "description": "Trekkers navigate a verdant alpine valley toward a dramatic cliff-face peak.",
+    "location": "Himalayas, likely Uttarakhand or Himachal Pradesh, India"
+  },
+  "landscape/Himalayas 5.webp": {
+    "rank": 8,
+    "description": "Snow-crowned peaks pierce clouds in austere, layered majesty.",
+    "location": "Himalayas, likely Karakoram or Hindu Kush range"
+  },
+  "landscape/Himalayas 6.webp": {
+    "rank": 8,
+    "description": "Twin peaks pierce clouds with ethereal light and snow-laden majesty.",
+    "location": "Himalayas, likely Nanga Parbat region, Pakistan or nearby range"
+  },
+  "landscape/Himalayas 7.webp": {
+    "rank": 5,
+    "description": "Solitary raptor glides above forested Himalayan slopes under clouded sky.",
+    "location": "Himalayan region, India/Nepal"
+  },
+  "landscape/Himalayas 8.webp": {
+    "rank": 8,
+    "description": "Snow-capped peaks pierce turquoise sky, wreathed in gossamer clouds.",
+    "location": "Himalayas, India/Nepal border region"
+  },
+  "landscape/Himalayas 9.webp": {
+    "rank": 6,
+    "description": "Layered canopy silhouettes create depth against overcast alpine sky.",
+    "location": "Himalayan region, India"
+  },
+  "landscape/Humpta Pass 1.webp": {
+    "rank": 8,
+    "description": "Mountain stream cascades through moss-draped boulders in pristine alpine solitude.",
+    "location": "Himachal Pradesh, India - Humpta Pass region"
+  },
+  "landscape/Humpta Pass 2.webp": {
+    "rank": 7,
+    "description": "Trekkers traverse mist-shrouded alpine meadow beneath towering limestone cliffs.",
+    "location": "Himachal Pradesh, India - Hampta Pass region"
+  },
+  "landscape/Manali.webp": {
+    "rank": 8,
+    "description": "Towering pines frame a rushing river beneath dramatic cumulus clouds.",
+    "location": "Kullu Valley, Himachal Pradesh, India"
+  },
+  "landscape/Masi 2.webp": {
+    "rank": 8,
+    "description": "Gazelle grazes beneath a burning sun and purple mountains at dusk.",
+    "location": "East African savanna, likely Tanzania or Kenya"
+  },
+  "landscape/Masi Airspace.webp": {
+    "rank": 7,
+    "description": "Solitary aircraft rests on vast African plains beneath crystalline skies.",
+    "location": "Masai Mara National Reserve, Kenya"
+  },
+  "landscape/Masi Fields.webp": {
+    "rank": 8,
+    "description": "Solitary acacia stands sentinel across golden savanna beneath cerulean sky.",
+    "location": "Serengeti National Park, Tanzania"
+  },
+  "landscape/Mt. Kilimanjero.webp": {
+    "rank": 9,
+    "description": "Elephants graze beneath Kilimanjaro's snow-capped summit, mirrored in still water.",
+    "location": "Amboseli National Park, Kenya"
+  },
+  "landscape/Snow Desert.webp": {
+    "rank": 8,
+    "description": "Wind-sculpted snow undulates beneath towering peaks and roiling clouds.",
+    "location": "High Alpine Range, possibly Swiss Alps or similar elevation"
+  },
+  "landscape/Tosh 2.webp": {
+    "rank": 7,
+    "description": "Coniferous forest dissolves into mist beneath a brooding alpine slope.",
+    "location": "Himachal Pradesh, India"
+  },
+  "landscape/Tosh 3.webp": {
+    "rank": 8,
+    "description": "Mountain village nestled in misty valley beneath snow-capped peaks.",
+    "location": "Tosh, Himachal Pradesh, India"
+  },
+  "landscape/Tree Trunk.webp": {
+    "rank": 7,
+    "description": "Skeletal branches pierce clear sky, a monument to resilience and decay.",
+    "location": null
+  },
+  "wildlife/Black Mamba.webp": {
+    "rank": 6,
+    "description": "Coiled serpent basks beneath harsh artificial light in cramped stone enclosure.",
+    "location": null
+  },
+  "wildlife/Coco.webp": {
+    "rank": 6,
+    "description": "Fluffy white dog gazes upward with soulful, contemplative expression.",
+    "location": null
+  },
+  "wildlife/DSC_0489.webp": {
+    "rank": 8,
+    "description": "Rust-scaled lizard surveys its rocky domain with predatory stillness.",
+    "location": null
+  },
+  "wildlife/Elephant.webp": {
+    "rank": 8,
+    "description": "Weathered elephant matriarch faces camera with tusks gleaming under bright sunlight.",
+    "location": "African savanna, likely East Africa (Kenya or Tanzania)"
+  },
+  "wildlife/Elephants quenching their thirst.webp": {
+    "rank": 8,
+    "description": "A mother elephant lifts her calf in an intimate moment of tender connection.",
+    "location": null
+  },
+  "wildlife/Eye of the Lion.webp": {
+    "rank": 8,
+    "description": "Intense amber gaze pierces through thorns, raw predatory focus unguarded.",
+    "location": "Sub-Saharan Africa"
+  },
+  "wildlife/Giraffe 1.webp": {
+    "rank": 8,
+    "description": "Two giraffes stretch skyward into acacia canopy beneath brooding clouds.",
+    "location": "Southern African savanna, likely Botswana or Zimbabwe"
+  },
+  "wildlife/Giraffe 2.webp": {
+    "rank": 7,
+    "description": "Giraffe's elegant neck stretches toward thorny acacia in muted savanna light.",
+    "location": "African savanna (likely East Africa - Kenya or Tanzania)"
+  },
+  "wildlife/Giraffe 3.webp": {
+    "rank": 7,
+    "description": "Giraffe stretches for acacia browse while safari vehicle observes from distance.",
+    "location": "East African savanna, likely Kenya or Tanzania"
+  },
+  "wildlife/Giraffe 4.webp": {
+    "rank": 7,
+    "description": "Mother giraffe tenderly gazes toward her calf beneath an acacia tree.",
+    "location": "East African savanna"
+  },
+  "wildlife/Great Egret 1.webp": {
+    "rank": 8,
+    "description": "Pristine egret glides through emerald wetland with effortless grace.",
+    "location": null
+  },
+  "wildlife/Great Egret 2.webp": {
+    "rank": 7,
+    "description": "White egret arrests mid-flight above emerald marshland, wings spread in graceful suspension.",
+    "location": "Atlantic Coast salt marsh, Eastern United States"
+  },
+  "wildlife/Great Egret riding atop Elephant.webp": {
+    "rank": 3,
+    "description": "Digitally composited elephant and egret lacks natural authenticity and cohesive lighting.",
+    "location": null
+  },
+  "wildlife/Greater Flamingo 2.webp": {
+    "rank": 7,
+    "description": "Ethereal white flamingo curves gracefully, golden eye catching filtered sunlight.",
+    "location": null
+  },
+  "wildlife/Greater Flamingo.webp": {
+    "rank": 7,
+    "description": "Flamingo's crimson plumage blazes against monochromatic stone backdrop.",
+    "location": null
+  },
+  "wildlife/Herd of Elephants 1.webp": {
+    "rank": 7,
+    "description": "A distant elephant herd grazes across vast savanna beneath brooding skies.",
+    "location": "African savanna, likely East Africa (Kenya or Tanzania)"
+  },
+  "wildlife/Herd of Elephants 2.webp": {
+    "rank": 9,
+    "description": "Elephants wade through shallow waters beneath snow-capped Kilimanjaro's distant gaze.",
+    "location": "Amboseli National Park, Kenya"
+  },
+  "wildlife/Lion.webp": {
+    "rank": 8,
+    "description": "Lion's contemplative gaze pierces through savanna grass in golden stillness.",
+    "location": "African savanna (specific location indeterminate)"
+  },
+  "wildlife/Lionness.webp": {
+    "rank": 8,
+    "description": "Lioness emerges from desert scrub, golden gaze penetrating the arid landscape.",
+    "location": "Kalahari Desert or similar African savanna region"
+  }
+}

@@ -1,0 +1,318 @@
+{
+  "site": {
+    "name": "Soham Kakra",
+    "role": "M.Sc. Data Science & AI student \u00b7 Full-stack and ML engineer",
+    "location": "Eindhoven, NL",
+    "email": "sohamkakra@gmail.com",
+    "nav": [
+      {
+        "label": "About",
+        "href": "#about"
+      },
+      {
+        "label": "Projects",
+        "href": "#projects"
+      },
+      {
+        "label": "Photography",
+        "href": "#photography"
+      },
+      {
+        "label": "Life",
+        "href": "#life"
+      },
+      {
+        "label": "Contact",
+        "href": "#contact"
+      }
+    ],
+    "socials": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/sohamkakraa"
+      },
+      {
+        "label": "LinkedIn",
+        "href": "https://www.linkedin.com/in/sohamkakra"
+      },
+      {
+        "label": "Email",
+        "href": "mailto:sohamkakra@gmail.com"
+      }
+    ]
+  },
+  "hero": {
+    "eyebrow": "AI research, full-stack systems, and visual storytelling",
+    "titleLine1": "I build data and AI",
+    "titleLine2": "products that feel human.",
+    "subtitle": "M.Sc. Data Science & AI at TU/e. I design and engineer end-to-end systems from model logic to production UX, with a strong focus on clarity and speed.",
+    "ctaPrimary": {
+      "label": "View projects",
+      "href": "#projects"
+    },
+    "ctaSecondary": {
+      "label": "Explore photography",
+      "href": "#photography"
+    },
+    "badges": [
+      "AI/ML systems",
+      "Data visualization",
+      "Full-stack engineering",
+      "Real-time products"
+    ],
+    "showVivekaCta": true,
+    "vivekaCta": {
+      "label": "Viveka",
+      "href": "https://viveka.sohamkakra.com"
+    }
+  },
+  "about": {
+    "title": "About me",
+    "subtitle": "Data Science and AI builder with a product-first systems mindset.",
+    "portraitSrc": "/about/portrait-1775860059347.jpg",
+    "body": "I am pursuing an M.Sc. in Data Science and AI at Eindhoven University of Technology (TU/e). Across internships and independent products, I have worked on AI/ML-driven systems, full-stack applications, and analytics workflows that improve real decision-making.",
+    "highlights": [
+      "Eindhoven University of Technology (TU/e) \u00b7 M.Sc. Data Science & AI",
+      "Etihad Credit Insurance \u00b7 Data Analyst & IT Support (2023\u20132024)",
+      "Heriot-Watt University Dubai \u00b7 B.Sc. Computer Science",
+      "Built AI/ML, dashboard, and full-stack systems across fintech and health"
+    ]
+  },
+  "highlights": {
+    "title": "What I optimize for",
+    "description": "A practical stack that connects data, models, and user experience.",
+    "items": [
+      {
+        "title": "End-to-end delivery",
+        "description": "From data ingestion and model design to product UI and deployment workflows."
+      },
+      {
+        "title": "Readable intelligence",
+        "description": "Turning complex model behavior into interfaces people can trust and use."
+      },
+      {
+        "title": "Real-time thinking",
+        "description": "Building systems that react quickly and stay reliable under live conditions."
+      }
+    ]
+  },
+  "projects": {
+    "title": "Selected projects",
+    "description": "A curated mix of AI, analytics, and product engineering work across healthcare, fintech, and autonomous decision systems.",
+    "items": [
+      {
+        "id": "uma",
+        "title": "UMA",
+        "summary": "A privacy-first medical record workspace that converts fragmented documents into structured patient timelines with clear retrieval.",
+        "tags": [
+          "Healthcare",
+          "Next.js",
+          "Data UX"
+        ],
+        "year": "2025",
+        "status": "Prototype",
+        "link": "https://uma-taupe-rho.vercel.app"
+      },
+      {
+        "id": "tabscape",
+        "title": "TabScape",
+        "summary": "A personal finance product focused on forecasting, recurring expense logic, and budgeting behavior over time.",
+        "tags": [
+          "Fintech",
+          "Forecasting",
+          "Product"
+        ],
+        "year": "2025",
+        "status": "In progress",
+        "link": "https://github.com/sohamkakraa"
+      },
+      {
+        "id": "robotrader",
+        "title": "RoboTrader",
+        "summary": "A signal-driven trading platform with live dashboards, strategy backtesting, and autonomous execution controls.",
+        "tags": [
+          "AI/ML",
+          "Trading",
+          "Real-time"
+        ],
+        "year": "2024",
+        "status": "Live",
+        "link": "https://github.com/sohamkakraa"
+      }
+    ]
+  },
+  "life": {
+    "eyebrow": "Beyond work",
+    "title": "Life, books, places, and entertainment I return to.",
+    "snapshots": [
+      {
+        "title": "Research and product loops",
+        "note": "TU/e lab time + build sprints",
+        "detail": "Most weeks are split between ML research, product prototyping, and turning technical ideas into interfaces people can actually use."
+      },
+      {
+        "title": "Photography in motion",
+        "note": "Field sessions after classes",
+        "detail": "I treat photography as a design practice: framing, patience, and timing. It keeps my visual thinking sharp for product work."
+      },
+      {
+        "title": "Systems-first mindset",
+        "note": "From data to decisions",
+        "detail": "I enjoy building end-to-end systems where data collection, model logic, and UX all support one clear outcome."
+      }
+    ],
+    "books": [
+      {
+        "title": "Designing Data-Intensive Applications",
+        "author": "Martin Kleppmann",
+        "theme": "Systems",
+        "palette": "from-indigo-600/50 via-blue-500/30 to-cyan-600/50"
+      },
+      {
+        "title": "Clean Architecture",
+        "author": "Robert C. Martin",
+        "theme": "Engineering",
+        "palette": "from-emerald-600/50 via-teal-500/30 to-cyan-600/50"
+      },
+      {
+        "title": "Deep Learning",
+        "author": "Goodfellow, Bengio, Courville",
+        "theme": "AI",
+        "palette": "from-violet-600/50 via-purple-500/30 to-indigo-600/50"
+      },
+      {
+        "title": "Thinking, Fast and Slow",
+        "author": "Daniel Kahneman",
+        "theme": "Decision-making",
+        "palette": "from-amber-600/50 via-orange-500/30 to-red-600/50"
+      },
+      {
+        "title": "Atomic Habits",
+        "author": "James Clear",
+        "theme": "Execution",
+        "palette": "from-lime-600/50 via-emerald-500/30 to-green-600/50"
+      }
+    ],
+    "places": [
+      {
+        "place": "Eindhoven, Netherlands",
+        "context": "Current base",
+        "note": "Graduate work at TU/e and a strong student-builder ecosystem."
+      },
+      {
+        "place": "Dubai, U.A.E.",
+        "context": "Education and work",
+        "note": "Shaped my practical approach to analytics, operations, and product delivery."
+      },
+      {
+        "place": "Hyderabad, India",
+        "context": "Early engineering chapter",
+        "note": "Software internship experience and foundation in full-stack execution."
+      },
+      {
+        "place": "Abu Dhabi, U.A.E.",
+        "context": "Regional projects",
+        "note": "Exposure to cross-functional teams and enterprise-scale workflows."
+      }
+    ],
+    "entertainment": [
+      {
+        "title": "Films",
+        "kind": "film",
+        "picks": [
+          "Sci-fi worldbuilding",
+          "Biographical dramas",
+          "Cinematic documentaries"
+        ]
+      },
+      {
+        "title": "Music",
+        "kind": "music",
+        "picks": [
+          "Lo-fi while coding",
+          "Instrumental focus playlists",
+          "Indie and alternative"
+        ]
+      },
+      {
+        "title": "Shows",
+        "kind": "show",
+        "picks": [
+          "Tech and startup series",
+          "Mystery thrillers",
+          "Character-driven stories"
+        ]
+      }
+    ]
+  },
+  "contact": {
+    "title": "Get in touch",
+    "description": "I am open to internships, collaborations, and product engineering opportunities in AI, data systems, and full-stack development.",
+    "ctaLabel": "Email me",
+    "email": "sohamkakra@gmail.com"
+  },
+  "footer": {
+    "note": "Designed and built by Soham Kakra \u00b7 2026",
+    "links": [
+      {
+        "label": "Admin",
+        "href": "/admin"
+      }
+    ]
+  },
+  "photography": {
+    "title": "Photography",
+    "description": "A visual journal from field sessions across cities, landscapes, and night skies. Open any collection and move through it seamlessly.",
+    "categories": [
+      {
+        "slug": "wildlife",
+        "title": "Wildlife",
+        "description": "Quiet encounters and slow-frame patience in the wild.",
+        "accent": "#7DD3FC",
+        "images": []
+      },
+      {
+        "slug": "landscape",
+        "title": "Landscape",
+        "description": "Open horizons and layered atmospheres.",
+        "accent": "#A5B4FC",
+        "images": []
+      },
+      {
+        "slug": "astrophotography",
+        "title": "Astrophotography",
+        "description": "Long exposures, star geometry, and cosmic texture.",
+        "accent": "#C4B5FD",
+        "images": []
+      },
+      {
+        "slug": "light-trails",
+        "title": "Light Trails",
+        "description": "Motion carved into neon ribbons.",
+        "accent": "#F9A8D4",
+        "images": []
+      },
+      {
+        "slug": "automobile",
+        "title": "Automobile",
+        "description": "Reflections, curves, and engineered silhouettes.",
+        "accent": "#FCA5A5",
+        "images": []
+      },
+      {
+        "slug": "events",
+        "title": "Events",
+        "description": "Candid energy and story between frames.",
+        "accent": "#FCD34D",
+        "images": []
+      },
+      {
+        "slug": "cityscapes",
+        "title": "Cityscapes",
+        "description": "Urban grids, midnight color, and volume.",
+        "accent": "#6EE7B7",
+        "images": []
+      }
+    ]
+  }
+}

@@ -123,6 +123,8 @@ export type PhotoItem = {
   description: string;
   meta?: PhotoMeta;
   hidden?: boolean;
+  /** AI-assigned quality rank (1–10, higher = better). Used for sort order. */
+  rank?: number;
 };
 
 export type PhotographyCategory = {

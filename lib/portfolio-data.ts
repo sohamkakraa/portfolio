@@ -36,6 +36,22 @@ function getManifest(): PhotoManifest | null {
   return _manifest;
 }
 
+// AI-generated rankings from scripts/rank-photos.mjs
+// Keys: "slug/filename.webp", values: { rank, description, location }
+interface RankEntry { rank: number; description: string; location: string | null }
+interface PhotoRankings { [key: string]: RankEntry }
+let _rankings: PhotoRankings | null = null;
+function getRankings(): PhotoRankings {
+  if (_rankings !== null) return _rankings;
+  try {
+    const p = path.join(process.cwd(), "data", "photography-rankings.json");
+    _rankings = JSON.parse(fs.readFileSync(p, "utf-8")) as PhotoRankings;
+  } catch {
+    _rankings = {};
+  }
+  return _rankings;
+}
+
 const CATEGORY_SEEDS: Omit<PhotographyCategory, "images">[] = [
   {
     slug: "wildlife",
@@ -305,7 +321,7 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
     ],
   },
   contact: {
-    title: "Let’s build something meaningful",
+    title: "Get in touch",
     description:
       "I am open to internships, collaborations, and product engineering opportunities in AI, data systems, and full-stack development.",
     ctaLabel: "Email me",
@@ -329,6 +345,30 @@ const titleFromFilename = (filename: string, fallback: string) => {
 
 const numericSort = (a: string, b: string) => a.localeCompare(b, undefined, { numeric: true });
 
+/** Apply AI rankings: populate description/location and sort by rank descending. */
+const applyRankings = (items: PhotoItem[], slug: string): PhotoItem[] => {
+  const rankings = getRankings();
+  const ranked = items.map((item) => {
+    const filename = decodeURIComponent(item.src.split("/").pop() ?? "");
+    const entry = rankings[`${slug}/${filename}`];
+    if (!entry) return item;
+    return {
+      ...item,
+      rank: entry.rank,
+      description: entry.description || item.description,
+      meta: entry.location
+        ? { ...item.meta, location: entry.location }
+        : item.meta,
+    };
+  });
+  // Sort by rank descending; unranked images fall to the end (stable sort)
+  return ranked.sort((a, b) => {
+    const ra = a.rank ?? 0;
+    const rb = b.rank ?? 0;
+    return rb - ra;
+  });
+};
+
 const buildPhotoItems = (slug: string): PhotoItem[] => {
   const folder = SLUG_TO_FOLDER[slug] ?? slug;
 
@@ -336,7 +376,7 @@ const buildPhotoItems = (slug: string): PhotoItem[] => {
   const manifest = getManifest();
   const manifestFiles = manifest?.categories?.[slug];
   if (manifestFiles?.length) {
-    return manifestFiles.map((file, i) => ({
+    const items = manifestFiles.map((file, i) => ({
       id: `${slug}-${i + 1}`,
       src: R2_BASE
         ? `${R2_BASE}/photography/${slug}/${encodeURIComponent(file)}`
@@ -344,6 +384,7 @@ const buildPhotoItems = (slug: string): PhotoItem[] => {
       title: titleFromFilename(file, `${slug} ${i + 1}`),
       description: "",
     }));
+    return applyRankings(items, slug);
   }
 
   // 2. Live filesystem scan of photography-webp/ (dev, no manifest yet)
@@ -351,7 +392,7 @@ const buildPhotoItems = (slug: string): PhotoItem[] => {
   if (fs.existsSync(webpDir)) {
     const webpFiles = fs.readdirSync(webpDir).filter((f) => f.endsWith(".webp")).sort(numericSort);
     if (webpFiles.length) {
-      return webpFiles.map((file, i) => ({
+      const items = webpFiles.map((file, i) => ({
         id: `${slug}-${i + 1}`,
         src: R2_BASE
           ? `${R2_BASE}/photography/${slug}/${encodeURIComponent(file)}`
@@ -359,13 +400,14 @@ const buildPhotoItems = (slug: string): PhotoItem[] => {
         title: titleFromFilename(file, `${slug} ${i + 1}`),
         description: "",
       }));
+      return applyRankings(items, slug);
     }
   }
 
   // 3. Last resort: web-compatible originals in photography/
   const origDir = path.join(process.cwd(), "public", "photography", folder);
   if (!fs.existsSync(origDir)) return [];
-  return fs
+  const items = fs
     .readdirSync(origDir)
     .filter((f) => WEB_EXTENSIONS.has(path.extname(f).toLowerCase()))
     .sort(numericSort)
@@ -375,6 +417,7 @@ const buildPhotoItems = (slug: string): PhotoItem[] => {
       title: titleFromFilename(file, `${slug} ${i + 1}`),
       description: "",
     }));
+  return applyRankings(items, slug);
 };
 
 export const getDefaultPortfolioData = (): PortfolioData => {
