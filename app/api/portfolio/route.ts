@@ -46,9 +46,7 @@ function mergeStoredWithDefaults(stored: PortfolioData, defaults: PortfolioData)
         return {
           ...defCat,
           ...storedCat,
-          // Only fall back to disk-scanned images when CMS never saved an `images` array.
-          // `[]` means an intentionally empty gallery; `?.length > 0` incorrectly replaced that with disk defaults.
-          images: Array.isArray(storedImages) ? storedImages : defCat.images,
+            images: storedImages?.length ? storedImages : defCat.images,
         };
       }),
     },

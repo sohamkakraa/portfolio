@@ -29,9 +29,10 @@ async function getPortfolioData() {
               return {
                 ...defCat,
                 ...storedCat,
-                images: Array.isArray(storedCat.images)
-                  ? storedCat.images
-                  : defCat.images,
+                images:
+                  storedCat.images?.length
+                    ? storedCat.images
+                    : defCat.images,
               };
             }),
           },

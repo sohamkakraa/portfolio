@@ -5,8 +5,12 @@ import type { PortfolioData, PhotographyCategory, PhotoItem } from "@/lib/portfo
 // Web-displayable formats only (no RAW)
 const WEB_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"]);
 
-// R2 base URL (no trailing slash). When set, all photo srcs point to R2.
-const R2_BASE = process.env.R2_PUBLIC_URL?.replace(/\/$/, "") ?? "";
+// R2 base URL (no trailing slash). Only used in production to avoid pointing
+// at an R2 domain that may not be reachable in local dev.
+const R2_BASE =
+  process.env.NODE_ENV === "production"
+    ? (process.env.R2_PUBLIC_URL?.replace(/\/$/, "") ?? "")
+    : "";
 
 // Some disk folder names differ from the category slug used in the CMS.
 const FOLDER_TO_SLUG: Record<string, string> = {

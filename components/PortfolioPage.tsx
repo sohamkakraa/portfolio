@@ -27,6 +27,7 @@ import ProjectGrid from "@/components/ProjectGrid";
 import PhotographySection from "@/components/PhotographySection";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import BookCoverTile from "@/components/BookCoverTile";
+import LoadingScreen from "@/components/LoadingScreen";
 
 type PortfolioPageProps = {
   initialData: PortfolioData;
@@ -70,6 +71,8 @@ function entertainmentIcon(kind: LifeEntertainment["kind"]) {
 
 export default function PortfolioPage({ initialData }: PortfolioPageProps) {
   const [data, setData] = useState<PortfolioData>(initialData);
+  const [loading, setLoading] = useState(true);
+  const [loaderMounted, setLoaderMounted] = useState(true);
 
   useEffect(() => {
     // 1. Immediately apply any localStorage overrides (fast, no network)
@@ -88,7 +91,12 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
       })
       .catch(() => {
         // Network error — keep localStorage / initial data
-      });
+      })
+      .finally(() => setLoading(false));
+
+    // Minimum display time so the animation completes at least one loop
+    const minTimer = setTimeout(() => setLoading(false), 2500);
+    return () => clearTimeout(minTimer);
   }, [initialData]);
 
   const visibleHighlights = useMemo(
@@ -98,6 +106,12 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
 
   return (
     <div className="min-h-screen bg-[color:var(--bg)] text-[color:var(--fg)]">
+      {loaderMounted && (
+        <LoadingScreen
+          visible={loading}
+          onComplete={() => setLoaderMounted(false)}
+        />
+      )}
       <Nav name={data.site.name} nav={data.site.nav} />
 
       <main>
@@ -332,17 +346,8 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
             <ScrollReveal>
               <div className="mt-12 flex flex-col items-center text-center">
                 <p className="text-sm text-[color:var(--fg-muted)]">
-                  This is just a preview. The full collection lives on its own site.
+                  This is just a preview — browse every collection above.
                 </p>
-                <a
-                  href="https://photography.sohamkakra.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn-primary mt-6"
-                >
-                  <span>Explore full gallery</span>
-                  <ArrowUpRight size={14} />
-                </a>
               </div>
             </ScrollReveal>
           </div>
