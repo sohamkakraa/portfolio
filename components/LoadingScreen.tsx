@@ -29,42 +29,68 @@ export default function LoadingScreen({ visible, onComplete }: Props) {
     if (!mounted) return;
     framesRef.current = Array.from({ length: FRAME_COUNT }, (_, i) => {
       const img = new Image();
-      img.src = `/loading-frames/${String(i + 1).padStart(2, "0")}.webp`;
+      img.src = `/loading-frames/${String(i + 1).padStart(2, "0")}.jpg`;
       return img;
     });
   }, [mounted]);
 
-  // rAF draw loop — draws onto a canvas that is CSS-sized to 100vw × 100vh
+  // Resize canvas to physical pixels (respects devicePixelRatio for Retina sharpness).
+  // This runs once on mount and on window resize — never inside the draw loop.
   useEffect(() => {
     if (!mounted) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+
+    const resize = () => {
+      const dpr = window.devicePixelRatio || 1;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+    return () => window.removeEventListener("resize", resize);
+  }, [mounted]);
+
+  // rAF draw loop — uses canvas.width/height (physical pixels) for crisp output
+  useEffect(() => {
+    if (!mounted) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
+
+    let lastDrawnFrame = -1;
 
     const draw = (ts: number) => {
       rafRef.current = requestAnimationFrame(draw);
       if (ts - lastTsRef.current < FRAME_MS) return;
       lastTsRef.current = ts;
 
-      const img = framesRef.current[frameIdxRef.current];
+      const idx = frameIdxRef.current;
+      const img = framesRef.current[idx];
+
       if (img?.complete && img.naturalWidth > 0) {
-        // Cover: scale image to fill canvas, cropping edges as needed
-        const cw = canvas.clientWidth;
-        const ch = canvas.clientHeight;
-        const iw = img.naturalWidth;   // 960
-        const ih = img.naturalHeight;  // 540
+        // object-cover in physical pixels
+        const cw = canvas.width;
+        const ch = canvas.height;
+        const iw = img.naturalWidth;
+        const ih = img.naturalHeight;
         const scale = Math.max(cw / iw, ch / ih);
         const dw = iw * scale;
         const dh = ih * scale;
         const dx = (cw - dw) / 2;
         const dy = (ch - dh) / 2;
-
-        canvas.width = cw;
-        canvas.height = ch;
         ctx.drawImage(img, dx, dy, dw, dh);
+        lastDrawnFrame = idx;
       }
-      frameIdxRef.current = (frameIdxRef.current + 1) % FRAME_COUNT;
+      // Advance even if frame wasn't ready — it'll catch up next tick
+      frameIdxRef.current = (idx + 1) % FRAME_COUNT;
+      void lastDrawnFrame; // suppress lint
     };
 
     rafRef.current = requestAnimationFrame(draw);
@@ -94,10 +120,7 @@ export default function LoadingScreen({ visible, onComplete }: Props) {
         transition: "opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1)",
       }}
     >
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 block h-full w-full"
-      />
+      <canvas ref={canvasRef} className="block" />
     </div>
   );
 }

@@ -94,10 +94,22 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
       })
       .finally(() => setLoading(false));
 
-    // 60 frames at 24fps = 2500ms. Add 800ms buffer for preload + fade.
-    const minTimer = setTimeout(() => setLoading(false), 3300);
+    // 60 frames at 24fps = 2500ms per loop. Show two full loops + fade buffer.
+    const minTimer = setTimeout(() => setLoading(false), 5200);
     return () => clearTimeout(minTimer);
   }, [initialData]);
+
+  // Preload book covers so they appear instantly when the accordion opens
+  useEffect(() => {
+    data.life.books.forEach((book) => {
+      const src = book.coverSrc?.trim();
+      const isbn = book.isbn?.trim();
+      const url = src || (isbn ? `/api/book-cover?isbn=${encodeURIComponent(isbn)}` : null);
+      if (!url) return;
+      const img = document.createElement("img");
+      img.src = url;
+    });
+  }, [data.life.books]);
 
   const visibleHighlights = useMemo(
     () => data.highlights.items.filter((item) => item.title.trim().length),
