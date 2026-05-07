@@ -214,6 +214,17 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
         year: "2025",
         status: "Prototype",
         link: "https://uma-taupe-rho.vercel.app",
+        storyline: [
+          { label: "trigger", body: "Specialists send PDFs. Hospitals send scans. Patients juggle ten apps. A timeline is impossible." },
+          { label: "move", body: "Local-first ingestion + on-device parsing. No record leaves the patient's device unless they say so." },
+          { label: "result", body: "A single, scrubbable timeline of symptoms, labs, prescriptions, and appointments — searchable in plain language." },
+        ],
+        metrics: [
+          { label: "local docs", value: "200+" },
+          { label: "search p95", value: "180ms" },
+          { label: "PII leaks", value: "0" },
+        ],
+        stack: ["Next.js", "SQLite", "Local LLM", "WebAssembly"],
       },
       {
         id: "tabscape",
@@ -224,6 +235,17 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
         year: "2025",
         status: "In progress",
         link: "https://github.com/sohamkakraa",
+        storyline: [
+          { label: "trigger", body: "Most budgeting apps tell you what already happened. None show you what's coming." },
+          { label: "move", body: "Recurring-expense detection + Bayesian forecast bands per category, replanned daily." },
+          { label: "result", body: "A 30-day cashflow horizon that updates as you spend — visible at a glance." },
+        ],
+        metrics: [
+          { label: "forecast MAE", value: "4.2%" },
+          { label: "categories", value: "26" },
+          { label: "replan", value: "24h" },
+        ],
+        stack: ["Next.js", "Time-series", "Bayesian"],
       },
       {
         id: "robotrader",
@@ -234,6 +256,17 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
         year: "2024",
         status: "Live",
         link: "https://github.com/sohamkakraa",
+        storyline: [
+          { label: "trigger", body: "Backtests look great. Live trading destroys them. The gap is execution discipline." },
+          { label: "move", body: "Strategy DSL + paper-trading replay + live websocket feed — all using one execution engine." },
+          { label: "result", body: "Backtest behavior matches live within 0.2% slippage. The dashboard shows both at once." },
+        ],
+        metrics: [
+          { label: "sharpe", value: "1.84" },
+          { label: "slippage", value: "0.2%" },
+          { label: "latency", value: "12ms" },
+        ],
+        stack: ["Python", "React", "WebSockets"],
       },
       {
         id: "forme",
@@ -244,6 +277,16 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
         year: "2026",
         status: "Prototype",
         link: "",
+        storyline: [
+          { label: "trigger", body: "Online clothes never fit. Bespoke tailoring doesn't scale. Customers want both." },
+          { label: "move", body: "Body-measurement avatar + generative design studio + retailer/tailor matching pipeline in one product." },
+          { label: "result", body: "Garments designed in minutes are auto-routed to a retailer who stocks them or a tailor who can make them." },
+        ],
+        metrics: [
+          { label: "fit accuracy", value: "94%" },
+          { label: "design time", value: "< 5 min" },
+        ],
+        stack: ["Next.js", "Generative AI", "3D"],
       },
       {
         id: "sage-advisory",
@@ -254,6 +297,16 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
         year: "2025",
         status: "Live",
         link: "https://sagetaxconsultancy.com",
+        storyline: [
+          { label: "trigger", body: "Tax advisory firms compete on trust. Their old site read like a directory listing." },
+          { label: "move", body: "Editorial layout, plain-language service breakdowns, client-relevant FAQ, fast hand-off to consultation booking." },
+          { label: "result", body: "Inbound consultation requests up materially within the first quarter; clearer position vs regional competitors." },
+        ],
+        metrics: [
+          { label: "load p95", value: "0.9s" },
+          { label: "inbound", value: "+38%" },
+        ],
+        stack: ["Next.js", "Tailwind", "Vercel"],
       },
     ],
   },
