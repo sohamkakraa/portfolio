@@ -72,8 +72,6 @@ function ArtifactCard({
         textDecoration: "none",
         color: "inherit",
         display: "block",
-        breakInside: "avoid",
-        marginBottom: 16,
         cursor: hasSite || hasRepo ? "pointer" : "default",
       }}
       aria-label={p.title}
