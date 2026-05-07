@@ -24,16 +24,7 @@ export default function ProjectsHoverExpand({ items }: Props) {
   const [hover, setHover] = useState<string | null>(null);
 
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))",
-        gap: 16,
-        gridAutoRows: "440px",
-        gridAutoFlow: "dense",
-        alignItems: "stretch",
-      }}
-    >
+    <div className="projects-masonry">
       {items.map((p) => (
         <ArtifactCard key={p.id} p={p} isHover={hover === p.id} onHover={setHover} />
       ))}
@@ -57,13 +48,11 @@ function ArtifactCard({
   };
   const hasSite = !!p.link;
   const hasRepo = !!p.repo;
-  // If only one is set, the whole card becomes a link to it.
-  // If both are set, render as <article> and surface two buttons in the reveal.
-  const soleHref = hasSite && !hasRepo ? p.link : !hasSite && hasRepo ? p.repo : null;
-  const Wrapper: React.ElementType = soleHref ? "a" : "article";
-  const wrapperProps: Record<string, unknown> = soleHref
-    ? { href: soleHref, target: soleHref.startsWith("http") ? "_blank" : undefined, rel: "noreferrer" }
-    : {};
+  // Always render as <article> with link buttons inside the reveal so the
+  // same UX works on hover (desktop) and on tap (mobile). The card body is a
+  // toggle, never a link — touch users get a clear two-step flow.
+  const Wrapper: React.ElementType = "article";
+  const wrapperProps: Record<string, unknown> = {};
 
   return (
     <Wrapper
@@ -72,20 +61,23 @@ function ArtifactCard({
       onMouseLeave={() => onHover(null)}
       onFocus={() => onHover(p.id)}
       onBlur={() => onHover(null)}
+      onClick={() => onHover(isHover ? null : p.id)}
+      className="project-card"
       style={{
         position: "relative",
         overflow: "hidden",
         border: "1px solid var(--line-2)",
         background: "var(--bg-2)",
-        gridRow: isHover ? "span 2" : "span 1",
-        transition: "grid-row 0.5s cubic-bezier(.7,0,.2,1), border-color 0.3s",
+        transition: "border-color 0.3s",
         textDecoration: "none",
         color: "inherit",
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
+        display: "block",
+        breakInside: "avoid",
+        marginBottom: 16,
+        cursor: hasSite || hasRepo ? "pointer" : "default",
       }}
       aria-label={p.title}
+      aria-expanded={isHover}
     >
       {/* Artifact glyph header */}
       <div
@@ -155,13 +147,13 @@ function ArtifactCard({
         </p>
       </div>
 
-      {/* Reveal */}
+      {/* Reveal — adaptive height: matches content when hovered */}
       <div
         style={{
-          flex: isHover ? 1 : 0,
+          maxHeight: isHover ? 1200 : 0,
           opacity: isHover ? 1 : 0,
-          overflow: "auto",
-          transition: "opacity 0.35s 0.1s, flex 0.5s cubic-bezier(.7,0,.2,1)",
+          overflow: "hidden",
+          transition: "max-height 0.5s cubic-bezier(.7,0,.2,1), opacity 0.35s 0.1s, padding 0.5s cubic-bezier(.7,0,.2,1)",
           padding: isHover ? "20px 24px 60px" : "0 24px",
           pointerEvents: isHover ? "auto" : "none",
         }}
@@ -244,7 +236,7 @@ function ArtifactCard({
           </div>
         ) : null}
 
-        {hasSite && hasRepo && (
+        {(hasSite || hasRepo) && (
           <div
             style={{
               display: "flex",
@@ -255,45 +247,51 @@ function ArtifactCard({
               flexWrap: "wrap",
             }}
           >
-            <a
-              href={p.link}
-              target={p.link!.startsWith("http") ? "_blank" : undefined}
-              rel="noreferrer"
-              className="mono"
-              style={{
-                padding: "8px 14px",
-                background: "var(--ink)",
-                color: "var(--bg)",
-                fontSize: 10,
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                fontWeight: 600,
-                textDecoration: "none",
-                borderRadius: 4,
-              }}
-            >
-              Open site →
-            </a>
-            <a
-              href={p.repo}
-              target={p.repo!.startsWith("http") ? "_blank" : undefined}
-              rel="noreferrer"
-              className="mono"
-              style={{
-                padding: "8px 14px",
-                background: "transparent",
-                color: "var(--ink)",
-                fontSize: 10,
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                fontWeight: 600,
-                textDecoration: "none",
-                borderRadius: 4,
-                border: "1px solid var(--line-2)",
-              }}
-            >
-              View repo ↗
-            </a>
+            {hasSite && (
+              <a
+                href={p.link}
+                target={p.link!.startsWith("http") ? "_blank" : undefined}
+                rel="noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="mono"
+                style={{
+                  padding: "8px 14px",
+                  background: "var(--ink)",
+                  color: "var(--bg)",
+                  fontSize: 10,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  fontWeight: 600,
+                  textDecoration: "none",
+                  borderRadius: 4,
+                }}
+              >
+                Open site →
+              </a>
+            )}
+            {hasRepo && (
+              <a
+                href={p.repo}
+                target={p.repo!.startsWith("http") ? "_blank" : undefined}
+                rel="noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="mono"
+                style={{
+                  padding: "8px 14px",
+                  background: hasSite ? "transparent" : "var(--ink)",
+                  color: hasSite ? "var(--ink)" : "var(--bg)",
+                  fontSize: 10,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  fontWeight: 600,
+                  textDecoration: "none",
+                  borderRadius: 4,
+                  border: hasSite ? "1px solid var(--line-2)" : "none",
+                }}
+              >
+                View repo ↗
+              </a>
+            )}
           </div>
         )}
       </div>

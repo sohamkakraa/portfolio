@@ -467,23 +467,17 @@
 }
 .photo-tile:hover .photo-tile-caption { opacity: 1; transform: translateY(0); }
 
-/* ── Project hover-expand ── */
-.project-card-collapsed {
-  background: var(--bg-2);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-card);
-  padding: 1.25rem;
-  cursor: pointer;
-  transition: border-color 0.38s var(--ease-card),
-              transform 0.38s var(--ease-card);
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+/* ── Selected work — adaptive masonry ── */
+.projects-masonry {
+  column-count: 3;
+  column-gap: 16px;
 }
+@media (max-width: 1024px) { .projects-masonry { column-count: 2; } }
+@media (max-width: 640px)  { .projects-masonry { column-count: 1; } }
 
-.project-card-collapsed:hover,
-.project-card-collapsed:focus-within {
-  border-color: var(--line-2);
+.projects-masonry > .project-card {
+  display: inline-block;
+  width: 100%;
 }
 
 .project-card-glyph {
@@ -491,29 +485,9 @@
   transition: color 0.38s var(--ease-card);
 }
 
-/* Touch / no-hover: tap toggles open instead of relying on hover */
-@media (hover: none) {
-  .project-reveal {
-    max-height: 600px;
-    opacity: 1;
-  }
-}
-.project-card-collapsed:hover .project-card-glyph,
-.project-card-collapsed:focus-within .project-card-glyph {
+.project-card:hover .project-card-glyph,
+.project-card:focus-within .project-card-glyph {
   color: var(--accent);
-}
-
-.project-reveal {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: max-height 0.42s var(--ease-card), opacity 0.32s var(--ease-card);
-}
-
-.project-card-collapsed:hover .project-reveal,
-.project-card-collapsed:focus-within .project-reveal {
-  max-height: 720px;
-  opacity: 1;
 }
 
 /* ── Globe ── */
@@ -623,7 +597,7 @@
   .image-loader-skeleton { animation: none; background: rgba(244, 241, 234, 0.06); }
   .photo-tile, .photo-tile:hover { transform: none; transition: none; }
   .photo-tile img, .photo-tile:hover img { transform: none; transition: none; }
-  .project-card-collapsed { transition: border-color 0.1s; }
+  .project-card { transition: border-color 0.1s; }
   .btn-primary:hover { transform: none; }
   .cursor-blink { animation: none; }
   .loader-dismiss { animation: none; opacity: 0; }
