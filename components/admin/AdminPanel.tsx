@@ -18,7 +18,6 @@ import {
   Plus,
   Save,
   Settings,
-  Sparkles,
   Trash2,
   Upload,
   User,
@@ -53,7 +52,6 @@ const TABS = [
   { id: "site", label: "Site", icon: Globe },
   { id: "hero", label: "Hero", icon: Layout },
   { id: "about", label: "About", icon: User },
-  { id: "highlights", label: "Highlights", icon: Sparkles },
   { id: "projects", label: "Projects", icon: FileText },
   { id: "photography", label: "Photography", icon: Camera },
   { id: "life", label: "Beyond work", icon: Compass },
@@ -325,9 +323,6 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
     setData((prev) => ({ ...prev, about: { ...prev.about, [field]: value } }));
   };
 
-  const updateHighlights = (field: keyof PortfolioData["highlights"], value: unknown) => {
-    setData((prev) => ({ ...prev, highlights: { ...prev.highlights, [field]: value } }));
-  };
 
   const updateProjects = (field: keyof PortfolioData["projects"], value: unknown) => {
     setData((prev) => ({ ...prev, projects: { ...prev.projects, [field]: value } }));
@@ -1038,124 +1033,6 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
                   </button>
                 </div>
               </Card>
-              <Card title="Legacy Hero (gradient layout — currently inert)">
-                <p className="text-[11px] text-[color:var(--fg-muted)] mb-3">
-                  These fields drive the older gradient hero variant. The current editorial hero ignores them; they remain for data continuity.
-                </p>
-                <div className="space-y-4">
-                  <Field label="Eyebrow text">
-                    <Input value={data.hero.eyebrow} onChange={(v) => updateHero("eyebrow", v)} />
-                  </Field>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="Title Line 1">
-                    <Input value={data.hero.titleLine1} onChange={(v) => updateHero("titleLine1", v)} />
-                  </Field>
-                  <Field label="Title Line 2 (gradient)">
-                    <Input value={data.hero.titleLine2} onChange={(v) => updateHero("titleLine2", v)} />
-                  </Field>
-                </div>
-                <Field label="Subtitle">
-                  <TextArea value={data.hero.subtitle} onChange={(v) => updateHero("subtitle", v)} />
-                </Field>
-
-                <label className="flex cursor-pointer items-center gap-2 pt-2 text-xs text-[color:var(--fg-muted)]">
-                  <input
-                    type="checkbox"
-                    checked={data.hero.showVivekaCta !== false}
-                    onChange={(e) => updateHero("showVivekaCta", e.target.checked)}
-                    className="rounded border-[color:var(--border)]"
-                  />
-                  Show third CTA (Viveka) in hero and about
-                </label>
-
-                <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-4">
-                  Call to Actions
-                </h4>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="Primary CTA Label">
-                    <Input
-                      value={data.hero.ctaPrimary.label}
-                      onChange={(v) => updateHero("ctaPrimary", { ...data.hero.ctaPrimary, label: v })}
-                    />
-                  </Field>
-                  <Field label="Primary CTA Link">
-                    <Input
-                      value={data.hero.ctaPrimary.href}
-                      onChange={(v) => updateHero("ctaPrimary", { ...data.hero.ctaPrimary, href: v })}
-                    />
-                  </Field>
-                  <Field label="Secondary CTA Label">
-                    <Input
-                      value={data.hero.ctaSecondary.label}
-                      onChange={(v) => updateHero("ctaSecondary", { ...data.hero.ctaSecondary, label: v })}
-                    />
-                  </Field>
-                  <Field label="Secondary CTA Link">
-                    <Input
-                      value={data.hero.ctaSecondary.href}
-                      onChange={(v) => updateHero("ctaSecondary", { ...data.hero.ctaSecondary, href: v })}
-                    />
-                  </Field>
-                </div>
-
-                <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-4">
-                  Viveka CTA
-                </h4>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="Label">
-                    <Input
-                      value={data.hero.vivekaCta?.label ?? ""}
-                      onChange={(v) =>
-                        updateHero("vivekaCta", {
-                          label: v,
-                          href: data.hero.vivekaCta?.href ?? "https://viveka.sohamkakra.com",
-                        })
-                      }
-                    />
-                  </Field>
-                  <Field label="URL">
-                    <Input
-                      value={data.hero.vivekaCta?.href ?? ""}
-                      onChange={(v) =>
-                        updateHero("vivekaCta", {
-                          label: data.hero.vivekaCta?.label ?? "Viveka",
-                          href: v,
-                        })
-                      }
-                    />
-                  </Field>
-                </div>
-
-                <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-4">
-                  Badges
-                </h4>
-                <div className="space-y-2">
-                  {data.hero.badges.map((badge, i) => (
-                    <div key={i} className="flex gap-2 items-center">
-                      <input
-                        className="flex-1"
-                        value={badge}
-                        onChange={(e) => {
-                          const badges = [...data.hero.badges];
-                          badges[i] = e.target.value;
-                          updateHero("badges", badges);
-                        }}
-                      />
-                      <DangerButton onClick={() => updateHero("badges", data.hero.badges.filter((_, j) => j !== i))}>
-                        <X size={12} />
-                      </DangerButton>
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() => updateHero("badges", [...data.hero.badges, ""])}
-                    className="btn-secondary !py-1.5 !px-3 !text-[10px]"
-                  >
-                    <Plus size={12} /> Add Badge
-                  </button>
-                </div>
-              </div>
-            </Card>
             </>
           )}
 
@@ -1348,48 +1225,9 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
                   </div>
                 </div>
               </Card>
-              <Card title="Legacy About fields (currently inert)">
-                <p className="text-[11px] text-[color:var(--fg-muted)] mb-3">
-                  These fields drove the older About card. The current editorial layout uses the fields above; these remain for data continuity.
-                </p>
+              <Card title="Portrait photo">
                 <div className="space-y-4">
-                  <Field label="Section Title">
-                    <Input value={data.about.title} onChange={(v) => updateAbout("title", v)} />
-                  </Field>
-                <Field label="Subtitle">
-                  <Input value={data.about.subtitle} onChange={(v) => updateAbout("subtitle", v)} />
-                </Field>
-                <Field label="Body">
-                  <TextArea value={data.about.body} onChange={(v) => updateAbout("body", v)} rows={5} />
-                </Field>
-                <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-2">
-                  Highlights
-                </h4>
-                {data.about.highlights.map((h, i) => (
-                  <div key={i} className="flex gap-2 items-center">
-                    <input
-                      className="flex-1"
-                      value={h}
-                      onChange={(e) => {
-                        const hl = [...data.about.highlights];
-                        hl[i] = e.target.value;
-                        updateAbout("highlights", hl);
-                      }}
-                    />
-                    <DangerButton onClick={() => updateAbout("highlights", data.about.highlights.filter((_, j) => j !== i))}>
-                      <X size={12} />
-                    </DangerButton>
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => updateAbout("highlights", [...data.about.highlights, ""])}
-                  className="btn-secondary !py-1.5 !px-3 !text-[10px]"
-                >
-                  <Plus size={12} /> Add Highlight
-                </button>
-
-                <Field label="Portrait photo">
+                  <Field label="Portrait photo (3:4 crop)">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
                     {data.about.portraitSrc ? (
                       /* eslint-disable-next-line @next/next/no-img-element */
@@ -1460,66 +1298,6 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
               </div>
             </Card>
             </>
-          )}
-
-          {/* ── Highlights ── */}
-          {activeTab === "highlights" && (
-            <Card title="Highlights Section">
-              <div className="space-y-4">
-                <Field label="Section Title">
-                  <Input value={data.highlights.title} onChange={(v) => updateHighlights("title", v)} />
-                </Field>
-                <Field label="Description">
-                  <Input value={data.highlights.description} onChange={(v) => updateHighlights("description", v)} />
-                </Field>
-                <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-2">
-                  Items
-                </h4>
-                {data.highlights.items.map((item, i) => (
-                  <div key={i} className="rounded-xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-4 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-[color:var(--fg-muted)]">Item {i + 1}</span>
-                      <DangerButton onClick={() => updateHighlights("items", data.highlights.items.filter((_, j) => j !== i))}>
-                        <Trash2 size={12} />
-                      </DangerButton>
-                    </div>
-                    <input
-                      className="w-full"
-                      value={item.title}
-                      onChange={(e) => {
-                        const items = [...data.highlights.items];
-                        items[i] = { ...items[i], title: e.target.value };
-                        updateHighlights("items", items);
-                      }}
-                      placeholder="Title"
-                    />
-                    <textarea
-                      className="w-full resize-y"
-                      value={item.description}
-                      onChange={(e) => {
-                        const items = [...data.highlights.items];
-                        items[i] = { ...items[i], description: e.target.value };
-                        updateHighlights("items", items);
-                      }}
-                      placeholder="Description"
-                      rows={2}
-                    />
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={() =>
-                    updateHighlights("items", [
-                      ...data.highlights.items,
-                      { title: "", description: "" },
-                    ])
-                  }
-                  className="btn-secondary !py-1.5 !px-3 !text-[10px]"
-                >
-                  <Plus size={12} /> Add Item
-                </button>
-              </div>
-            </Card>
           )}
 
           {/* ── Projects ── */}
