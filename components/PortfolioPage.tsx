@@ -89,8 +89,8 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
       .catch(() => {})
       .finally(() => { fetchDone = true; tryDismiss(); });
 
-    // Terminal boot ~3.2s cap; loader handles its own internal pacing.
-    const minTimer = setTimeout(() => { timerDone = true; tryDismiss(); }, 3200);
+    // Terminal boot — short cap; loader handles its own internal pacing.
+    const minTimer = setTimeout(() => { timerDone = true; tryDismiss(); }, 1400);
     return () => clearTimeout(minTimer);
   }, [initialData]);
 

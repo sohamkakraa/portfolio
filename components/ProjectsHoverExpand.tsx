@@ -74,16 +74,7 @@ function ProjectCard({ project: p }: { project: ProjectItem }) {
       ) : null}
 
       {/* Expanded reveal */}
-      <div
-        className="reveal-on-hover"
-        style={{
-          maxHeight: 0,
-          overflow: "hidden",
-          opacity: 0,
-          transition: "max-height 0.38s var(--ease-card), opacity 0.3s var(--ease-card)",
-          marginTop: 0,
-        }}
-      >
+      <div className="project-reveal">
         {p.storyline?.length ? (
           <div className="mt-5 pt-5" style={{ borderTop: "1px solid var(--line)" }}>
             {p.storyline.map((step, i) => (
@@ -128,13 +119,6 @@ function ProjectCard({ project: p }: { project: ProjectItem }) {
         )}
       </div>
 
-      <style jsx>{`
-        .project-card-collapsed:hover .reveal-on-hover,
-        .project-card-collapsed:focus-within .reveal-on-hover {
-          max-height: 600px;
-          opacity: 1;
-        }
-      `}</style>
     </Wrapper>
   );
 }

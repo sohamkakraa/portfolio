@@ -9,10 +9,20 @@ import {
 } from "react";
 import Image from "next/image";
 import LAND_PATHS from "@/data/land-paths.json";
+import PHOTO_LOCATIONS from "@/data/photo-locations.json";
 import type {
   PhotographySection as PhotographySectionType,
   PhotoItem,
 } from "@/lib/portfolio-types";
+
+type EnrichedLocation = {
+  city: string;
+  country: string;
+  countryCode?: string;
+  lat: number;
+  lon: number;
+};
+const PHOTO_LOC_MAP = PHOTO_LOCATIONS as Record<string, EnrichedLocation>;
 
 type Frame = {
   id: string;
@@ -22,6 +32,9 @@ type Frame = {
   category: string;
   categoryTitle: string;
   city: string;
+  country?: string;
+  lat?: number;
+  lon?: number;
   date?: string;
   exif: { lens?: string; iso?: string; shutter?: string; aperture?: string };
 };
@@ -34,34 +47,35 @@ type Location = {
   lon: number;
 };
 
-const LOCATIONS: Location[] = [
-  { id: "eindhoven", name: "Eindhoven", country: "NL", lat: 51.44, lon: 5.48 },
-  { id: "amsterdam", name: "Amsterdam", country: "NL", lat: 52.37, lon: 4.90 },
-  { id: "dubai", name: "Dubai", country: "AE", lat: 25.20, lon: 55.27 },
-  { id: "abudhabi", name: "Abu Dhabi", country: "AE", lat: 24.45, lon: 54.38 },
-  { id: "hyderabad", name: "Hyderabad", country: "IN", lat: 17.39, lon: 78.49 },
-  { id: "mumbai", name: "Mumbai", country: "IN", lat: 19.08, lon: 72.88 },
-  { id: "ladakh", name: "Ladakh", country: "IN", lat: 34.15, lon: 77.58 },
-  { id: "london", name: "London", country: "UK", lat: 51.51, lon: -0.13 },
-  { id: "reykjavik", name: "Reykjavik", country: "IS", lat: 64.13, lon: -21.94 },
-  { id: "tokyo", name: "Tokyo", country: "JP", lat: 35.68, lon: 139.69 },
-];
-
-// Hash a string deterministically to choose a city.
-function hashTo(loc: Location[], key: string): Location {
-  let h = 0;
-  for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) | 0;
-  return loc[Math.abs(h) % loc.length];
+// Pull manifest key from photo src. /photography-webp/wildlife/Lion.webp → wildlife/Lion.webp
+function manifestKey(src: string): string {
+  return src.replace(/^\/?photography-webp\//, "");
 }
 
-function buildFrames(section: PhotographySectionType): Frame[] {
-  const out: Frame[] = [];
+function buildFrames(section: PhotographySectionType): { frames: Frame[]; locations: Location[] } {
+  const frames: Frame[] = [];
+  const locByName = new Map<string, Location>();
+
   for (const cat of section.categories) {
     if (cat.hidden) continue;
     for (const img of cat.images) {
       if (img.hidden) continue;
-      const city = hashTo(LOCATIONS, `${cat.slug}/${img.id}`).name;
-      out.push({
+      const key = manifestKey(img.src);
+      const enriched = PHOTO_LOC_MAP[key];
+      const city = enriched?.city || "Unmapped";
+      const country = enriched?.country;
+
+      if (enriched && !locByName.has(city)) {
+        locByName.set(city, {
+          id: city.toLowerCase().replace(/\s+/g, "-"),
+          name: city,
+          country: enriched.countryCode || (enriched.country?.slice(0, 2).toUpperCase() ?? ""),
+          lat: enriched.lat,
+          lon: enriched.lon,
+        });
+      }
+
+      frames.push({
         id: `${cat.slug}/${img.id}`,
         src: img.src,
         title: img.title || img.id,
@@ -69,6 +83,9 @@ function buildFrames(section: PhotographySectionType): Frame[] {
         category: cat.slug,
         categoryTitle: cat.title,
         city,
+        country,
+        lat: enriched?.lat,
+        lon: enriched?.lon,
         date: img.meta?.date,
         exif: {
           lens: img.meta?.lens,
@@ -79,7 +96,8 @@ function buildFrames(section: PhotographySectionType): Frame[] {
       });
     }
   }
-  return out;
+
+  return { frames, locations: Array.from(locByName.values()) };
 }
 
 type Props = {
@@ -87,7 +105,7 @@ type Props = {
 };
 
 export default function PhotographyGlobe({ section }: Props) {
-  const allFrames = useMemo(() => buildFrames(section), [section]);
+  const { frames: allFrames, locations: LOCATIONS } = useMemo(() => buildFrames(section), [section]);
 
   const [category, setCategory] = useState<string | null>(null);
   const [city, setCity] = useState<string | null>(null);
@@ -200,6 +218,7 @@ export default function PhotographyGlobe({ section }: Props) {
             <div style={{ aspectRatio: "1 / 1", maxWidth: "min(560px, 50vw)", margin: "0 auto", position: "relative" }}>
               <Globe
                 frames={allFrames}
+                locations={LOCATIONS}
                 category={category}
                 city={city}
                 onPickCity={(name) => setCity((c) => (c === name ? null : name))}
@@ -386,17 +405,25 @@ function FilterDropdown({
 // ─────────────────────────────────────────────────────────────────────
 function Globe({
   frames,
+  locations,
   category,
   city,
   onPickCity,
 }: {
   frames: Frame[];
+  locations: Location[];
   category: string | null;
   city: string | null;
   onPickCity: (name: string) => void;
 }) {
+  const [mounted, setMounted] = useState(false);
   const [rot, setRot] = useState({ lon: -10, lat: 18 });
   const [autoOn, setAutoOn] = useState(true);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
   const idleRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [hovered, setHovered] = useState<Location | null>(null);
   const targetRef = useRef<{ lat: number; lon: number } | null>(null);
@@ -481,11 +508,11 @@ function Globe({
 
   useEffect(() => {
     if (city) {
-      const loc = LOCATIONS.find((l) => l.name === city);
+      const loc = locations.find((l) => l.name === city);
       if (loc) flyTo({ lat: loc.lat, lon: -loc.lon });
     } else if (category) {
       // Centroid of cities with this category
-      const weighted = LOCATIONS.map((l) => {
+      const weighted = locations.map((l) => {
         const sub = cityCounts.get(l.name);
         const n = sub ? sub.get(category) ?? 0 : 0;
         return { l, n };
@@ -567,6 +594,14 @@ function Globe({
     });
   });
 
+  if (!mounted) {
+    return (
+      <svg viewBox="0 0 600 600" className="globe-svg">
+        <circle cx={cx} cy={cy} r={R} fill="var(--bg-2)" stroke="var(--line-2)" strokeWidth="1" />
+      </svg>
+    );
+  }
+
   return (
     <svg
       viewBox="0 0 600 600"
@@ -588,7 +623,7 @@ function Globe({
       <circle cx={cx} cy={cy} r={R} fill="url(#globe-glow)" stroke="var(--line-2)" strokeWidth="1" />
       {lines}
       {land}
-      {LOCATIONS.map((loc) => {
+      {locations.map((loc) => {
         const p = project(loc.lat, loc.lon);
         if (!p) return null;
         const sub = cityCounts.get(loc.name);
@@ -609,7 +644,7 @@ function Globe({
             style={{ cursor: dim ? "default" : "pointer", opacity: dim ? 0.2 : 1 }}
           >
             <circle cx={p.x} cy={p.y} r={size + (isH ? 6 : 0)} fill="var(--accent)" opacity={isH ? 0.22 : 0.1} />
-            <circle cx={p.x} cy={p.y} r={size * 0.5} fill="var(--accent)" opacity={p.depth} />
+            <circle cx={p.x} cy={p.y} r={size * 0.5} fill="var(--accent)" opacity={Number(p.depth.toFixed(3))} />
             {isH && (
               <g>
                 <line x1={p.x} y1={p.y} x2={p.x + 24} y2={p.y - 18} stroke="var(--accent)" strokeWidth="0.6" />

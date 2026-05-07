@@ -27,10 +27,10 @@ const SCRIPT: Line[] = [
   { kind: "success", text: "$ launch ✓" },
 ];
 
-const TYPE_MS = 18;
-const PAUSE_MS = 250;
-const PROGRESS_MS = 600;
-const HOLD_AFTER_MS = 350;
+const TYPE_MS = 8;
+const PAUSE_MS = 90;
+const PROGRESS_MS = 280;
+const HOLD_AFTER_MS = 150;
 
 export default function LoadingScreen({ visible, onComplete }: Props) {
   const [hiding, setHiding] = useState(false);

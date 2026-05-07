@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useId } from "react";
 
 type Props = {
   size?: number;
@@ -9,151 +9,119 @@ type Props = {
   className?: string;
 };
 
+// Faithful port of logos.jsx → LogoOrbit (40x40 viewBox, italic s+k anchor,
+// outer tilted orbit + inner counter-tilted orbit, animated moon + particle).
 export default function LogoOrbit({
-  size = 32,
+  size = 44,
   ink = "currentColor",
   animated = true,
   className,
 }: Props) {
-  const [reduced, setReduced] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
-  const enableAnim = animated && !reduced;
-
-  // Comet trail — JS animates trailing arc opacity.
-  const cometRef = useRef<SVGPathElement | null>(null);
-
+  const gid = useId().replace(/[^a-z0-9]/gi, "");
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 64 64"
+      viewBox="0 0 40 40"
       fill="none"
       aria-label="Soham Kakra mark"
       className={className}
     >
       <defs>
-        <linearGradient id="orbit-comet" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="var(--accent)" stopOpacity="0" />
-          <stop offset="100%" stopColor="var(--accent)" stopOpacity="1" />
-        </linearGradient>
-        <radialGradient id="orbit-halo" cx="50%" cy="50%">
-          <stop offset="0%" stopColor={ink} stopOpacity="0.06" />
-          <stop offset="80%" stopColor={ink} stopOpacity="0" />
+        <radialGradient id={`og-${gid}`} cx="50%" cy="50%">
+          <stop offset="0%" stopColor={ink} stopOpacity="0.12" />
+          <stop offset="70%" stopColor={ink} stopOpacity="0" />
         </radialGradient>
       </defs>
 
-      <circle cx="32" cy="32" r="28" fill="url(#orbit-halo)" />
-      <circle
-        cx="32"
-        cy="32"
-        r="26"
-        stroke="var(--line)"
-        strokeOpacity="0.35"
-        strokeWidth="1"
+      {/* gravitational halo */}
+      <circle cx="20" cy="20" r="18" fill={`url(#og-${gid})`} />
+
+      {/* outer tilted orbit */}
+      <ellipse
+        cx="20"
+        cy="20"
+        rx="17"
+        ry="7"
+        stroke={ink}
+        strokeOpacity="0.28"
+        strokeWidth="0.5"
         fill="none"
+        transform="rotate(-22 20 20)"
+      />
+      {/* inner counter-tilted orbit */}
+      <ellipse
+        cx="20"
+        cy="20"
+        rx="11"
+        ry="13"
+        stroke={ink}
+        strokeOpacity="0.18"
+        strokeWidth="0.4"
+        fill="none"
+        transform="rotate(34 20 20)"
       />
 
-      {/* Plane A */}
-      <g transform="rotate(-18 32 32)">
-        <ellipse
-          cx="32"
-          cy="32"
-          rx="24"
-          ry="10"
-          stroke="var(--line-2)"
-          strokeWidth="0.8"
-          strokeDasharray="2 4"
-          fill="none"
-        />
-        <g>
-          {enableAnim && (
-            <animateTransform
-              attributeName="transform"
-              type="rotate"
-              from="0 32 32"
-              to="-360 32 32"
-              dur="7s"
-              repeatCount="indefinite"
-            />
-          )}
-          {/* moon body */}
-          <circle cx="56" cy="32" r="2" fill="var(--accent)" />
-          {/* trailing comet arc — 60deg trailing (clockwise, since moon goes ccw) */}
-          <path
-            ref={cometRef}
-            d={trailArc(24, 10, 0, 60)}
-            fill="none"
-            stroke="url(#orbit-comet)"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-          />
-        </g>
-      </g>
-
-      {/* Plane B */}
-      <g transform="rotate(22 32 32)">
-        <ellipse
-          cx="32"
-          cy="32"
-          rx="22"
-          ry="8"
-          stroke="var(--line-2)"
-          strokeWidth="0.8"
-          strokeDasharray="2 4"
-          fill="none"
-        />
-        <g>
-          {enableAnim && (
-            <animateTransform
-              attributeName="transform"
-              type="rotate"
-              from="0 32 32"
-              to="360 32 32"
-              dur="4.3s"
-              repeatCount="indefinite"
-            />
-          )}
-          <circle cx="54" cy="32" r="1.2" fill="var(--accent-2)" />
-        </g>
-      </g>
-
-      {/* Central anchor: italic s + roman k */}
+      {/* central s — italic */}
       <text
-        x="32"
-        y="38"
+        x="20"
+        y="25"
         textAnchor="middle"
-        fontFamily="var(--font-fraunces), serif"
-        fontSize="20"
+        fontFamily="var(--font-fraunces), Fraunces, serif"
+        fontSize="22"
         fontWeight="400"
         fontStyle="italic"
         fill={ink}
-        letterSpacing="-0.04em"
+        letterSpacing="-1"
       >
-        <tspan>s</tspan>
-        <tspan fontStyle="normal" dx="-2">k</tspan>
+        s
       </text>
+      {/* k — italic, sits beside s */}
+      <text
+        x="28"
+        y="25"
+        textAnchor="middle"
+        fontFamily="var(--font-fraunces), Fraunces, serif"
+        fontSize="22"
+        fontWeight="400"
+        fontStyle="italic"
+        fill={ink}
+        letterSpacing="-1"
+      >
+        k
+      </text>
+
+      {/* outer moon — orbits along inner plane (counter-clockwise, period 5.5s) */}
+      <g transform="rotate(34 20 20)">
+        <g>
+          <circle cx="20" cy="7" r="1.4" fill={ink} opacity="0.9" />
+          {animated && (
+            <animateTransform
+              attributeName="transform"
+              type="rotate"
+              from="0 20 20"
+              to="-360 20 20"
+              dur="5.5s"
+              repeatCount="indefinite"
+            />
+          )}
+        </g>
+      </g>
+
+      {/* tiny inner particle (clockwise, period 3s) */}
+      <g>
+        <circle cx="20" cy="13" r="0.7" fill={ink} opacity="0.7" />
+        {animated && (
+          <animateTransform
+            attributeName="transform"
+            type="rotate"
+            from="0 20 20"
+            to="360 20 20"
+            dur="3s"
+            repeatCount="indefinite"
+          />
+        )}
+      </g>
     </svg>
   );
-}
-
-// Build an arc path on an ellipse (rx, ry) centered at (32,32), from angle a→b in degrees, counter-clockwise.
-function trailArc(rx: number, ry: number, startDeg: number, endDeg: number): string {
-  const cx = 32, cy = 32;
-  const a0 = (startDeg * Math.PI) / 180;
-  const a1 = (endDeg * Math.PI) / 180;
-  const x0 = cx + rx * Math.cos(a0);
-  const y0 = cy + ry * Math.sin(a0);
-  const x1 = cx + rx * Math.cos(a1);
-  const y1 = cy + ry * Math.sin(a1);
-  // counter-clockwise sweep
-  const largeArc = Math.abs(endDeg - startDeg) > 180 ? 1 : 0;
-  return `M ${x0} ${y0} A ${rx} ${ry} 0 ${largeArc} 0 ${x1} ${y1}`;
 }

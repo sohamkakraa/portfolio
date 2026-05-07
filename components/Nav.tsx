@@ -38,14 +38,14 @@ export default function Nav({ name, nav }: NavProps) {
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "nav-floating" : ""}`}
       >
         <div className="section-container">
-          <div className="flex h-16 items-center justify-between md:h-[68px]">
+          <div className="flex h-20 items-center justify-between md:h-[80px]">
             {/* Mark + wordmark */}
             <Link
               href="/#top"
               className="group relative inline-flex items-center gap-3 no-underline"
               aria-label={`${name} — home`}
             >
-              <LogoOrbit size={32} ink="var(--ink)" />
+              <LogoOrbit size={48} ink="var(--ink)" />
               <span
                 className="hidden sm:inline relative font-mono text-[11px] font-semibold uppercase"
                 style={{ letterSpacing: "0.2em", color: "var(--ink)" }}
@@ -128,7 +128,7 @@ export default function Nav({ name, nav }: NavProps) {
           }}
         >
           <div className="flex h-16 items-center justify-between px-6">
-            <LogoOrbit size={28} ink="var(--ink)" />
+            <LogoOrbit size={40} ink="var(--ink)" />
             <button
               type="button"
               onClick={() => setMobileOpen(false)}
