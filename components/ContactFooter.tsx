@@ -1,7 +1,18 @@
 "use client";
 
+import { Github, Linkedin, Mail, Instagram, Globe, ArrowUpRight } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import type { ContactSection, FooterContent, SocialLink } from "@/lib/portfolio-types";
 import { renderEm } from "@/lib/render-em";
+
+function iconFor(label: string, href: string): LucideIcon {
+  const k = `${label} ${href}`.toLowerCase();
+  if (k.includes("github")) return Github;
+  if (k.includes("linkedin")) return Linkedin;
+  if (k.includes("instagram")) return Instagram;
+  if (k.includes("mail") || k.includes("@") || k.startsWith("mailto")) return Mail;
+  return Globe;
+}
 
 type Props = {
   contact: ContactSection;
@@ -87,27 +98,38 @@ export default function ContactFooter({ contact, footer, socials }: Props) {
               >
                 {contact.email} →
               </a>
-              <div style={{ marginTop: 24, display: "flex", gap: 16, flexWrap: "wrap" }}>
-                {allLinks.map((l) => (
-                  <a
-                    key={`${l.label}-${l.href}`}
-                    href={l.href}
-                    target={l.href.startsWith("http") ? "_blank" : undefined}
-                    rel="noreferrer"
-                    className="mono"
-                    style={{
-                      fontSize: 11,
-                      letterSpacing: "0.18em",
-                      textTransform: "uppercase",
-                      color: "var(--ink-2)",
-                      borderBottom: "1px solid var(--line-2)",
-                      paddingBottom: 4,
-                      textDecoration: "none",
-                    }}
-                  >
-                    {l.label} ↗
-                  </a>
-                ))}
+              <div style={{ marginTop: 24, display: "flex", gap: 12, flexWrap: "wrap" }}>
+                {allLinks.map((l) => {
+                  const Icon = iconFor(l.label, l.href);
+                  return (
+                    <a
+                      key={`${l.label}-${l.href}`}
+                      href={l.href}
+                      target={l.href.startsWith("http") ? "_blank" : undefined}
+                      rel="noreferrer"
+                      className="mono contact-social"
+                      aria-label={l.label}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 8,
+                        padding: "10px 14px",
+                        border: "1px solid var(--line-2)",
+                        borderRadius: 99,
+                        color: "var(--ink-2)",
+                        fontSize: 11,
+                        letterSpacing: "0.18em",
+                        textTransform: "uppercase",
+                        textDecoration: "none",
+                        transition: "color 0.18s, border-color 0.18s",
+                      }}
+                    >
+                      <Icon size={14} aria-hidden />
+                      <span>{l.label}</span>
+                      <ArrowUpRight size={12} aria-hidden style={{ opacity: 0.6 }} />
+                    </a>
+                  );
+                })}
               </div>
             </div>
           </div>

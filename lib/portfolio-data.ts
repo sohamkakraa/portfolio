@@ -113,6 +113,7 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
     socials: [
       { label: "GitHub", href: "https://github.com/sohamkakraa" },
       { label: "LinkedIn", href: "https://www.linkedin.com/in/sohamkakra" },
+      { label: "Instagram", href: "https://www.instagram.com/sohamkakra" },
       { label: "Email", href: "mailto:sohamkakra@gmail.com" },
     ],
   },

@@ -599,6 +599,11 @@
 }
 
 /* Desktop nav: flex on wide, hidden on narrow. Mobile controls invert. */
+.contact-social:hover {
+  color: var(--ink) !important;
+  border-color: var(--accent) !important;
+}
+
 .nav-desktop { display: flex; }
 .nav-mobile  { display: none; }
 .nav-wordmark { display: inline; }
