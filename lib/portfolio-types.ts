@@ -193,6 +193,8 @@ export type PhotoMeta = {
   /** Structured city / country used by the globe + lightbox sidebar. */
   city?: string;
   country?: string;
+  /** Specific location / point of interest, e.g. "Masai Mara National Park". */
+  landmark?: string;
 };
 
 export type EquipmentList = {

@@ -272,27 +272,37 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
 
   // Union of cities/countries known from globe metadata + any already-set on
   // a photo's meta. Used to populate datalists in the image metadata editor.
-  const cityOptions = useMemo(() => {
-    const set = new Set<string>();
-    for (const v of Object.values(PHOTO_LOC_MAP)) if (v.city) set.add(v.city);
-    for (const c of data.photography.categories) {
-      for (const img of c.images) {
-        if (img.meta?.city) set.add(img.meta.city);
+  const { cityOptions, countryOptions, cityToCountry, citiesByCountry } = useMemo(() => {
+    const cities = new Set<string>();
+    const countries = new Set<string>();
+    const c2c = new Map<string, string>();
+    const byCountry = new Map<string, Set<string>>();
+
+    const note = (city?: string, country?: string) => {
+      if (city) cities.add(city);
+      if (country) countries.add(country);
+      if (city && country) {
+        if (!c2c.has(city)) c2c.set(city, country);
+        if (!byCountry.has(country)) byCountry.set(country, new Set());
+        byCountry.get(country)!.add(city);
       }
+    };
+
+    for (const v of Object.values(PHOTO_LOC_MAP)) note(v.city, v.country);
+    for (const c of data.photography.categories) {
+      for (const img of c.images) note(img.meta?.city, img.meta?.country);
     }
-    return Array.from(set).sort();
+
+    return {
+      cityOptions: Array.from(cities).sort(),
+      countryOptions: Array.from(countries).sort(),
+      cityToCountry: c2c,
+      citiesByCountry: byCountry,
+    };
   }, [data.photography.categories]);
 
-  const countryOptions = useMemo(() => {
-    const set = new Set<string>();
-    for (const v of Object.values(PHOTO_LOC_MAP)) if (v.country) set.add(v.country);
-    for (const c of data.photography.categories) {
-      for (const img of c.images) {
-        if (img.meta?.country) set.add(img.meta.country);
-      }
-    }
-    return Array.from(set).sort();
-  }, [data.photography.categories]);
+  // datalist id-safe slug
+  const slugifyCountry = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
   const showAssetHint = useCallback((text: string) => {
     if (assetHintTimer.current) clearTimeout(assetHintTimer.current);
@@ -1854,17 +1864,42 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
                                 />
                                 <input
                                   className="!py-1.5 !text-xs"
-                                  list="equipment-cities"
-                                  value={m.city ?? ""}
-                                  onChange={(e) => setMeta("city", e.target.value)}
-                                  placeholder="City"
-                                />
-                                <input
-                                  className="!py-1.5 !text-xs"
                                   list="equipment-countries"
                                   value={m.country ?? ""}
                                   onChange={(e) => setMeta("country", e.target.value)}
                                   placeholder="Country"
+                                />
+                                <input
+                                  className="!py-1.5 !text-xs"
+                                  list={
+                                    m.country
+                                      ? `cities-${slugifyCountry(m.country)}`
+                                      : "equipment-cities"
+                                  }
+                                  value={m.city ?? ""}
+                                  onChange={(e) => {
+                                    const newCity = e.target.value;
+                                    const images = [...cat.images];
+                                    const existing = images[ii].meta ?? {};
+                                    const trimmed = newCity.trim();
+                                    const nextMeta: Record<string, unknown> = { ...existing };
+                                    if (trimmed) nextMeta.city = trimmed;
+                                    else delete nextMeta.city;
+                                    // Auto-set country if known and country not already set.
+                                    if (trimmed && !existing.country) {
+                                      const known = cityToCountry.get(trimmed);
+                                      if (known) nextMeta.country = known;
+                                    }
+                                    images[ii] = { ...images[ii], meta: nextMeta as PhotoMeta };
+                                    updateCategory(ci, "images", images);
+                                  }}
+                                  placeholder={m.country ? `City in ${m.country}` : "City"}
+                                />
+                                <input
+                                  className="!py-1.5 !text-xs col-span-2"
+                                  value={m.landmark ?? ""}
+                                  onChange={(e) => setMeta("landmark", e.target.value)}
+                                  placeholder="Landmark / point of interest (e.g. Masai Mara National Park)"
                                 />
                               </div>
                             </details>
@@ -2520,6 +2555,15 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
               <option key={c} value={c} />
             ))}
           </datalist>
+          {Array.from(citiesByCountry.entries()).map(([country, cities]) => (
+            <datalist key={country} id={`cities-${slugifyCountry(country)}`}>
+              {Array.from(cities)
+                .sort()
+                .map((c) => (
+                  <option key={c} value={c} />
+                ))}
+            </datalist>
+          ))}
         </>
       )}
 

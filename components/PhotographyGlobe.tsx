@@ -33,6 +33,7 @@ type Frame = {
   categoryTitle: string;
   city: string;
   country?: string;
+  landmark?: string;
   lat?: number;
   lon?: number;
   date?: string;
@@ -109,6 +110,7 @@ function buildFrames(section: PhotographySectionType): { frames: Frame[]; locati
         categoryTitle: cat.title,
         city,
         country,
+        landmark: img.meta?.landmark,
         lat,
         lon,
         date: img.meta?.date,
@@ -967,6 +969,7 @@ function Lightbox({
           className="mono"
           style={{ marginTop: 12, fontSize: 12, color: "var(--ink-2)" }}
         >
+          {f.landmark ? `${f.landmark} · ` : ""}
           {f.city}
           {f.country ? ` · ${f.country}` : ""}
           {f.date ? ` · ${f.date}` : ""}
