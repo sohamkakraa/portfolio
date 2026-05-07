@@ -18,6 +18,15 @@ async function getPortfolioData() {
         return {
           ...defaults,
           ...stored,
+          // Deep-merge each section so older stored payloads inherit editorial defaults.
+          site: { ...defaults.site, ...stored.site },
+          hero: { ...defaults.hero, ...stored.hero },
+          about: { ...defaults.about, ...stored.about },
+          highlights: { ...defaults.highlights, ...stored.highlights },
+          projects: { ...defaults.projects, ...stored.projects },
+          life: { ...defaults.life, ...stored.life },
+          contact: { ...defaults.contact, ...stored.contact },
+          footer: { ...defaults.footer, ...stored.footer },
           photography: {
             ...defaults.photography,
             ...stored.photography,

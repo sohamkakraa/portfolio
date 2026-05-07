@@ -136,6 +136,18 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
       label: "Viveka",
       href: "https://viveka.sohamkakra.com",
     },
+    // Editorial layout
+    issueLabel: "Issue №07 · Eindhoven",
+    dateLabel: "May 2026 / now reading",
+    headline: ["Building data", "and AI products", "that {{em}}feel human{{/em}}."],
+    masthead:
+      "Soham Kakra. M.Sc. Data Science & AI at TU/e. Engineer of end-to-end systems — model logic to production UX.",
+    tableOfContents: [
+      { num: "01", label: "About",         page: "p.02", href: "#about" },
+      { num: "02", label: "Selected work", page: "p.04", href: "#projects" },
+      { num: "03", label: "Photography",   page: "p.08", href: "#photography" },
+      { num: "04", label: "Field notes",   page: "p.12", href: "#life" },
+    ],
   },
   about: {
     title: "About me",
@@ -149,6 +161,26 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
       "Heriot-Watt University Dubai · B.Sc. Computer Science",
       "Built AI/ML, dashboard, and full-stack systems across fintech and health",
     ],
+    // Editorial layout
+    headline: ["I build systems", "where data, models,", "and {{em}}people{{/em}} meet."],
+    pillars: [
+      { title: "End-to-end", body: "From data ingestion and model design to product UI and deployment." },
+      { title: "Readable",   body: "Turning complex model behavior into interfaces people can trust." },
+      { title: "Real-time",  body: "Building systems that react quickly and stay reliable under live conditions." },
+    ],
+    log: [
+      { year: "2025–",   org: "TU/e",                     role: "M.Sc. Data Science & AI" },
+      { year: "2023–24", org: "Etihad Credit Insurance",  role: "Data Analyst & IT Support" },
+      { year: "2020–23", org: "Heriot-Watt Dubai",        role: "B.Sc. Computer Science" },
+    ],
+    meta: [
+      { label: "Based in",  value: "Eindhoven, NL" },
+      { label: "Studying",  value: "M.Sc. DS&AI · TU/e" },
+      { label: "Available", value: "Summer 2026" },
+      { label: "Reach",     value: "sohamkakra@gmail.com" },
+    ],
+    portraitLabel: "// portrait",
+    portraitMeta: "2026 / 35mm",
   },
   highlights: {
     title: "What I optimize for",
@@ -227,7 +259,9 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
   },
   life: {
     eyebrow: "Beyond work",
-    title: "Life, books, places, and entertainment I return to.",
+    title: "Books, places, films — {{em}}signals I return to{{/em}}.",
+    readingLabel: "Reading library",
+    placesLabel: "Places",
     snapshots: [
       {
         title: "Research and product loops",
@@ -323,12 +357,14 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
   contact: {
     title: "Get in touch",
     description:
-      "I am open to internships, collaborations, and product engineering opportunities in AI, data systems, and full-stack development.",
+      "I am open to internships, collaborations, and product engineering opportunities in AI, data systems, and full-stack development — summer 2026 onward.",
     ctaLabel: "Email me",
     email: "sohamkakra@gmail.com",
+    headline: ["Let's {{em}}build{{/em}}", "something {{em}}quietly bold{{/em}}."],
   },
   footer: {
-    note: "Designed and built by Soham Kakra · 2026",
+    note: "Designed & built · soham kakra · 2026",
+    versionNote: "v3.0 · last edit: today",
     links: [{ label: "Admin", href: "/admin" }],
   },
 };
