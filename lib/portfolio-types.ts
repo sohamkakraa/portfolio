@@ -188,7 +188,16 @@ export type PhotoMeta = {
   iso?: string;
   focalLength?: string;
   date?: string;
+  /** Free-text legacy location (kept for back-compat with AI rankings). */
   location?: string;
+  /** Structured city / country used by the globe + lightbox sidebar. */
+  city?: string;
+  country?: string;
+};
+
+export type EquipmentList = {
+  cameras: string[];
+  lenses: string[];
 };
 
 export type PhotoItem = {
@@ -253,4 +262,6 @@ export type PortfolioData = {
   footer: FooterContent;
   /** “Beyond work” — life, books, places, entertainment */
   life: LifeSection;
+  /** My equipment — autofill source for image camera/lens fields. */
+  equipment?: EquipmentList;
 };

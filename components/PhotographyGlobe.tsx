@@ -52,6 +52,16 @@ function manifestKey(src: string): string {
   return src.replace(/^\/?photography-webp\//, "");
 }
 
+// City index built once from the geocoded photo-locations.json. Used to look
+// up lat/lon when an admin overrides a photo's city via meta.city.
+const CITY_INDEX = (() => {
+  const idx = new Map<string, EnrichedLocation>();
+  for (const v of Object.values(PHOTO_LOC_MAP)) {
+    if (v.city && !idx.has(v.city)) idx.set(v.city, v);
+  }
+  return idx;
+})();
+
 function buildFrames(section: PhotographySectionType): { frames: Frame[]; locations: Location[] } {
   const frames: Frame[] = [];
   const locByName = new Map<string, Location>();
@@ -60,18 +70,33 @@ function buildFrames(section: PhotographySectionType): { frames: Frame[]; locati
     if (cat.hidden) continue;
     for (const img of cat.images) {
       if (img.hidden) continue;
-      const key = manifestKey(img.src);
-      const enriched = PHOTO_LOC_MAP[key];
-      const city = enriched?.city || "Unmapped";
-      const country = enriched?.country;
 
-      if (enriched && !locByName.has(city)) {
+      // Resolve city/country/lat/lon. Admin overrides win; fall back to
+      // the auto-enriched manifest entry; finally "Unmapped".
+      const overrideCity = img.meta?.city?.trim();
+      const overrideCountry = img.meta?.country?.trim();
+      const enriched = PHOTO_LOC_MAP[manifestKey(img.src)];
+      let city = overrideCity || enriched?.city || "Unmapped";
+      let country = overrideCountry || enriched?.country;
+      let lat: number | undefined = enriched?.lat;
+      let lon: number | undefined = enriched?.lon;
+      let countryCode: string | undefined = enriched?.countryCode;
+
+      if (overrideCity && CITY_INDEX.has(overrideCity)) {
+        const known = CITY_INDEX.get(overrideCity)!;
+        lat = known.lat;
+        lon = known.lon;
+        country = country || known.country;
+        countryCode = countryCode || known.countryCode;
+      }
+
+      if (lat !== undefined && lon !== undefined && city !== "Unmapped" && !locByName.has(city)) {
         locByName.set(city, {
           id: city.toLowerCase().replace(/\s+/g, "-"),
           name: city,
-          country: enriched.countryCode || (enriched.country?.slice(0, 2).toUpperCase() ?? ""),
-          lat: enriched.lat,
-          lon: enriched.lon,
+          country: countryCode || (country?.slice(0, 2).toUpperCase() ?? ""),
+          lat,
+          lon,
         });
       }
 
@@ -84,8 +109,8 @@ function buildFrames(section: PhotographySectionType): { frames: Frame[]; locati
         categoryTitle: cat.title,
         city,
         country,
-        lat: enriched?.lat,
-        lon: enriched?.lon,
+        lat,
+        lon,
         date: img.meta?.date,
         exif: {
           lens: img.meta?.lens,

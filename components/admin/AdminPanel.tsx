@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   Bot,
   Camera,
+  Aperture,
   Check,
   Compass,
   Eye,
@@ -34,6 +35,7 @@ import type {
   PhotographyCategory,
   PhotoItem,
   PhotoMeta,
+  EquipmentList,
   PortfolioData,
   ProjectItem,
   ProjectStorylineStep,
@@ -42,6 +44,62 @@ import type {
 import ImageCropDialog from "@/components/admin/ImageCropDialog";
 import AIChatPanel from "@/components/admin/AIChatPanel";
 import { extractExif } from "@/lib/photo-meta";
+import PHOTO_LOCATIONS from "@/data/photo-locations.json";
+
+type EnrichedLoc = { city: string; country: string; countryCode?: string; lat: number; lon: number };
+const PHOTO_LOC_MAP = PHOTO_LOCATIONS as Record<string, EnrichedLoc>;
+
+function matchesPhotoQuery(img: PhotoItem, q: string): boolean {
+  if (!q) return true;
+  const m = img.meta || {};
+  const haystack = [
+    img.title,
+    img.description,
+    img.id,
+    m.camera,
+    m.lens,
+    m.city,
+    m.country,
+    m.location,
+    m.iso,
+    m.aperture,
+    m.shutter,
+    m.focalLength,
+    m.date,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+  return haystack.includes(q);
+}
+
+// Numeric helpers — keep PhotoMeta values as their final formatted strings
+// (e.g. "35mm", "f/4", "400") so the lightbox can render directly.
+function formatFocal(raw: string): string | undefined {
+  const trimmed = raw.trim();
+  if (!trimmed) return undefined;
+  const n = parseFloat(trimmed);
+  if (Number.isFinite(n) && trimmed.match(/^\d+\.?\d*$/)) return `${n}mm`;
+  return trimmed; // already formatted, leave it
+}
+function formatAperture(raw: string): string | undefined {
+  const trimmed = raw.trim();
+  if (!trimmed) return undefined;
+  const n = parseFloat(trimmed);
+  if (Number.isFinite(n) && trimmed.match(/^\d+\.?\d*$/)) return `f/${n}`;
+  return trimmed.startsWith("f/") ? trimmed : trimmed;
+}
+function formatIso(raw: string): string | undefined {
+  const trimmed = raw.trim();
+  if (!trimmed) return undefined;
+  const n = parseInt(trimmed.replace(/[^\d]/g, ""), 10);
+  return Number.isFinite(n) ? String(n) : trimmed;
+}
+// Strip the formatting suffix so the input shows just the numeric portion.
+function stripUnit(value: string | undefined, pattern: RegExp): string {
+  if (!value) return "";
+  return value.replace(pattern, "").trim();
+}
 
 type AdminPanelProps = {
   defaultData: PortfolioData;
@@ -54,6 +112,7 @@ const TABS = [
   { id: "about", label: "About", icon: User },
   { id: "projects", label: "Projects", icon: FileText },
   { id: "photography", label: "Photography", icon: Camera },
+  { id: "equipment", label: "My equipment", icon: Aperture },
   { id: "life", label: "Beyond work", icon: Compass },
   { id: "contact", label: "Contact", icon: Settings },
   { id: "ai", label: "AI Assistant", icon: Bot },
@@ -127,6 +186,52 @@ function TextArea({
   );
 }
 
+function NumericUnitInput({
+  value,
+  unit,
+  unitPosition,
+  step,
+  placeholder,
+  onChange,
+}: {
+  value: string;
+  unit: string;
+  unitPosition: "prefix" | "suffix";
+  step?: string;
+  placeholder?: string;
+  onChange: (raw: string) => void;
+}) {
+  return (
+    <div className="relative flex items-center">
+      {unitPosition === "prefix" && (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute left-2 text-[10px] font-mono text-[color:var(--fg-muted)] uppercase tracking-[0.15em]"
+        >
+          {unit}
+        </span>
+      )}
+      <input
+        type="number"
+        inputMode="decimal"
+        step={step}
+        className={`!py-1.5 !text-xs w-full ${unitPosition === "prefix" ? "!pl-7" : "!pr-9"}`}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+      />
+      {unitPosition === "suffix" && (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute right-2 text-[10px] font-mono text-[color:var(--fg-muted)] uppercase tracking-[0.15em]"
+        >
+          {unit}
+        </span>
+      )}
+    </div>
+  );
+}
+
 function Card({ children, title }: { children: React.ReactNode; title?: string }) {
   return (
     <div className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--bg-surface)] p-6">
@@ -170,6 +275,7 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
   const [statusMessage, setStatusMessage] = useState("");
   const [assetUploadHint, setAssetUploadHint] = useState<string | null>(null);
   const [photoDropSlug, setPhotoDropSlug] = useState<string | null>(null);
+  const [photoFilters, setPhotoFilters] = useState<Record<string, string>>({});
   const [aboutDropActive, setAboutDropActive] = useState(false);
   const [bookDropIndex, setBookDropIndex] = useState<number | null>(null);
   const [photoUploadBusy, setPhotoUploadBusy] = useState(false);
@@ -181,6 +287,30 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
     scope: "about" | "books";
     bookIndex?: number;
   } | null>(null);
+
+  // Union of cities/countries known from globe metadata + any already-set on
+  // a photo's meta. Used to populate datalists in the image metadata editor.
+  const cityOptions = useMemo(() => {
+    const set = new Set<string>();
+    for (const v of Object.values(PHOTO_LOC_MAP)) if (v.city) set.add(v.city);
+    for (const c of data.photography.categories) {
+      for (const img of c.images) {
+        if (img.meta?.city) set.add(img.meta.city);
+      }
+    }
+    return Array.from(set).sort();
+  }, [data.photography.categories]);
+
+  const countryOptions = useMemo(() => {
+    const set = new Set<string>();
+    for (const v of Object.values(PHOTO_LOC_MAP)) if (v.country) set.add(v.country);
+    for (const c of data.photography.categories) {
+      for (const img of c.images) {
+        if (img.meta?.country) set.add(img.meta.country);
+      }
+    }
+    return Array.from(set).sort();
+  }, [data.photography.categories]);
 
   const showAssetHint = useCallback((text: string) => {
     if (assetHintTimer.current) clearTimeout(assetHintTimer.current);
@@ -342,6 +472,17 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
 
   const updateFooter = (field: keyof PortfolioData["footer"], value: unknown) => {
     setData((prev) => ({ ...prev, footer: { ...prev.footer, [field]: value } }));
+  };
+
+  const updateEquipment = (field: keyof EquipmentList, value: string[]) => {
+    setData((prev) => ({
+      ...prev,
+      equipment: {
+        cameras: prev.equipment?.cameras ?? [],
+        lenses: prev.equipment?.lenses ?? [],
+        [field]: value,
+      },
+    }));
   };
 
   const closeCrop = () => {
@@ -1576,10 +1717,36 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
 
                     {/* Image list */}
                     <div className="space-y-3">
-                      <p className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)]">
-                        {cat.images.length} images
-                      </p>
-                      {cat.images.map((img, ii) => {
+                      <div className="flex items-center justify-between gap-3 flex-wrap">
+                        <p className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)]">
+                          {(() => {
+                            const q = (photoFilters[cat.slug] || "").toLowerCase();
+                            const total = cat.images.length;
+                            const shown = q
+                              ? cat.images.filter((im) =>
+                                  matchesPhotoQuery(im, q)
+                                ).length
+                              : total;
+                            return q ? `${shown} of ${total} images` : `${total} images`;
+                          })()}
+                        </p>
+                        <input
+                          className="!py-1.5 !text-xs flex-1 min-w-[180px] max-w-xs"
+                          value={photoFilters[cat.slug] || ""}
+                          onChange={(e) =>
+                            setPhotoFilters((p) => ({ ...p, [cat.slug]: e.target.value }))
+                          }
+                          placeholder="Filter by title, city, lens…"
+                        />
+                      </div>
+                      {cat.images
+                        .map((img, ii) => ({ img, ii }))
+                        .filter(({ img }) => {
+                          const q = (photoFilters[cat.slug] || "").toLowerCase().trim();
+                          if (!q) return true;
+                          return matchesPhotoQuery(img, q);
+                        })
+                        .map(({ img, ii }) => {
                         const setMeta = (field: keyof PhotoMeta, value: string) => {
                           const images = [...cat.images];
                           const existing = images[ii].meta ?? {};
@@ -1659,21 +1826,25 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
                               <div className="grid grid-cols-2 gap-2 pt-2">
                                 <input
                                   className="!py-1.5 !text-xs"
+                                  list="equipment-cameras"
                                   value={m.camera ?? ""}
                                   onChange={(e) => setMeta("camera", e.target.value)}
-                                  placeholder="Camera (e.g. Sony A7 IV)"
+                                  placeholder="Camera"
                                 />
                                 <input
                                   className="!py-1.5 !text-xs"
+                                  list="equipment-lenses"
                                   value={m.lens ?? ""}
                                   onChange={(e) => setMeta("lens", e.target.value)}
-                                  placeholder="Lens (e.g. 24-70 f/2.8)"
+                                  placeholder="Lens"
                                 />
-                                <input
-                                  className="!py-1.5 !text-xs"
-                                  value={m.aperture ?? ""}
-                                  onChange={(e) => setMeta("aperture", e.target.value)}
-                                  placeholder="Aperture (e.g. f/4)"
+                                <NumericUnitInput
+                                  value={stripUnit(m.aperture, /^f\/|f$/i)}
+                                  unit="f/"
+                                  unitPosition="prefix"
+                                  step="0.1"
+                                  placeholder="Aperture"
+                                  onChange={(raw) => setMeta("aperture", formatAperture(raw) ?? "")}
                                 />
                                 <input
                                   className="!py-1.5 !text-xs"
@@ -1681,29 +1852,42 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
                                   onChange={(e) => setMeta("shutter", e.target.value)}
                                   placeholder="Shutter (e.g. 1/250s)"
                                 />
-                                <input
-                                  className="!py-1.5 !text-xs"
-                                  value={m.iso ?? ""}
-                                  onChange={(e) => setMeta("iso", e.target.value)}
-                                  placeholder="ISO (e.g. 400)"
+                                <NumericUnitInput
+                                  value={stripUnit(m.iso, /\D/g)}
+                                  unit="iso"
+                                  unitPosition="prefix"
+                                  step="1"
+                                  placeholder="ISO"
+                                  onChange={(raw) => setMeta("iso", formatIso(raw) ?? "")}
+                                />
+                                <NumericUnitInput
+                                  value={stripUnit(m.focalLength, /mm$/i)}
+                                  unit="mm"
+                                  unitPosition="suffix"
+                                  step="1"
+                                  placeholder="Focal length"
+                                  onChange={(raw) => setMeta("focalLength", formatFocal(raw) ?? "")}
                                 />
                                 <input
                                   className="!py-1.5 !text-xs"
-                                  value={m.focalLength ?? ""}
-                                  onChange={(e) => setMeta("focalLength", e.target.value)}
-                                  placeholder="Focal length (e.g. 35mm)"
-                                />
-                                <input
-                                  className="!py-1.5 !text-xs"
+                                  type="date"
                                   value={m.date ?? ""}
                                   onChange={(e) => setMeta("date", e.target.value)}
-                                  placeholder="Date (e.g. 2024-08)"
+                                  placeholder="Date"
                                 />
                                 <input
                                   className="!py-1.5 !text-xs"
-                                  value={m.location ?? ""}
-                                  onChange={(e) => setMeta("location", e.target.value)}
-                                  placeholder="Location"
+                                  list="equipment-cities"
+                                  value={m.city ?? ""}
+                                  onChange={(e) => setMeta("city", e.target.value)}
+                                  placeholder="City"
+                                />
+                                <input
+                                  className="!py-1.5 !text-xs"
+                                  list="equipment-countries"
+                                  value={m.country ?? ""}
+                                  onChange={(e) => setMeta("country", e.target.value)}
+                                  placeholder="Country"
                                 />
                               </div>
                             </details>
@@ -2242,6 +2426,90 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
             </>
           )}
 
+          {activeTab === "equipment" && (
+            <Card title="My equipment (autofill source)">
+              <div className="space-y-6">
+                <p className="text-[11px] leading-relaxed text-[color:var(--fg-muted)]">
+                  Items listed here suggest as you type into the camera / lens
+                  fields on each photo. Add the gear you actually use so the
+                  Photography tab fills out faster.
+                </p>
+
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] mb-2">
+                    Cameras
+                  </h4>
+                  <div className="space-y-2">
+                    {(data.equipment?.cameras ?? []).map((c, i) => (
+                      <div key={i} className="flex gap-2 items-center">
+                        <Input
+                          value={c}
+                          onChange={(v) => {
+                            const arr = [...(data.equipment?.cameras ?? [])];
+                            arr[i] = v;
+                            updateEquipment("cameras", arr);
+                          }}
+                          placeholder="Sony A7 IV"
+                        />
+                        <DangerButton
+                          onClick={() => {
+                            const arr = (data.equipment?.cameras ?? []).filter((_, j) => j !== i);
+                            updateEquipment("cameras", arr);
+                          }}
+                        >
+                          <X size={12} />
+                        </DangerButton>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => updateEquipment("cameras", [...(data.equipment?.cameras ?? []), ""])}
+                      className="btn-secondary !py-1.5 !px-3 !text-[10px]"
+                    >
+                      <Plus size={12} /> Add camera
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] mb-2">
+                    Lenses
+                  </h4>
+                  <div className="space-y-2">
+                    {(data.equipment?.lenses ?? []).map((l, i) => (
+                      <div key={i} className="flex gap-2 items-center">
+                        <Input
+                          value={l}
+                          onChange={(v) => {
+                            const arr = [...(data.equipment?.lenses ?? [])];
+                            arr[i] = v;
+                            updateEquipment("lenses", arr);
+                          }}
+                          placeholder="Sony FE 24-70mm f/2.8 GM"
+                        />
+                        <DangerButton
+                          onClick={() => {
+                            const arr = (data.equipment?.lenses ?? []).filter((_, j) => j !== i);
+                            updateEquipment("lenses", arr);
+                          }}
+                        >
+                          <X size={12} />
+                        </DangerButton>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => updateEquipment("lenses", [...(data.equipment?.lenses ?? []), ""])}
+                      className="btn-secondary !py-1.5 !px-3 !text-[10px]"
+                    >
+                      <Plus size={12} /> Add lens
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          )}
+
           {activeTab === "ai" && (
             <AIChatPanel
               data={data}
@@ -2251,6 +2519,28 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
           )}
         </main>
       </div>
+
+      {/* Datalists for autofill — referenced from per-image meta inputs */}
+      <datalist id="equipment-cameras">
+        {(data.equipment?.cameras ?? []).filter(Boolean).map((c) => (
+          <option key={c} value={c} />
+        ))}
+      </datalist>
+      <datalist id="equipment-lenses">
+        {(data.equipment?.lenses ?? []).filter(Boolean).map((l) => (
+          <option key={l} value={l} />
+        ))}
+      </datalist>
+      <datalist id="equipment-cities">
+        {cityOptions.map((c) => (
+          <option key={c} value={c} />
+        ))}
+      </datalist>
+      <datalist id="equipment-countries">
+        {countryOptions.map((c) => (
+          <option key={c} value={c} />
+        ))}
+      </datalist>
 
       <ImageCropDialog
         open={!!crop}

@@ -367,6 +367,19 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
     versionNote: "v3.0 · last edit: today",
     links: [{ label: "Admin", href: "/admin" }],
   },
+  equipment: {
+    cameras: [
+      "Sony A7 IV",
+      "Sony A6400",
+      "iPhone 15 Pro",
+    ],
+    lenses: [
+      "Sony FE 24-70mm f/2.8 GM",
+      "Sony FE 85mm f/1.4 GM",
+      "Sony FE 70-200mm f/4 G",
+      "Sigma 35mm f/1.4 Art",
+    ],
+  },
 };
 
 const titleFromFilename = (filename: string, fallback: string) => {
