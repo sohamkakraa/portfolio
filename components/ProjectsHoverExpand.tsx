@@ -29,8 +29,9 @@ export default function ProjectsHoverExpand({ items }: Props) {
         display: "grid",
         gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))",
         gap: 16,
-        gridAutoRows: "min-content",
-        alignItems: "start",
+        gridAutoRows: "440px",
+        gridAutoFlow: "dense",
+        alignItems: "stretch",
       }}
     >
       {items.map((p) => (
@@ -72,11 +73,12 @@ function ArtifactCard({
         border: "1px solid var(--line-2)",
         background: "var(--bg-2)",
         gridRow: isHover ? "span 2" : "span 1",
-        transition: "all 0.5s cubic-bezier(.7,0,.2,1)",
-        minHeight: 360,
+        transition: "grid-row 0.5s cubic-bezier(.7,0,.2,1), border-color 0.3s",
         textDecoration: "none",
         color: "inherit",
-        display: "block",
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
       }}
       aria-label={p.title}
     >
@@ -84,9 +86,10 @@ function ArtifactCard({
       <div
         style={{
           position: "relative",
-          height: isHover ? 200 : 220,
+          height: isHover ? 180 : 220,
+          flexShrink: 0,
           background: `linear-gradient(160deg, ${meta.palette[1]} 0%, ${meta.palette[0]} 100%)`,
-          transition: "height 0.5s",
+          transition: "height 0.5s cubic-bezier(.7,0,.2,1)",
           overflow: "hidden",
         }}
       >
@@ -121,7 +124,7 @@ function ArtifactCard({
       </div>
 
       {/* Title + pitch */}
-      <div style={{ padding: "20px 24px 0" }}>
+      <div style={{ padding: "20px 24px 0", flexShrink: 0 }}>
         <h3
           className="serif"
           style={{
@@ -150,11 +153,12 @@ function ArtifactCard({
       {/* Reveal */}
       <div
         style={{
-          maxHeight: isHover ? 600 : 0,
+          flex: isHover ? 1 : 0,
           opacity: isHover ? 1 : 0,
-          overflow: "hidden",
-          transition: "max-height 0.5s cubic-bezier(.7,0,.2,1), opacity 0.4s 0.05s",
-          padding: isHover ? "20px 24px 24px" : "0 24px",
+          overflow: "auto",
+          transition: "opacity 0.35s 0.1s, flex 0.5s cubic-bezier(.7,0,.2,1)",
+          padding: isHover ? "20px 24px 60px" : "0 24px",
+          pointerEvents: isHover ? "auto" : "none",
         }}
       >
         {p.storyline?.length ? (

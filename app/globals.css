@@ -490,6 +490,14 @@
   color: var(--ink);
   transition: color 0.38s var(--ease-card);
 }
+
+/* Touch / no-hover: tap toggles open instead of relying on hover */
+@media (hover: none) {
+  .project-reveal {
+    max-height: 600px;
+    opacity: 1;
+  }
+}
 .project-card-collapsed:hover .project-card-glyph,
 .project-card-collapsed:focus-within .project-card-glyph {
   color: var(--accent);

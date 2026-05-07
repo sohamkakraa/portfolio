@@ -59,7 +59,19 @@ type PortfolioData = {
   footer: { note: string; links: SocialLink[] };
 };
 
-type ProjectItem   = { id: string; title: string; summary: string; tags: string[]; year: string; status?: string; link?: string };
+type ProjectItem   = {
+  id: string;
+  title: string;
+  summary: string;
+  tags: string[];
+  year: string;
+  status?: string;
+  link?: string;
+  // Optional — populated to drive the hover-expand "Selected work" cards.
+  storyline?: Array<{ label: "trigger" | "move" | "result"; body: string }>;
+  metrics?: Array<{ label: string; value: string }>;
+  stack?: string[];
+};
 type PhotographyCategory = { slug: string; title: string; description: string; accent: string; hidden?: boolean; images: PhotoItem[] };
 type PhotoItem     = { id: string; src: string; title: string; description: string; meta?: PhotoMeta; hidden?: boolean };
 type LifeBook      = { title: string; author: string; theme: string; palette: string; coverSrc?: string; isbn?: string };

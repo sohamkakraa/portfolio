@@ -37,6 +37,8 @@ import type {
   PhotoMeta,
   PortfolioData,
   ProjectItem,
+  ProjectStorylineStep,
+  ProjectMetric,
 } from "@/lib/portfolio-types";
 import ImageCropDialog from "@/components/admin/ImageCropDialog";
 import AIChatPanel from "@/components/admin/AIChatPanel";
@@ -438,6 +440,69 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
       ...prev,
       projects: { ...prev.projects, items: prev.projects.items.filter((_, i) => i !== idx) },
     }));
+  };
+
+  const updateStoryline = (pIdx: number, sIdx: number, field: keyof ProjectStorylineStep, value: string) => {
+    setData((prev) => {
+      const items = [...prev.projects.items];
+      const story = [...(items[pIdx].storyline ?? [])];
+      story[sIdx] = { ...story[sIdx], [field]: value } as ProjectStorylineStep;
+      items[pIdx] = { ...items[pIdx], storyline: story };
+      return { ...prev, projects: { ...prev.projects, items } };
+    });
+  };
+  const addStorylineStep = (pIdx: number) => {
+    setData((prev) => {
+      const items = [...prev.projects.items];
+      const story = [...(items[pIdx].storyline ?? [])];
+      const usedLabels = new Set(story.map((s) => s.label));
+      const next = (["trigger", "move", "result"] as const).find((l) => !usedLabels.has(l)) ?? "result";
+      story.push({ label: next, body: "" });
+      items[pIdx] = { ...items[pIdx], storyline: story };
+      return { ...prev, projects: { ...prev.projects, items } };
+    });
+  };
+  const removeStorylineStep = (pIdx: number, sIdx: number) => {
+    setData((prev) => {
+      const items = [...prev.projects.items];
+      const story = (items[pIdx].storyline ?? []).filter((_, i) => i !== sIdx);
+      items[pIdx] = { ...items[pIdx], storyline: story };
+      return { ...prev, projects: { ...prev.projects, items } };
+    });
+  };
+
+  const updateMetric = (pIdx: number, mIdx: number, field: keyof ProjectMetric, value: string) => {
+    setData((prev) => {
+      const items = [...prev.projects.items];
+      const metrics = [...(items[pIdx].metrics ?? [])];
+      metrics[mIdx] = { ...metrics[mIdx], [field]: value };
+      items[pIdx] = { ...items[pIdx], metrics };
+      return { ...prev, projects: { ...prev.projects, items } };
+    });
+  };
+  const addMetric = (pIdx: number) => {
+    setData((prev) => {
+      const items = [...prev.projects.items];
+      const metrics = [...(items[pIdx].metrics ?? []), { label: "", value: "" }];
+      items[pIdx] = { ...items[pIdx], metrics };
+      return { ...prev, projects: { ...prev.projects, items } };
+    });
+  };
+  const removeMetric = (pIdx: number, mIdx: number) => {
+    setData((prev) => {
+      const items = [...prev.projects.items];
+      const metrics = (items[pIdx].metrics ?? []).filter((_, i) => i !== mIdx);
+      items[pIdx] = { ...items[pIdx], metrics };
+      return { ...prev, projects: { ...prev.projects, items } };
+    });
+  };
+
+  const updateStack = (pIdx: number, value: string[]) => {
+    setData((prev) => {
+      const items = [...prev.projects.items];
+      items[pIdx] = { ...items[pIdx], stack: value };
+      return { ...prev, projects: { ...prev.projects, items } };
+    });
   };
 
   const addCategory = () => {
@@ -1199,6 +1264,102 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
                         onChange={(v) => updateProject(i, "tags", v.split(",").map((t) => t.trim()).filter(Boolean))}
                       />
                     </Field>
+                    <Field label="Stack (comma-separated)">
+                      <Input
+                        value={(project.stack ?? []).join(", ")}
+                        onChange={(v) => updateStack(i, v.split(",").map((t) => t.trim()).filter(Boolean))}
+                      />
+                    </Field>
+
+                    {/* Storyline */}
+                    <div className="rounded-xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-3">
+                      <div className="mb-2 flex items-center justify-between">
+                        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[color:var(--fg-muted)]">
+                          Storyline (trigger / move / result)
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => addStorylineStep(i)}
+                          className="text-[11px] font-medium text-[color:var(--accent)] hover:underline"
+                        >
+                          + Add step
+                        </button>
+                      </div>
+                      <div className="space-y-2">
+                        {(project.storyline ?? []).map((step, sIdx) => (
+                          <div key={sIdx} className="grid gap-2 sm:grid-cols-[120px_1fr_auto] items-start">
+                            <select
+                              value={step.label}
+                              onChange={(e) => updateStoryline(i, sIdx, "label", e.target.value)}
+                              className="rounded-lg border border-[color:var(--border)] bg-[color:var(--bg-surface)] px-2 py-2 text-xs"
+                            >
+                              <option value="trigger">trigger</option>
+                              <option value="move">move</option>
+                              <option value="result">result</option>
+                            </select>
+                            <TextArea
+                              value={step.body}
+                              onChange={(v) => updateStoryline(i, sIdx, "body", v)}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removeStorylineStep(i, sIdx)}
+                              className="rounded-lg border border-[color:var(--border)] bg-transparent px-2 py-1 text-[11px] text-[color:var(--fg-muted)] hover:text-[color:var(--fg)]"
+                              aria-label="Remove step"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                        ))}
+                        {!project.storyline?.length && (
+                          <p className="text-[11px] text-[color:var(--fg-subtle)]">No storyline steps yet.</p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Metrics */}
+                    <div className="rounded-xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-3">
+                      <div className="mb-2 flex items-center justify-between">
+                        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[color:var(--fg-muted)]">
+                          Metrics
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => addMetric(i)}
+                          className="text-[11px] font-medium text-[color:var(--accent)] hover:underline"
+                        >
+                          + Add metric
+                        </button>
+                      </div>
+                      <div className="space-y-2">
+                        {(project.metrics ?? []).map((m, mIdx) => (
+                          <div key={mIdx} className="grid gap-2 sm:grid-cols-[1fr_1fr_auto] items-center">
+                            <Input
+                              value={m.label}
+                              onChange={(v) => updateMetric(i, mIdx, "label", v)}
+                              placeholder="label (e.g. latency)"
+                            />
+                            <Input
+                              value={m.value}
+                              onChange={(v) => updateMetric(i, mIdx, "value", v)}
+                              placeholder="value (e.g. 240ms)"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removeMetric(i, mIdx)}
+                              className="rounded-lg border border-[color:var(--border)] bg-transparent px-2 py-1 text-[11px] text-[color:var(--fg-muted)] hover:text-[color:var(--fg)]"
+                              aria-label="Remove metric"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                        ))}
+                        {!project.metrics?.length && (
+                          <p className="text-[11px] text-[color:var(--fg-subtle)]">No metrics yet.</p>
+                        )}
+                      </div>
+                    </div>
+
                     <DangerButton onClick={() => removeProject(i)}>
                       <Trash2 size={12} /> Remove Project
                     </DangerButton>
