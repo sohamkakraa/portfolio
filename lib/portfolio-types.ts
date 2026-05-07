@@ -89,6 +89,16 @@ export type LifeSection = {
   entertainment: LifeEntertainment[];
 };
 
+export type ProjectStorylineStep = {
+  label: "trigger" | "move" | "result";
+  body: string;
+};
+
+export type ProjectMetric = {
+  label: string;
+  value: string;
+};
+
 export type ProjectItem = {
   id: string;
   title: string;
@@ -97,6 +107,12 @@ export type ProjectItem = {
   year: string;
   status?: string;
   link?: string;
+  /** Optional 3-step storyline used by the hover-expand projects grid. */
+  storyline?: ProjectStorylineStep[];
+  /** Optional 2-4 quantitative metrics shown on expand. */
+  metrics?: ProjectMetric[];
+  /** Flat list of stack tags shown on expand. */
+  stack?: string[];
 };
 
 export type ProjectsSection = {

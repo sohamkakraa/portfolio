@@ -2,9 +2,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { Menu, X, ExternalLink } from "lucide-react";
+import { Menu, X, ArrowUpRight } from "lucide-react";
 import type { NavItem } from "@/lib/portfolio-types";
 import ThemeToggle from "@/components/ThemeToggle";
+import LogoOrbit from "@/components/LogoOrbit";
 
 type NavProps = {
   name: string;
@@ -20,37 +21,41 @@ export default function Nav({ name, nav }: NavProps) {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
   useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
 
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled ? "nav-floating" : "bg-transparent"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "nav-floating" : ""}`}
       >
         <div className="section-container">
-          <div className="flex h-16 items-center justify-between md:h-20">
-            {/* Logo */}
+          <div className="flex h-16 items-center justify-between md:h-[68px]">
+            {/* Mark + wordmark */}
             <Link
-              href="/"
-              className="group relative text-sm font-bold tracking-[0.2em] uppercase text-[color:var(--fg)] no-underline"
+              href="/#top"
+              className="group relative inline-flex items-center gap-3 no-underline"
+              aria-label={`${name} — home`}
             >
-              <span className="relative z-10">{name}</span>
-              <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-[color:var(--accent)] transition-all duration-300 group-hover:w-full" />
+              <LogoOrbit size={32} ink="var(--ink)" />
+              <span
+                className="hidden sm:inline relative font-mono text-[11px] font-semibold uppercase"
+                style={{ letterSpacing: "0.2em", color: "var(--ink)" }}
+              >
+                {name}
+                <span
+                  className="absolute -bottom-1 left-0 h-[2px] w-0 transition-all duration-300 group-hover:w-full"
+                  style={{ background: "var(--accent)" }}
+                />
+              </span>
             </Link>
 
             {/* Desktop nav */}
@@ -59,21 +64,29 @@ export default function Nav({ name, nav }: NavProps) {
                 <Link
                   key={`${item.href}-${item.label}`}
                   href={item.href}
-                  className="relative rounded-full px-4 py-2 text-[11px] font-medium uppercase tracking-[0.2em] text-[color:var(--fg-muted)] no-underline transition-colors hover:text-[color:var(--fg)]"
+                  className="mono-label relative rounded-full px-3 py-2 no-underline transition-colors"
+                  style={{ color: "var(--ink-2)" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--ink)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--ink-2)")}
                 >
                   {item.label}
                 </Link>
               ))}
 
-              {/* Viveka link */}
               <a
                 href="https://viveka.sohamkakra.com"
                 target="_blank"
                 rel="noreferrer"
-                className="btn-accent ml-2 !py-2 !px-4 !text-[10px]"
+                className="ml-3 inline-flex items-center gap-2 mono-label"
+                style={{
+                  padding: "8px 12px",
+                  background: "var(--accent)",
+                  color: "var(--bg)",
+                  borderRadius: 4,
+                }}
               >
                 <span>Viveka</span>
-                <ExternalLink size={12} />
+                <ArrowUpRight size={12} />
               </a>
 
               <div className="ml-3">
@@ -87,7 +100,13 @@ export default function Nav({ name, nav }: NavProps) {
               <button
                 type="button"
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--border)] text-[color:var(--fg)]"
+                className="inline-flex h-10 w-10 items-center justify-center"
+                style={{
+                  border: "1px solid var(--line-2)",
+                  borderRadius: 99,
+                  color: "var(--ink)",
+                  background: "transparent",
+                }}
                 aria-label="Toggle menu"
               >
                 {mobileOpen ? <X size={18} /> : <Menu size={18} />}
@@ -99,25 +118,40 @@ export default function Nav({ name, nav }: NavProps) {
 
       {/* Mobile menu overlay */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-[100] flex flex-col bg-[color:var(--bg)]/95 pt-[max(0px,env(safe-area-inset-top))] pb-[max(0px,env(safe-area-inset-bottom))] backdrop-blur-xl md:hidden">
-          <div className="flex h-16 items-center justify-end px-6">
+        <div
+          className="fixed inset-0 z-[100] flex flex-col md:hidden"
+          style={{
+            background: "color-mix(in oklab, var(--bg) 96%, transparent)",
+            backdropFilter: "blur(20px)",
+            paddingTop: "max(0px, env(safe-area-inset-top))",
+            paddingBottom: "max(0px, env(safe-area-inset-bottom))",
+          }}
+        >
+          <div className="flex h-16 items-center justify-between px-6">
+            <LogoOrbit size={28} ink="var(--ink)" />
             <button
               type="button"
               onClick={() => setMobileOpen(false)}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--border)] text-[color:var(--fg)]"
+              className="inline-flex h-10 w-10 items-center justify-center"
+              style={{
+                border: "1px solid var(--line-2)",
+                borderRadius: 99,
+                color: "var(--ink)",
+                background: "transparent",
+              }}
               aria-label="Close menu"
             >
               <X size={18} />
             </button>
           </div>
-          <nav className="flex flex-1 flex-col items-center justify-center gap-6">
-            {nav.map((item, i) => (
+          <nav className="flex flex-1 flex-col items-center justify-center gap-8">
+            {nav.map((item) => (
               <Link
                 key={`mobile-${item.href}`}
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
-                className="text-2xl font-semibold tracking-tight text-[color:var(--fg)] no-underline"
-                style={{ animationDelay: `${i * 0.05}s` }}
+                className="display-md font-display no-underline"
+                style={{ color: "var(--ink)" }}
               >
                 {item.label}
               </Link>
@@ -126,11 +160,17 @@ export default function Nav({ name, nav }: NavProps) {
               href="https://viveka.sohamkakra.com"
               target="_blank"
               rel="noreferrer"
-              className="btn-accent mt-4"
+              className="mt-4 inline-flex items-center gap-2 mono-label"
+              style={{
+                padding: "12px 18px",
+                background: "var(--accent)",
+                color: "var(--bg)",
+                borderRadius: 4,
+              }}
               onClick={() => setMobileOpen(false)}
             >
               <span>Viveka</span>
-              <ExternalLink size={14} />
+              <ArrowUpRight size={14} />
             </a>
           </nav>
         </div>

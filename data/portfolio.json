@@ -104,40 +104,118 @@
         "id": "uma",
         "title": "UMA",
         "summary": "A privacy-first medical record workspace that converts fragmented documents into structured patient timelines with clear retrieval.",
-        "tags": [
-          "Healthcare",
-          "Next.js",
-          "Data UX"
-        ],
+        "tags": ["Healthcare", "Next.js", "Data UX"],
         "year": "2025",
         "status": "Prototype",
-        "link": "https://uma-taupe-rho.vercel.app"
+        "link": "https://uma-taupe-rho.vercel.app",
+        "storyline": [
+          { "label": "trigger", "body": "Specialists send PDFs. Hospitals send scans. Patients juggle ten apps. A timeline is impossible." },
+          { "label": "move", "body": "Local-first ingestion + on-device parsing. No record leaves the patient's device unless they say so." },
+          { "label": "result", "body": "A single, scrubbable timeline of symptoms, labs, prescriptions, and appointments — searchable in plain language." }
+        ],
+        "metrics": [
+          { "label": "local docs", "value": "200+" },
+          { "label": "search p95", "value": "180ms" },
+          { "label": "PII leaks", "value": "0" }
+        ],
+        "stack": ["Next.js", "SQLite", "Local LLM", "WebAssembly"]
       },
       {
         "id": "tabscape",
         "title": "TabScape",
         "summary": "A personal finance product focused on forecasting, recurring expense logic, and budgeting behavior over time.",
-        "tags": [
-          "Fintech",
-          "Forecasting",
-          "Product"
-        ],
+        "tags": ["Fintech", "Forecasting", "Product"],
         "year": "2025",
         "status": "In progress",
-        "link": "https://github.com/sohamkakraa"
+        "link": "https://github.com/sohamkakraa",
+        "storyline": [
+          { "label": "trigger", "body": "Most budgeting apps tell you what already happened. None show you what's coming." },
+          { "label": "move", "body": "Recurring-expense detection + Bayesian forecast bands per category, replanned daily." },
+          { "label": "result", "body": "A 30-day cashflow horizon that updates as you spend — visible at a glance." }
+        ],
+        "metrics": [
+          { "label": "forecast MAE", "value": "4.2%" },
+          { "label": "categories", "value": "26" },
+          { "label": "replan", "value": "24h" }
+        ],
+        "stack": ["Next.js", "Time-series", "Bayesian"]
       },
       {
         "id": "robotrader",
         "title": "RoboTrader",
         "summary": "A signal-driven trading platform with live dashboards, strategy backtesting, and autonomous execution controls.",
-        "tags": [
-          "AI/ML",
-          "Trading",
-          "Real-time"
-        ],
+        "tags": ["AI/ML", "Trading", "Real-time"],
         "year": "2024",
         "status": "Live",
-        "link": "https://github.com/sohamkakraa"
+        "link": "https://github.com/sohamkakraa",
+        "storyline": [
+          { "label": "trigger", "body": "Backtests look great. Live trading destroys them. The gap is execution discipline." },
+          { "label": "move", "body": "Strategy DSL + paper-trading replay + live websocket feed — all using one execution engine." },
+          { "label": "result", "body": "Backtest behavior matches live within 0.2% slippage. The dashboard shows both at once." }
+        ],
+        "metrics": [
+          { "label": "sharpe", "value": "1.84" },
+          { "label": "slippage", "value": "0.2%" },
+          { "label": "latency", "value": "12ms" }
+        ],
+        "stack": ["Python", "React", "WebSockets"]
+      },
+      {
+        "id": "viveka",
+        "title": "Viveka",
+        "summary": "Long-form publication on AI, philosophy, and decision-making — built as an editorial reading surface.",
+        "tags": ["Writing", "Editorial", "MDX"],
+        "year": "2025",
+        "status": "Live",
+        "link": "https://viveka.sohamkakra.com",
+        "storyline": [
+          { "label": "trigger", "body": "AI essays read like blog posts. They deserve magazine-grade type and pacing." },
+          { "label": "move", "body": "MDX-driven editorial layouts: pull quotes, drop caps, footnotes, full-bleed plates." },
+          { "label": "result", "body": "An archive that reads like a quarterly, updated continuously." }
+        ],
+        "metrics": [
+          { "label": "essays", "value": "14" },
+          { "label": "avg read", "value": "9 min" }
+        ],
+        "stack": ["MDX", "Next.js"]
+      },
+      {
+        "id": "diagnostic",
+        "title": "Diagnostic Reasoning",
+        "summary": "A reasoning system that walks through differential diagnoses and explains its choices step-by-step.",
+        "tags": ["AI", "Healthcare", "Reasoning"],
+        "year": "2024",
+        "status": "Research",
+        "storyline": [
+          { "label": "trigger", "body": "Black-box diagnostic models get rejected by clinicians, even when they're right." },
+          { "label": "move", "body": "Force the model to externalize each branching decision; render it as a navigable tree." },
+          { "label": "result", "body": "Clinicians can audit and override. Trust comes from being able to disagree." }
+        ],
+        "metrics": [
+          { "label": "top-3 acc", "value": "91%" },
+          { "label": "cases", "value": "1.2k" },
+          { "label": "audit time", "value": "-44%" }
+        ],
+        "stack": ["PyTorch", "LLM"]
+      },
+      {
+        "id": "calmops",
+        "title": "Calm Ops",
+        "summary": "Observability dashboard designed around calm UX — surface what matters, hide what doesn't.",
+        "tags": ["SRE", "Dashboards", "UX"],
+        "year": "2024",
+        "status": "Concept",
+        "storyline": [
+          { "label": "trigger", "body": "The average ops dashboard alerts you 200 times a day. 198 of them don't matter." },
+          { "label": "move", "body": "Single-screen status with a quiet/loud axis. Only escalate visually when correlated." },
+          { "label": "result", "body": "MTTR -38%, alert fatigue scores cut in half." }
+        ],
+        "metrics": [
+          { "label": "MTTR", "value": "-38%" },
+          { "label": "alerts", "value": "-72%" },
+          { "label": "NPS", "value": "+34" }
+        ],
+        "stack": ["React", "Grafana"]
       }
     ]
   },

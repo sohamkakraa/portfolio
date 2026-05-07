@@ -2,127 +2,278 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const FRAME_COUNT = 60;
-const FPS = 24;
-const FRAME_MS = 1000 / FPS;
-
 type Props = {
   visible: boolean;
   onComplete?: () => void;
 };
 
-export default function LoadingScreen({ visible, onComplete }: Props) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const framesRef = useRef<HTMLImageElement[]>([]);
-  const rafRef = useRef<number>(0);
-  const frameIdxRef = useRef(0);
-  const lastTsRef = useRef(0);
-  const [hiding, setHiding] = useState(false);
-  const [mounted, setMounted] = useState(false);
+type Line =
+  | { kind: "prompt"; cmd: string; text: string }
+  | { kind: "output"; text: string }
+  | { kind: "progress" }
+  | { kind: "success"; text: string };
 
+const SCRIPT: Line[] = [
+  { kind: "prompt", cmd: "$", text: "whoami" },
+  { kind: "output", text: "soham kakra · m.sc data science & ai · tu/e" },
+  { kind: "prompt", cmd: "$", text: "pwd" },
+  { kind: "output", text: "~/portfolio" },
+  { kind: "prompt", cmd: "$", text: "ls projects/" },
+  { kind: "output", text: "uma  tabscape  robotrader  viveka  diagnostic  calm-ops" },
+  { kind: "prompt", cmd: "$", text: "cat about.md | head -3" },
+  { kind: "output", text: "data + ai engineer. systems thinker. visual journal on the side." },
+  { kind: "prompt", cmd: "$", text: "booting interface" },
+  { kind: "progress" },
+  { kind: "success", text: "$ launch ✓" },
+];
+
+const TYPE_MS = 18;
+const PAUSE_MS = 250;
+const PROGRESS_MS = 600;
+const HOLD_AFTER_MS = 350;
+
+export default function LoadingScreen({ visible, onComplete }: Props) {
+  const [hiding, setHiding] = useState(false);
+  const [shown, setShown] = useState<Line[]>([]);
+  const [typingIdx, setTypingIdx] = useState(0);
+  const [typingText, setTypingText] = useState("");
+  const [progress, setProgress] = useState(0);
+  const [done, setDone] = useState(false);
+  const [reduced, setReduced] = useState(false);
+  const skipRef = useRef(false);
+
+  // Reduced motion check
   useEffect(() => {
-    setMounted(true);
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
   }, []);
 
-  // Preload all 60 frames
+  // Skip on click / key
   useEffect(() => {
-    if (!mounted) return;
-    framesRef.current = Array.from({ length: FRAME_COUNT }, (_, i) => {
-      const img = new Image();
-      img.src = `/loading-frames/${String(i + 1).padStart(2, "0")}.jpg`;
-      return img;
-    });
-  }, [mounted]);
-
-  // Resize canvas to physical pixels (respects devicePixelRatio for Retina sharpness).
-  // This runs once on mount and on window resize — never inside the draw loop.
-  useEffect(() => {
-    if (!mounted) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      canvas.style.width = `${w}px`;
-      canvas.style.height = `${h}px`;
-      canvas.width = Math.round(w * dpr);
-      canvas.height = Math.round(h * dpr);
+    const skip = () => {
+      if (skipRef.current) return;
+      skipRef.current = true;
+      setShown(SCRIPT);
+      setTypingText("");
+      setTypingIdx(SCRIPT.length);
+      setProgress(100);
+      setDone(true);
     };
-
-    resize();
-    window.addEventListener("resize", resize);
-    return () => window.removeEventListener("resize", resize);
-  }, [mounted]);
-
-  // rAF draw loop — uses canvas.width/height (physical pixels) for crisp output
-  useEffect(() => {
-    if (!mounted) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d", { alpha: false });
-    if (!ctx) return;
-
-    let lastDrawnFrame = -1;
-
-    const draw = (ts: number) => {
-      const idx = frameIdxRef.current;
-      // Stop advancing once we've played through all frames exactly once
-      if (idx >= FRAME_COUNT) return;
-      rafRef.current = requestAnimationFrame(draw);
-      if (ts - lastTsRef.current < FRAME_MS) return;
-      lastTsRef.current = ts;
-
-      const img = framesRef.current[idx];
-
-      if (img?.complete && img.naturalWidth > 0) {
-        // object-cover in physical pixels
-        const cw = canvas.width;
-        const ch = canvas.height;
-        const iw = img.naturalWidth;
-        const ih = img.naturalHeight;
-        const scale = Math.max(cw / iw, ch / ih);
-        const dw = iw * scale;
-        const dh = ih * scale;
-        const dx = (cw - dw) / 2;
-        const dy = (ch - dh) / 2;
-        ctx.drawImage(img, dx, dy, dw, dh);
-        lastDrawnFrame = idx;
-      }
-      // Advance; clamp at FRAME_COUNT to stop after one full play
-      frameIdxRef.current = idx + 1;
-      void lastDrawnFrame; // suppress lint
+    window.addEventListener("keydown", skip);
+    window.addEventListener("pointerdown", skip);
+    return () => {
+      window.removeEventListener("keydown", skip);
+      window.removeEventListener("pointerdown", skip);
     };
+  }, []);
 
-    rafRef.current = requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [mounted]);
-
-  // Fade-out on hide
+  // Reduced motion: show full state, hold briefly, finish
   useEffect(() => {
-    if (!visible) {
-      setHiding(true);
-      const t = setTimeout(() => onComplete?.(), 700);
-      return () => clearTimeout(t);
-    } else {
-      setHiding(false);
+    if (!reduced) return;
+    setShown(SCRIPT);
+    setProgress(100);
+    setDone(true);
+  }, [reduced]);
+
+  // Type sequence
+  useEffect(() => {
+    if (reduced || skipRef.current || done) return;
+    if (typingIdx >= SCRIPT.length) {
+      setDone(true);
+      return;
     }
-  }, [visible, onComplete]);
+    const line = SCRIPT[typingIdx];
 
-  if (!mounted) return null;
+    if (line.kind === "progress") {
+      const start = performance.now();
+      let raf = 0;
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - start) / PROGRESS_MS);
+        setProgress(Math.round(t * 100));
+        if (t < 1 && !skipRef.current) raf = requestAnimationFrame(tick);
+        else {
+          setShown((s) => [...s, line]);
+          setTypingIdx((i) => i + 1);
+        }
+      };
+      raf = requestAnimationFrame(tick);
+      return () => cancelAnimationFrame(raf);
+    }
+
+    const text = line.kind === "success" ? line.text : (line.kind === "prompt" ? line.text : line.text);
+    let i = 0;
+    const id = setInterval(() => {
+      if (skipRef.current) { clearInterval(id); return; }
+      i++;
+      setTypingText(text.slice(0, i));
+      if (i >= text.length) {
+        clearInterval(id);
+        const pause = setTimeout(() => {
+          setShown((s) => [...s, line]);
+          setTypingText("");
+          setTypingIdx((idx) => idx + 1);
+        }, PAUSE_MS);
+        // store cleanup; OK to leak — short-lived
+        void pause;
+      }
+    }, TYPE_MS);
+    return () => clearInterval(id);
+  }, [typingIdx, reduced, done]);
+
+  // When done + parent says hide, dismiss
+  useEffect(() => {
+    if (!done) return;
+    if (visible) return; // wait for parent to flip visible to false
+    const t = setTimeout(() => {
+      setHiding(true);
+      const t2 = setTimeout(() => onComplete?.(), 700);
+      return () => clearTimeout(t2);
+    }, HOLD_AFTER_MS);
+    return () => clearTimeout(t);
+  }, [done, visible, onComplete]);
+
+  // Auto-finish after script fully types out, even if parent still says visible.
+  // Parent uses {visible && done} via two latches; we just stop animating.
 
   return (
     <div
-      aria-label="Loading"
       role="status"
-      className="pointer-events-none fixed inset-0 z-[300]"
+      aria-label="Loading"
+      className="loader-terminal"
       style={{
         opacity: hiding ? 0 : 1,
-        transition: "opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1)",
+        transform: hiding ? "translateY(-20px)" : "translateY(0)",
+        transition: "opacity 0.6s cubic-bezier(0.4,0,1,1), transform 0.6s cubic-bezier(0.4,0,1,1)",
       }}
     >
-      <canvas ref={canvasRef} className="block" />
+      <div
+        className="font-mono"
+        style={{
+          width: "min(640px, 90vw)",
+          minHeight: "min(420px, 70vh)",
+          background: "var(--bg-2)",
+          border: "1px solid var(--line)",
+          borderRadius: 14,
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        {/* Top chrome */}
+        <div
+          style={{
+            height: 36,
+            display: "flex",
+            alignItems: "center",
+            padding: "0 14px",
+            borderBottom: "1px solid var(--line)",
+            background: "var(--bg-3)",
+            position: "relative",
+          }}
+        >
+          <div style={{ display: "flex", gap: 6 }}>
+            <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--line-2)" }} />
+            <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--line-2)" }} />
+            <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--line-2)" }} />
+          </div>
+          <span
+            style={{
+              position: "absolute",
+              left: "50%",
+              transform: "translateX(-50%)",
+              fontSize: 11,
+              color: "var(--ink-3)",
+              letterSpacing: "0.16em",
+            }}
+          >
+            ~/sohamkakra — boot
+          </span>
+        </div>
+
+        {/* Body */}
+        <div
+          style={{
+            padding: "20px 22px",
+            fontSize: 14,
+            lineHeight: 1.55,
+            flex: 1,
+            color: "var(--ink-2)",
+          }}
+        >
+          {shown.map((line, idx) => (
+            <LineRow key={idx} line={line} progress={line.kind === "progress" ? 100 : undefined} />
+          ))}
+
+          {/* Active typing line */}
+          {!done && typingIdx < SCRIPT.length && SCRIPT[typingIdx].kind !== "progress" && (
+            <ActiveLine line={SCRIPT[typingIdx]} text={typingText} />
+          )}
+
+          {/* Active progress */}
+          {!done && typingIdx < SCRIPT.length && SCRIPT[typingIdx].kind === "progress" && (
+            <LineRow line={SCRIPT[typingIdx]} progress={progress} />
+          )}
+        </div>
+      </div>
     </div>
   );
+}
+
+function LineRow({ line, progress }: { line: Line; progress?: number }) {
+  if (line.kind === "prompt") {
+    return (
+      <div>
+        <span style={{ color: "var(--accent)" }}>$ </span>
+        <span style={{ color: "var(--ink)" }}>{line.text}</span>
+      </div>
+    );
+  }
+  if (line.kind === "output") {
+    return <div style={{ color: "var(--ink-2)" }}>{line.text}</div>;
+  }
+  if (line.kind === "success") {
+    return <div style={{ color: "var(--accent-2)" }}>{line.text}</div>;
+  }
+  // progress
+  const pct = progress ?? 0;
+  const width = 24;
+  const filled = Math.round((pct / 100) * width);
+  const bar = "█".repeat(filled) + "░".repeat(width - filled);
+  return (
+    <div style={{ color: "var(--ink-2)" }}>
+      <span style={{ color: "var(--accent)" }}>[</span>
+      <span>{bar}</span>
+      <span style={{ color: "var(--accent)" }}>]</span>
+      <span style={{ marginLeft: 12, color: "var(--ink-3)" }}>{pct}%</span>
+    </div>
+  );
+}
+
+function ActiveLine({ line, text }: { line: Line; text: string }) {
+  if (line.kind === "prompt") {
+    return (
+      <div>
+        <span style={{ color: "var(--accent)" }}>$ </span>
+        <span style={{ color: "var(--ink)" }}>{text}</span>
+        <span className="cursor-blink">▌</span>
+      </div>
+    );
+  }
+  if (line.kind === "output") {
+    return (
+      <div style={{ color: "var(--ink-2)" }}>
+        {text}
+        <span className="cursor-blink">▌</span>
+      </div>
+    );
+  }
+  if (line.kind === "success") {
+    return (
+      <div style={{ color: "var(--accent-2)" }}>
+        {text}
+        <span className="cursor-blink">▌</span>
+      </div>
+    );
+  }
+  return null;
 }
