@@ -45,9 +45,14 @@ import ImageCropDialog from "@/components/admin/ImageCropDialog";
 import AIChatPanel from "@/components/admin/AIChatPanel";
 import { extractExif } from "@/lib/photo-meta";
 import PHOTO_LOCATIONS from "@/data/photo-locations.json";
+import WORLD_LOCATIONS from "@/data/world-locations.json";
 
 type EnrichedLoc = { city: string; country: string; countryCode?: string; lat: number; lon: number };
 const PHOTO_LOC_MAP = PHOTO_LOCATIONS as Record<string, EnrichedLoc>;
+
+type WorldCountry = { name: string; iso2?: string; emoji?: string; cities: string[] };
+type WorldLocations = { generated: string; countries: WorldCountry[] };
+const WORLD = WORLD_LOCATIONS as WorldLocations;
 
 // Numeric helpers — keep PhotoMeta values as their final formatted strings
 // (e.g. "35mm", "f/4", "400") so the lightbox can render directly.
@@ -272,14 +277,12 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
 
   // Union of cities/countries known from globe metadata + any already-set on
   // a photo's meta. Used to populate datalists in the image metadata editor.
-  const { cityOptions, countryOptions, cityToCountry, citiesByCountry } = useMemo(() => {
-    const cities = new Set<string>();
+  const { countryOptions, cityToCountry, citiesByCountry } = useMemo(() => {
     const countries = new Set<string>();
     const c2c = new Map<string, string>();
     const byCountry = new Map<string, Set<string>>();
 
     const note = (city?: string, country?: string) => {
-      if (city) cities.add(city);
       if (country) countries.add(country);
       if (city && country) {
         if (!c2c.has(city)) c2c.set(city, country);
@@ -288,13 +291,24 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
       }
     };
 
+    // 1. Seed from the world dataset (250 countries, ~140k cities).
+    for (const c of WORLD.countries) {
+      countries.add(c.name);
+      if (!byCountry.has(c.name)) byCountry.set(c.name, new Set());
+      const bucket = byCountry.get(c.name)!;
+      for (const city of c.cities) {
+        bucket.add(city);
+        if (!c2c.has(city)) c2c.set(city, c.name);
+      }
+    }
+
+    // 2. Layer in any extras already on photos / from photo-locations.json.
     for (const v of Object.values(PHOTO_LOC_MAP)) note(v.city, v.country);
     for (const c of data.photography.categories) {
       for (const img of c.images) note(img.meta?.city, img.meta?.country);
     }
 
     return {
-      cityOptions: Array.from(cities).sort(),
       countryOptions: Array.from(countries).sort(),
       cityToCountry: c2c,
       citiesByCountry: byCountry,
@@ -2545,25 +2559,44 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
               <option key={l} value={l} />
             ))}
           </datalist>
+          {/* Cities-without-country fallback: only photos already labelled. */}
           <datalist id="equipment-cities">
-            {cityOptions.map((c) => (
-              <option key={c} value={c} />
-            ))}
+            {Array.from(
+              new Set(
+                data.photography.categories.flatMap((c) =>
+                  c.images.map((i) => i.meta?.city).filter(Boolean) as string[]
+                )
+              )
+            )
+              .sort()
+              .map((c) => (
+                <option key={c} value={c} />
+              ))}
           </datalist>
           <datalist id="equipment-countries">
             {countryOptions.map((c) => (
               <option key={c} value={c} />
             ))}
           </datalist>
-          {Array.from(citiesByCountry.entries()).map(([country, cities]) => (
-            <datalist key={country} id={`cities-${slugifyCountry(country)}`}>
-              {Array.from(cities)
-                .sort()
-                .map((c) => (
-                  <option key={c} value={c} />
-                ))}
-            </datalist>
-          ))}
+          {(() => {
+            const used = new Set<string>();
+            for (const c of data.photography.categories) {
+              for (const img of c.images) {
+                if (img.meta?.country) used.add(img.meta.country);
+              }
+            }
+            return Array.from(used)
+              .filter((country) => citiesByCountry.has(country))
+              .map((country) => (
+                <datalist key={country} id={`cities-${slugifyCountry(country)}`}>
+                  {Array.from(citiesByCountry.get(country)!)
+                    .sort()
+                    .map((c) => (
+                      <option key={c} value={c} />
+                    ))}
+                </datalist>
+              ));
+          })()}
         </>
       )}
 
