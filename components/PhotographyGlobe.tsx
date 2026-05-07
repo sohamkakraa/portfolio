@@ -805,11 +805,10 @@ function Mosaic({
             <Image
               src={f.src}
               alt={f.title}
-              width={800}
-              height={1000}
+              fill
               loading="lazy"
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              style={{ objectFit: "cover" }}
             />
             <div className="photo-tile-caption">
               {f.city}{f.date ? ` · ${f.date}` : ""}
@@ -1116,11 +1115,10 @@ function ViewAllOverlay({
                 <Image
                   src={f.src}
                   alt={f.title}
-                  width={800}
-                  height={1000}
+                  fill
                   loading="lazy"
                   sizes="(max-width: 640px) 50vw, 25vw"
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  style={{ objectFit: "cover" }}
                 />
                 <div className="photo-tile-caption">
                   {f.city}{f.date ? ` · ${f.date}` : ""}
