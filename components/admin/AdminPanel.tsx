@@ -1579,65 +1579,137 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
                       <p className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)]">
                         {cat.images.length} images
                       </p>
-                      {cat.images.map((img, ii) => (
-                        <div
-                          key={img.id}
-                          className="flex gap-3 items-start rounded-xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-3"
-                        >
-                          <div className="h-16 w-20 shrink-0 overflow-hidden rounded-lg bg-[color:var(--bg)]">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img key={img.src} src={img.src} alt="" className="h-full w-full object-cover" />
+                      {cat.images.map((img, ii) => {
+                        const setMeta = (field: keyof PhotoMeta, value: string) => {
+                          const images = [...cat.images];
+                          const existing = images[ii].meta ?? {};
+                          const trimmed = value.trim();
+                          const nextMeta = { ...existing, [field]: trimmed || undefined };
+                          // Drop the field entirely if empty so PhotoMeta stays clean.
+                          if (!trimmed) delete (nextMeta as Record<string, unknown>)[field];
+                          images[ii] = { ...images[ii], meta: nextMeta };
+                          updateCategory(ci, "images", images);
+                        };
+                        const m = img.meta ?? {};
+                        return (
+                          <div
+                            key={img.id}
+                            className="rounded-xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-3 space-y-2"
+                          >
+                            <div className="flex gap-3 items-start">
+                              <div className="h-16 w-20 shrink-0 overflow-hidden rounded-lg bg-[color:var(--bg)]">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img key={img.src} src={img.src} alt="" className="h-full w-full object-cover" />
+                              </div>
+                              <div className="flex-1 space-y-2">
+                                <input
+                                  className="w-full !py-1.5 !text-sm"
+                                  value={img.title}
+                                  onChange={(e) => {
+                                    const images = [...cat.images];
+                                    images[ii] = { ...images[ii], title: e.target.value };
+                                    updateCategory(ci, "images", images);
+                                  }}
+                                  placeholder="Title"
+                                />
+                                <input
+                                  className="w-full !py-1.5 !text-xs"
+                                  value={img.description}
+                                  onChange={(e) => {
+                                    const images = [...cat.images];
+                                    images[ii] = { ...images[ii], description: e.target.value };
+                                    updateCategory(ci, "images", images);
+                                  }}
+                                  placeholder="Description"
+                                />
+                              </div>
+                              <div className="flex flex-col gap-1">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const images = [...cat.images];
+                                    images[ii] = { ...images[ii], hidden: !images[ii].hidden };
+                                    updateCategory(ci, "images", images);
+                                  }}
+                                  className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-[color:var(--border)] text-[color:var(--fg-muted)]"
+                                  aria-label={img.hidden ? "Show image" : "Hide image"}
+                                  title={img.hidden ? "Show" : "Hide"}
+                                >
+                                  {img.hidden ? <EyeOff size={12} /> : <Eye size={12} />}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const images = cat.images.filter((_, j) => j !== ii);
+                                    updateCategory(ci, "images", images);
+                                  }}
+                                  className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-red-500/20 text-red-400"
+                                  aria-label="Remove image"
+                                >
+                                  <Trash2 size={12} />
+                                </button>
+                              </div>
+                            </div>
+
+                            <details className="group">
+                              <summary className="cursor-pointer list-none text-[10px] font-bold uppercase tracking-[0.2em] text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] [&::-webkit-details-marker]:hidden">
+                                <span className="inline-block group-open:hidden">▸ Metadata / EXIF</span>
+                                <span className="hidden group-open:inline-block">▾ Metadata / EXIF</span>
+                              </summary>
+                              <div className="grid grid-cols-2 gap-2 pt-2">
+                                <input
+                                  className="!py-1.5 !text-xs"
+                                  value={m.camera ?? ""}
+                                  onChange={(e) => setMeta("camera", e.target.value)}
+                                  placeholder="Camera (e.g. Sony A7 IV)"
+                                />
+                                <input
+                                  className="!py-1.5 !text-xs"
+                                  value={m.lens ?? ""}
+                                  onChange={(e) => setMeta("lens", e.target.value)}
+                                  placeholder="Lens (e.g. 24-70 f/2.8)"
+                                />
+                                <input
+                                  className="!py-1.5 !text-xs"
+                                  value={m.aperture ?? ""}
+                                  onChange={(e) => setMeta("aperture", e.target.value)}
+                                  placeholder="Aperture (e.g. f/4)"
+                                />
+                                <input
+                                  className="!py-1.5 !text-xs"
+                                  value={m.shutter ?? ""}
+                                  onChange={(e) => setMeta("shutter", e.target.value)}
+                                  placeholder="Shutter (e.g. 1/250s)"
+                                />
+                                <input
+                                  className="!py-1.5 !text-xs"
+                                  value={m.iso ?? ""}
+                                  onChange={(e) => setMeta("iso", e.target.value)}
+                                  placeholder="ISO (e.g. 400)"
+                                />
+                                <input
+                                  className="!py-1.5 !text-xs"
+                                  value={m.focalLength ?? ""}
+                                  onChange={(e) => setMeta("focalLength", e.target.value)}
+                                  placeholder="Focal length (e.g. 35mm)"
+                                />
+                                <input
+                                  className="!py-1.5 !text-xs"
+                                  value={m.date ?? ""}
+                                  onChange={(e) => setMeta("date", e.target.value)}
+                                  placeholder="Date (e.g. 2024-08)"
+                                />
+                                <input
+                                  className="!py-1.5 !text-xs"
+                                  value={m.location ?? ""}
+                                  onChange={(e) => setMeta("location", e.target.value)}
+                                  placeholder="Location"
+                                />
+                              </div>
+                            </details>
                           </div>
-                          <div className="flex-1 space-y-2">
-                            <input
-                              className="w-full !py-1.5 !text-sm"
-                              value={img.title}
-                              onChange={(e) => {
-                                const images = [...cat.images];
-                                images[ii] = { ...images[ii], title: e.target.value };
-                                updateCategory(ci, "images", images);
-                              }}
-                              placeholder="Title"
-                            />
-                            <input
-                              className="w-full !py-1.5 !text-xs"
-                              value={img.description}
-                              onChange={(e) => {
-                                const images = [...cat.images];
-                                images[ii] = { ...images[ii], description: e.target.value };
-                                updateCategory(ci, "images", images);
-                              }}
-                              placeholder="Description"
-                            />
-                          </div>
-                          <div className="flex flex-col gap-1">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const images = [...cat.images];
-                                images[ii] = { ...images[ii], hidden: !images[ii].hidden };
-                                updateCategory(ci, "images", images);
-                              }}
-                              className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-[color:var(--border)] text-[color:var(--fg-muted)]"
-                              aria-label={img.hidden ? "Show image" : "Hide image"}
-                              title={img.hidden ? "Show" : "Hide"}
-                            >
-                              {img.hidden ? <EyeOff size={12} /> : <Eye size={12} />}
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const images = cat.images.filter((_, j) => j !== ii);
-                                updateCategory(ci, "images", images);
-                              }}
-                              className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-red-500/20 text-red-400"
-                              aria-label="Remove image"
-                            >
-                              <Trash2 size={12} />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
 
                     <div className="flex items-center justify-between pt-2">
