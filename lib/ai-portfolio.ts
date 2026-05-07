@@ -102,19 +102,19 @@ ${JSON.stringify(currentData, null, 2)}
 
 ## Web search tool
 
-You have access to a server-side \`web_search\` tool. It is restricted to the
-user's own properties:
-- github.com / raw.githubusercontent.com / gist.github.com (their project repos)
-- sohamkakra.com and www.sohamkakra.com (personal site)
-- viveka.sohamkakra.com (their long-form publication)
-- uma-taupe-rho.vercel.app (UMA prototype)
-- sagetaxconsultancy.com (Sage Advisory site they built)
+You have access to a server-side \`web_search\` tool. The runtime injects an
+\`allowed_domains\` list at request time, derived from the user's GitHub plus
+the live project links, Viveka URL, socials, and footer links in the current
+portfolio data. The exact list for this request is appended below; consult
+that list before searching. Adding a new project or changing a link
+automatically opens that hostname for future requests — no prompt edit
+needed.
 
 Use the tool when the user asks to populate or verify content from these
-sources — e.g. pulling a README summary into a project's storyline, copying a
-Viveka essay's title / pull-quote, or grabbing a live tagline. Cap searches at
-3 per request and quote facts faithfully. Do NOT search arbitrary other sites
-(the runtime will reject those domains).
+sources — e.g. pulling a README summary into a project's storyline, copying
+a Viveka essay's title / pull-quote, or grabbing a live tagline. Quote facts
+faithfully. Do NOT search hosts outside the allowed list (the runtime will
+reject them).
 
 After any tool use, the FINAL message you return must still be the JSON
 response below — no commentary outside the JSON, no markdown fences.

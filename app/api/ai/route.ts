@@ -12,6 +12,53 @@ import {
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
+// Always-on baseline. The assistant can reach the user's GitHub plus the
+// portfolio's primary domain even before any project link is added.
+const STATIC_ALLOWED_DOMAINS = [
+  "github.com",
+  "raw.githubusercontent.com",
+  "gist.github.com",
+  "sohamkakra.com",
+  "www.sohamkakra.com",
+];
+
+function hostFromUrl(url: string | undefined | null): string | null {
+  if (!url) return null;
+  try {
+    const u = new URL(url, "https://placeholder.invalid");
+    if (u.hostname === "placeholder.invalid") return null; // relative
+    return u.hostname.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
+function buildAllowedDomains(data: PortfolioData): string[] {
+  const set = new Set<string>(STATIC_ALLOWED_DOMAINS);
+
+  // Include both the bare host and a www. prefixed variant so search results
+  // matching either subdomain are accepted.
+  const add = (host: string | null) => {
+    if (!host) return;
+    set.add(host);
+    if (!host.startsWith("www.")) set.add(`www.${host}`);
+  };
+
+  // Project links
+  for (const p of data.projects?.items ?? []) add(hostFromUrl(p.link));
+
+  // Viveka / hero CTAs
+  add(hostFromUrl(data.hero?.vivekaCta?.href));
+  add(hostFromUrl(data.hero?.ctaPrimary?.href));
+  add(hostFromUrl(data.hero?.ctaSecondary?.href));
+
+  // Site socials + footer links — only http(s) hrefs survive hostFromUrl.
+  for (const s of data.site?.socials ?? []) add(hostFromUrl(s.href));
+  for (const l of data.footer?.links ?? []) add(hostFromUrl(l.href));
+
+  return Array.from(set).sort();
+}
+
 export type HistoryMessage = { role: "user" | "assistant"; content: string };
 
 // How many recent messages to keep verbatim; older ones get compressed.
@@ -122,6 +169,10 @@ export async function POST(request: Request) {
       `\n\n## Prior conversation context (caveman-compressed)\n` +
       `Use this to understand what was already discussed:\n${activeContext}`;
   }
+  systemPrompt +=
+    `\n\n## web_search allowed_domains (this request)\n` +
+    `${buildAllowedDomains(currentData).join(", ")}\n` +
+    `These are derived from the user's site, project links, Viveka, socials, and footer links. Do not query other hosts.`;
 
   // Ensure messages start with a user role (Claude requirement)
   const safeHistory = recentHistory[0]?.role === "assistant"
@@ -138,6 +189,11 @@ export async function POST(request: Request) {
   ];
 
   // ── Claude call ───────────────────────────────────────────────────────────
+  // Derive web_search allowed_domains from the live portfolio data so adding
+  // a project / changing a link automatically grants the assistant access to
+  // that source.
+  const allowedDomains = buildAllowedDomains(currentData);
+
   let aiResponse: AIResponse;
   try {
     const completion = await anthropic.messages.create({
@@ -145,25 +201,12 @@ export async function POST(request: Request) {
       max_tokens: 4096,
       system: systemPrompt,
       messages: claudeMessages,
-      // Anthropic's server-side web search tool. Restricted to the user's
-      // own GitHub repos + personal sites so the model can pull live facts
-      // (READMEs, project pages, Viveka essays, etc.) when populating
-      // portfolio fields. Uses are capped per request to bound spend.
       tools: [
         {
           type: "web_search_20250305",
           name: "web_search",
           max_uses: 5,
-          allowed_domains: [
-            "github.com",
-            "raw.githubusercontent.com",
-            "gist.github.com",
-            "sohamkakra.com",
-            "www.sohamkakra.com",
-            "viveka.sohamkakra.com",
-            "uma-taupe-rho.vercel.app",
-            "sagetaxconsultancy.com",
-          ],
+          allowed_domains: allowedDomains,
         },
       ] as unknown as Anthropic.Tool[],
     });
