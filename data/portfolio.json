@@ -64,13 +64,50 @@
     "vivekaCta": {
       "label": "Viveka",
       "href": "https://viveka.sohamkakra.com"
-    }
+    },
+    "issueLabel": "Issue №07 · Eindhoven",
+    "dateLabel": "May 2026 / now reading",
+    "headline": [
+      "Building data",
+      "and AI products",
+      "that {{em}}feel human{{/em}}."
+    ],
+    "masthead": "Soham Kakra. M.Sc. Data Science & AI at TU/e. Engineer of end-to-end systems — model logic to production UX.",
+    "tableOfContents": [
+      { "num": "01", "label": "About",         "page": "p.02", "href": "#about" },
+      { "num": "02", "label": "Selected work", "page": "p.04", "href": "#projects" },
+      { "num": "03", "label": "Photography",   "page": "p.08", "href": "#photography" },
+      { "num": "04", "label": "Field notes",   "page": "p.12", "href": "#life" }
+    ]
   },
   "about": {
     "title": "About me",
     "subtitle": "Data Science and AI builder with a product-first systems mindset.",
     "portraitSrc": "/about/portrait-1775860059347.jpg",
     "body": "I am pursuing an M.Sc. in Data Science and AI at Eindhoven University of Technology (TU/e). Across internships and independent products, I have worked on AI/ML-driven systems, full-stack applications, and analytics workflows that improve real decision-making.",
+    "headline": [
+      "I build systems",
+      "where data, models,",
+      "and {{em}}people{{/em}} meet."
+    ],
+    "pillars": [
+      { "title": "End-to-end", "body": "From data ingestion and model design to product UI and deployment." },
+      { "title": "Readable", "body": "Turning complex model behavior into interfaces people can trust." },
+      { "title": "Real-time", "body": "Building systems that react quickly and stay reliable under live conditions." }
+    ],
+    "log": [
+      { "year": "2025\u2013", "org": "TU/e", "role": "M.Sc. Data Science & AI" },
+      { "year": "2023\u201324", "org": "Etihad Credit Insurance", "role": "Data Analyst & IT Support" },
+      { "year": "2020\u201323", "org": "Heriot-Watt Dubai", "role": "B.Sc. Computer Science" }
+    ],
+    "meta": [
+      { "label": "Based in", "value": "Eindhoven, NL" },
+      { "label": "Studying", "value": "M.Sc. DS&AI \u00b7 TU/e" },
+      { "label": "Available", "value": "Summer 2026" },
+      { "label": "Reach", "value": "sohamkakra@gmail.com" }
+    ],
+    "portraitLabel": "// portrait",
+    "portraitMeta": "2026 / 35mm",
     "highlights": [
       "Eindhoven University of Technology (TU/e) \u00b7 M.Sc. Data Science & AI",
       "Etihad Credit Insurance \u00b7 Data Analyst & IT Support (2023\u20132024)",
@@ -221,7 +258,9 @@
   },
   "life": {
     "eyebrow": "Beyond work",
-    "title": "Life, books, places, and entertainment I return to.",
+    "title": "Books, places, films — {{em}}signals I return to{{/em}}.",
+    "readingLabel": "Reading library",
+    "placesLabel": "Places",
     "snapshots": [
       {
         "title": "Research and product loops",
@@ -325,12 +364,17 @@
   },
   "contact": {
     "title": "Get in touch",
-    "description": "I am open to internships, collaborations, and product engineering opportunities in AI, data systems, and full-stack development.",
+    "description": "I am open to internships, collaborations, and product engineering opportunities in AI, data systems, and full-stack development \u2014 summer 2026 onward.",
     "ctaLabel": "Email me",
-    "email": "sohamkakra@gmail.com"
+    "email": "sohamkakra@gmail.com",
+    "headline": [
+      "Let's {{em}}build{{/em}}",
+      "something {{em}}quietly bold{{/em}}."
+    ]
   },
   "footer": {
-    "note": "Designed and built by Soham Kakra \u00b7 2026",
+    "note": "Designed & built \u00b7 soham kakra \u00b7 2026",
+    "versionNote": "v3.0 \u00b7 last edit: today",
     "links": [
       {
         "label": "Admin",

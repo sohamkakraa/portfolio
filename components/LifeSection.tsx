@@ -2,19 +2,26 @@
 
 import BookCoverTile from "@/components/BookCoverTile";
 import type { LifeSection as LifeData } from "@/lib/portfolio-types";
+import { renderEm } from "@/lib/render-em";
 
 type Props = {
   life: LifeData;
 };
 
+const DEFAULT_TITLE = "Books, places, films — {{em}}signals I return to{{/em}}.";
+
 export default function LifeSection({ life }: Props) {
+  const title = life.title?.includes("{{em}}") ? life.title : life.title ? life.title : DEFAULT_TITLE;
+  const eyebrow = life.eyebrow || "beyond work";
+  const readingLabel = life.readingLabel || "Reading library";
+  const placesLabel = life.placesLabel || "Places";
   return (
     <section
       id="life"
       style={{ padding: "120px 0", borderTop: "1px solid var(--line)" }}
     >
       <div className="container">
-        <div className="label">{"// 04 · beyond work"}</div>
+        <div className="label">{`// 04 · ${eyebrow.toLowerCase()}`}</div>
         <h2
           className="serif"
           style={{
@@ -27,8 +34,7 @@ export default function LifeSection({ life }: Props) {
             color: "var(--ink)",
           }}
         >
-          Books, places, films —{" "}
-          <em style={{ color: "var(--accent)", fontStyle: "italic" }}>signals I return to</em>.
+          {renderEm(title)}
         </h2>
 
         <div
@@ -43,7 +49,7 @@ export default function LifeSection({ life }: Props) {
           {/* Reading */}
           <div>
             <div className="label" style={{ marginBottom: 16 }}>
-              Reading library
+              {readingLabel}
             </div>
             <div
               style={{
@@ -76,7 +82,7 @@ export default function LifeSection({ life }: Props) {
           {/* Places */}
           <div>
             <div className="label" style={{ marginBottom: 16 }}>
-              Places
+              {placesLabel}
             </div>
             <ol
               style={{

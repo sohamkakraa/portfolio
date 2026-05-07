@@ -2,19 +2,46 @@
 
 import Image from "next/image";
 import type { AboutSection as AboutData, SiteSettings } from "@/lib/portfolio-types";
+import { renderEm } from "@/lib/render-em";
 
 type Props = {
   about: AboutData;
   site: SiteSettings;
 };
 
+const DEFAULT_HEADLINE: string[] = [
+  "I build systems",
+  "where data, models,",
+  "and {{em}}people{{/em}} meet.",
+];
+
+const DEFAULT_PILLARS = [
+  { title: "End-to-end", body: "From data ingestion and model design to product UI and deployment." },
+  { title: "Readable", body: "Turning complex model behavior into interfaces people can trust." },
+  { title: "Real-time", body: "Building systems that react quickly and stay reliable under live conditions." },
+];
+
+const DEFAULT_LOG = [
+  { year: "2025–", org: "TU/e", role: "M.Sc. Data Science & AI" },
+  { year: "2023–24", org: "Etihad Credit Insurance", role: "Data Analyst & IT Support" },
+  { year: "2020–23", org: "Heriot-Watt Dubai", role: "B.Sc. Computer Science" },
+];
+
 export default function AboutSection({ about, site }: Props) {
-  const meta: [string, string][] = [
-    ["Based in", site.location],
-    ["Studying", "M.Sc. DS&AI · TU/e"],
-    ["Available", "Summer 2026"],
-    ["Reach", site.email],
-  ];
+  const headline = about.headline?.length ? about.headline : DEFAULT_HEADLINE;
+  const pillars = about.pillars?.length ? about.pillars : DEFAULT_PILLARS;
+  const log = about.log?.length ? about.log : DEFAULT_LOG;
+  const meta =
+    about.meta?.length
+      ? about.meta
+      : [
+          { label: "Based in", value: site.location },
+          { label: "Studying", value: "M.Sc. DS&AI · TU/e" },
+          { label: "Available", value: "Summer 2026" },
+          { label: "Reach", value: site.email },
+        ];
+  const portraitLabel = about.portraitLabel ?? "// portrait";
+  const portraitMeta = about.portraitMeta ?? "2026 / 35mm";
 
   return (
     <section
@@ -68,7 +95,7 @@ export default function AboutSection({ about, site }: Props) {
                   zIndex: 1,
                 }}
               >
-                {"// portrait"}
+                {portraitLabel}
               </div>
               <div
                 className="mono"
@@ -82,7 +109,7 @@ export default function AboutSection({ about, site }: Props) {
                   zIndex: 1,
                 }}
               >
-                2026 / 35mm
+                {portraitMeta}
               </div>
             </div>
             <table
@@ -95,8 +122,8 @@ export default function AboutSection({ about, site }: Props) {
               }}
             >
               <tbody>
-                {meta.map(([k, v]) => (
-                  <tr key={k}>
+                {meta.map((row) => (
+                  <tr key={row.label}>
                     <td
                       style={{
                         color: "var(--ink-3)",
@@ -104,7 +131,7 @@ export default function AboutSection({ about, site }: Props) {
                         borderBottom: "1px dotted var(--line-2)",
                       }}
                     >
-                      {k}
+                      {row.label}
                     </td>
                     <td
                       style={{
@@ -114,7 +141,7 @@ export default function AboutSection({ about, site }: Props) {
                         color: "var(--ink)",
                       }}
                     >
-                      {v}
+                      {row.value}
                     </td>
                   </tr>
                 ))}
@@ -137,12 +164,11 @@ export default function AboutSection({ about, site }: Props) {
                 color: "var(--ink)",
               }}
             >
-              I build systems
-              <br />
-              where data, models,
-              <br />
-              and{" "}
-              <em style={{ color: "var(--accent)", fontStyle: "italic" }}>people</em> meet.
+              {headline.map((line, i) => (
+                <span key={i} style={{ display: "block" }}>
+                  {renderEm(line)}
+                </span>
+              ))}
             </h2>
             <p
               style={{
@@ -167,17 +193,13 @@ export default function AboutSection({ about, site }: Props) {
               }}
               className="about-pillars"
             >
-              {[
-                ["End-to-end", "From data ingestion and model design to product UI and deployment."],
-                ["Readable", "Turning complex model behavior into interfaces people can trust."],
-                ["Real-time", "Building systems that react quickly and stay reliable under live conditions."],
-              ].map(([t, d], i) => (
-                <div key={t}>
+              {pillars.map((p, i) => (
+                <div key={p.title}>
                   <div
                     className="mono"
                     style={{ fontSize: 10, color: "var(--ink-3)", letterSpacing: "0.18em" }}
                   >
-                    0{i + 1}
+                    {String(i + 1).padStart(2, "0")}
                   </div>
                   <h3
                     className="serif"
@@ -189,7 +211,7 @@ export default function AboutSection({ about, site }: Props) {
                       color: "var(--ink)",
                     }}
                   >
-                    {t}
+                    {p.title}
                   </h3>
                   <p
                     style={{
@@ -199,24 +221,19 @@ export default function AboutSection({ about, site }: Props) {
                       color: "var(--ink-2)",
                     }}
                   >
-                    {d}
+                    {p.body}
                   </p>
                 </div>
               ))}
             </div>
 
-            {/* CV strip */}
             <div style={{ marginTop: 48 }}>
               <div className="label" style={{ marginBottom: 12 }}>
                 {"// log"}
               </div>
-              {[
-                ["2025–", "TU/e", "M.Sc. Data Science & AI"],
-                ["2023–24", "Etihad Credit Insurance", "Data Analyst & IT Support"],
-                ["2020–23", "Heriot-Watt Dubai", "B.Sc. Computer Science"],
-              ].map(([y, p, r]) => (
+              {log.map((l) => (
                 <div
-                  key={y}
+                  key={`${l.year}-${l.org}`}
                   className="mono"
                   style={{
                     display: "grid",
@@ -227,9 +244,9 @@ export default function AboutSection({ about, site }: Props) {
                     alignItems: "baseline",
                   }}
                 >
-                  <span style={{ color: "var(--accent)" }}>{y}</span>
-                  <span style={{ color: "var(--ink)" }}>{p}</span>
-                  <span style={{ color: "var(--ink-2)" }}>{r}</span>
+                  <span style={{ color: "var(--accent)" }}>{l.year}</span>
+                  <span style={{ color: "var(--ink)" }}>{l.org}</span>
+                  <span style={{ color: "var(--ink-2)" }}>{l.role}</span>
                 </div>
               ))}
             </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import type { ContactSection, FooterContent, SocialLink } from "@/lib/portfolio-types";
+import { renderEm } from "@/lib/render-em";
 
 type Props = {
   contact: ContactSection;
@@ -8,8 +9,14 @@ type Props = {
   socials: SocialLink[];
 };
 
+const DEFAULT_HEADLINE: string[] = [
+  "Let's {{em}}build{{/em}}",
+  "something {{em}}quietly bold{{/em}}.",
+];
+
 export default function ContactFooter({ contact, footer, socials }: Props) {
   const allLinks = [...socials, ...(footer.links ?? [])];
+  const headline = contact.headline?.length ? contact.headline : DEFAULT_HEADLINE;
   return (
     <>
       <section
@@ -34,14 +41,11 @@ export default function ContactFooter({ contact, footer, socials }: Props) {
               color: "var(--ink)",
             }}
           >
-            Let&rsquo;s{" "}
-            <em style={{ color: "var(--accent)", fontStyle: "italic" }}>build</em>
-            <br />
-            something{" "}
-            <em style={{ fontStyle: "italic", color: "var(--ink-2)" }}>
-              quietly bold
-            </em>
-            .
+            {headline.map((line, i) => (
+              <span key={i} style={{ display: "block" }}>
+                {renderEm(line)}
+              </span>
+            ))}
           </h2>
           <div
             style={{
@@ -127,7 +131,7 @@ export default function ContactFooter({ contact, footer, socials }: Props) {
           }}
         >
           <span>{footer.note || "Designed & built · soham kakra · 2026"}</span>
-          <span>v3.0 · last edit: today</span>
+          {footer.versionNote && <span>{footer.versionNote}</span>}
         </div>
       </footer>
     </>

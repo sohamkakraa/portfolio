@@ -337,12 +337,16 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
     setData((prev) => ({ ...prev, photography: { ...prev.photography, [field]: value } }));
   };
 
-  const updateContact = (field: keyof ContactSection, value: string) => {
+  const updateContact = (field: keyof ContactSection, value: unknown) => {
     setData((prev) => ({ ...prev, contact: { ...prev.contact, [field]: value } }));
   };
 
   const updateLife = (field: keyof LifeSection, value: unknown) => {
     setData((prev) => ({ ...prev, life: { ...prev.life, [field]: value } }));
+  };
+
+  const updateFooter = (field: keyof PortfolioData["footer"], value: unknown) => {
+    setData((prev) => ({ ...prev, footer: { ...prev.footer, [field]: value } }));
   };
 
   const closeCrop = () => {
@@ -935,11 +939,113 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
 
           {/* ── Hero ── */}
           {activeTab === "hero" && (
-            <Card title="Hero Section">
-              <div className="space-y-4">
-                <Field label="Eyebrow text">
-                  <Input value={data.hero.eyebrow} onChange={(v) => updateHero("eyebrow", v)} />
-                </Field>
+            <>
+              <Card title="Editorial Hero (visible on site)">
+                <div className="space-y-4">
+                  <p className="text-[11px] leading-relaxed text-[color:var(--fg-muted)]">
+                    Wrap any phrase in <code className="font-mono text-[color:var(--accent)]">{"{{em}}…{{/em}}"}</code> to render it italic in the accent color (used for the hero headline).
+                  </p>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <Field label="Issue label (top-left)">
+                      <Input value={data.hero.issueLabel ?? ""} onChange={(v) => updateHero("issueLabel", v)} />
+                    </Field>
+                    <Field label="Date label (top-right)">
+                      <Input value={data.hero.dateLabel ?? ""} onChange={(v) => updateHero("dateLabel", v)} />
+                    </Field>
+                  </div>
+                  <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-2">
+                    Headline (3 lines)
+                  </h4>
+                  {[0, 1, 2].map((i) => (
+                    <Field key={i} label={`Line ${i + 1}`}>
+                      <Input
+                        value={data.hero.headline?.[i] ?? ""}
+                        onChange={(v) => {
+                          const arr = [...(data.hero.headline ?? ["", "", ""])];
+                          arr[i] = v;
+                          updateHero("headline", arr);
+                        }}
+                      />
+                    </Field>
+                  ))}
+                  <Field label="Masthead paragraph">
+                    <TextArea
+                      value={data.hero.masthead ?? ""}
+                      onChange={(v) => updateHero("masthead", v)}
+                      rows={3}
+                    />
+                  </Field>
+                  <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-2">
+                    In this issue (table of contents)
+                  </h4>
+                  {(data.hero.tableOfContents ?? []).map((entry, i) => (
+                    <div key={i} className="grid gap-2 sm:grid-cols-[60px_1fr_60px_1fr_auto] items-center">
+                      <Input
+                        value={entry.num}
+                        onChange={(v) => {
+                          const arr = [...(data.hero.tableOfContents ?? [])];
+                          arr[i] = { ...arr[i], num: v };
+                          updateHero("tableOfContents", arr);
+                        }}
+                        placeholder="01"
+                      />
+                      <Input
+                        value={entry.label}
+                        onChange={(v) => {
+                          const arr = [...(data.hero.tableOfContents ?? [])];
+                          arr[i] = { ...arr[i], label: v };
+                          updateHero("tableOfContents", arr);
+                        }}
+                        placeholder="About"
+                      />
+                      <Input
+                        value={entry.page}
+                        onChange={(v) => {
+                          const arr = [...(data.hero.tableOfContents ?? [])];
+                          arr[i] = { ...arr[i], page: v };
+                          updateHero("tableOfContents", arr);
+                        }}
+                        placeholder="p.02"
+                      />
+                      <Input
+                        value={entry.href}
+                        onChange={(v) => {
+                          const arr = [...(data.hero.tableOfContents ?? [])];
+                          arr[i] = { ...arr[i], href: v };
+                          updateHero("tableOfContents", arr);
+                        }}
+                        placeholder="#about"
+                      />
+                      <DangerButton
+                        onClick={() => {
+                          const arr = (data.hero.tableOfContents ?? []).filter((_, j) => j !== i);
+                          updateHero("tableOfContents", arr);
+                        }}
+                      >
+                        <X size={12} />
+                      </DangerButton>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const arr = [...(data.hero.tableOfContents ?? []), { num: "", label: "", page: "", href: "" }];
+                      updateHero("tableOfContents", arr);
+                    }}
+                    className="btn-secondary !py-1.5 !px-3 !text-[10px]"
+                  >
+                    <Plus size={12} /> Add entry
+                  </button>
+                </div>
+              </Card>
+              <Card title="Legacy Hero (gradient layout — currently inert)">
+                <p className="text-[11px] text-[color:var(--fg-muted)] mb-3">
+                  These fields drive the older gradient hero variant. The current editorial hero ignores them; they remain for data continuity.
+                </p>
+                <div className="space-y-4">
+                  <Field label="Eyebrow text">
+                    <Input value={data.hero.eyebrow} onChange={(v) => updateHero("eyebrow", v)} />
+                  </Field>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Field label="Title Line 1">
                     <Input value={data.hero.titleLine1} onChange={(v) => updateHero("titleLine1", v)} />
@@ -1050,15 +1156,206 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
                 </div>
               </div>
             </Card>
+            </>
           )}
 
           {/* ── About ── */}
           {activeTab === "about" && (
-            <Card title="About Section">
-              <div className="space-y-4">
-                <Field label="Section Title">
-                  <Input value={data.about.title} onChange={(v) => updateAbout("title", v)} />
-                </Field>
+            <>
+              <Card title="Editorial About (visible on site)">
+                <div className="space-y-4">
+                  <p className="text-[11px] leading-relaxed text-[color:var(--fg-muted)]">
+                    Wrap any phrase in <code className="font-mono text-[color:var(--accent)]">{"{{em}}…{{/em}}"}</code> to render it italic in the accent color.
+                  </p>
+                  <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)]">
+                    Headline (3 lines)
+                  </h4>
+                  {[0, 1, 2].map((i) => (
+                    <Field key={i} label={`Line ${i + 1}`}>
+                      <Input
+                        value={data.about.headline?.[i] ?? ""}
+                        onChange={(v) => {
+                          const arr = [...(data.about.headline ?? ["", "", ""])];
+                          arr[i] = v;
+                          updateAbout("headline", arr);
+                        }}
+                      />
+                    </Field>
+                  ))}
+
+                  <Field label="Body paragraph (under headline)">
+                    <TextArea
+                      value={data.about.body}
+                      onChange={(v) => updateAbout("body", v)}
+                      rows={5}
+                    />
+                  </Field>
+
+                  <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-2">
+                    Three pillars
+                  </h4>
+                  {(data.about.pillars ?? []).map((p, i) => (
+                    <div key={i} className="grid gap-2 sm:grid-cols-[160px_1fr_auto] items-start">
+                      <Input
+                        value={p.title}
+                        onChange={(v) => {
+                          const arr = [...(data.about.pillars ?? [])];
+                          arr[i] = { ...arr[i], title: v };
+                          updateAbout("pillars", arr);
+                        }}
+                        placeholder="End-to-end"
+                      />
+                      <TextArea
+                        value={p.body}
+                        onChange={(v) => {
+                          const arr = [...(data.about.pillars ?? [])];
+                          arr[i] = { ...arr[i], body: v };
+                          updateAbout("pillars", arr);
+                        }}
+                        rows={2}
+                      />
+                      <DangerButton
+                        onClick={() => {
+                          const arr = (data.about.pillars ?? []).filter((_, j) => j !== i);
+                          updateAbout("pillars", arr);
+                        }}
+                      >
+                        <X size={12} />
+                      </DangerButton>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const arr = [...(data.about.pillars ?? []), { title: "", body: "" }];
+                      updateAbout("pillars", arr);
+                    }}
+                    className="btn-secondary !py-1.5 !px-3 !text-[10px]"
+                  >
+                    <Plus size={12} /> Add pillar
+                  </button>
+
+                  <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-2">
+                    CV log
+                  </h4>
+                  {(data.about.log ?? []).map((entry, i) => (
+                    <div key={i} className="grid gap-2 sm:grid-cols-[100px_1fr_2fr_auto] items-center">
+                      <Input
+                        value={entry.year}
+                        onChange={(v) => {
+                          const arr = [...(data.about.log ?? [])];
+                          arr[i] = { ...arr[i], year: v };
+                          updateAbout("log", arr);
+                        }}
+                        placeholder="2025–"
+                      />
+                      <Input
+                        value={entry.org}
+                        onChange={(v) => {
+                          const arr = [...(data.about.log ?? [])];
+                          arr[i] = { ...arr[i], org: v };
+                          updateAbout("log", arr);
+                        }}
+                        placeholder="TU/e"
+                      />
+                      <Input
+                        value={entry.role}
+                        onChange={(v) => {
+                          const arr = [...(data.about.log ?? [])];
+                          arr[i] = { ...arr[i], role: v };
+                          updateAbout("log", arr);
+                        }}
+                        placeholder="M.Sc. Data Science & AI"
+                      />
+                      <DangerButton
+                        onClick={() => {
+                          const arr = (data.about.log ?? []).filter((_, j) => j !== i);
+                          updateAbout("log", arr);
+                        }}
+                      >
+                        <X size={12} />
+                      </DangerButton>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const arr = [...(data.about.log ?? []), { year: "", org: "", role: "" }];
+                      updateAbout("log", arr);
+                    }}
+                    className="btn-secondary !py-1.5 !px-3 !text-[10px]"
+                  >
+                    <Plus size={12} /> Add log entry
+                  </button>
+
+                  <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-2">
+                    Portrait meta table (sidebar under photo)
+                  </h4>
+                  {(data.about.meta ?? []).map((row, i) => (
+                    <div key={i} className="grid gap-2 sm:grid-cols-[180px_1fr_auto] items-center">
+                      <Input
+                        value={row.label}
+                        onChange={(v) => {
+                          const arr = [...(data.about.meta ?? [])];
+                          arr[i] = { ...arr[i], label: v };
+                          updateAbout("meta", arr);
+                        }}
+                        placeholder="Based in"
+                      />
+                      <Input
+                        value={row.value}
+                        onChange={(v) => {
+                          const arr = [...(data.about.meta ?? [])];
+                          arr[i] = { ...arr[i], value: v };
+                          updateAbout("meta", arr);
+                        }}
+                        placeholder="Eindhoven, NL"
+                      />
+                      <DangerButton
+                        onClick={() => {
+                          const arr = (data.about.meta ?? []).filter((_, j) => j !== i);
+                          updateAbout("meta", arr);
+                        }}
+                      >
+                        <X size={12} />
+                      </DangerButton>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const arr = [...(data.about.meta ?? []), { label: "", value: "" }];
+                      updateAbout("meta", arr);
+                    }}
+                    className="btn-secondary !py-1.5 !px-3 !text-[10px]"
+                  >
+                    <Plus size={12} /> Add meta row
+                  </button>
+
+                  <div className="grid gap-4 sm:grid-cols-2 pt-2">
+                    <Field label="Portrait label (top-left watermark)">
+                      <Input
+                        value={data.about.portraitLabel ?? ""}
+                        onChange={(v) => updateAbout("portraitLabel", v)}
+                      />
+                    </Field>
+                    <Field label="Portrait meta (bottom-right watermark)">
+                      <Input
+                        value={data.about.portraitMeta ?? ""}
+                        onChange={(v) => updateAbout("portraitMeta", v)}
+                      />
+                    </Field>
+                  </div>
+                </div>
+              </Card>
+              <Card title="Legacy About fields (currently inert)">
+                <p className="text-[11px] text-[color:var(--fg-muted)] mb-3">
+                  These fields drove the older About card. The current editorial layout uses the fields above; these remain for data continuity.
+                </p>
+                <div className="space-y-4">
+                  <Field label="Section Title">
+                    <Input value={data.about.title} onChange={(v) => updateAbout("title", v)} />
+                  </Field>
                 <Field label="Subtitle">
                   <Input value={data.about.subtitle} onChange={(v) => updateAbout("subtitle", v)} />
                 </Field>
@@ -1162,6 +1459,7 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
                 </Field>
               </div>
             </Card>
+            </>
           )}
 
           {/* ── Highlights ── */}
@@ -1593,12 +1891,31 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
             <>
               <Card title="Section header">
                 <div className="space-y-4">
-                  <Field label="Eyebrow">
+                  <p className="text-[11px] leading-relaxed text-[color:var(--fg-muted)]">
+                    Wrap any phrase in <code className="font-mono text-[color:var(--accent)]">{"{{em}}…{{/em}}"}</code> to render it italic in the accent color.
+                  </p>
+                  <Field label="Eyebrow (rendered as `// 04 · …`)">
                     <Input value={data.life.eyebrow} onChange={(v) => updateLife("eyebrow", v)} />
                   </Field>
-                  <Field label="Title">
+                  <Field label="Title (supports {{em}}…{{/em}})">
                     <Input value={data.life.title} onChange={(v) => updateLife("title", v)} />
                   </Field>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <Field label="Reading column label">
+                      <Input
+                        value={data.life.readingLabel ?? ""}
+                        onChange={(v) => updateLife("readingLabel", v)}
+                        placeholder="Reading library"
+                      />
+                    </Field>
+                    <Field label="Places column label">
+                      <Input
+                        value={data.life.placesLabel ?? ""}
+                        onChange={(v) => updateLife("placesLabel", v)}
+                        placeholder="Places"
+                      />
+                    </Field>
+                  </div>
                 </div>
               </Card>
 
@@ -1984,22 +2301,95 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
 
           {/* ── Contact ── */}
           {activeTab === "contact" && (
-            <Card title="Contact Section">
-              <div className="space-y-4">
-                <Field label="Section Title">
-                  <Input value={data.contact.title} onChange={(v) => updateContact("title", v)} />
-                </Field>
-                <Field label="Description">
-                  <TextArea value={data.contact.description} onChange={(v) => updateContact("description", v)} />
-                </Field>
-                <Field label="CTA Label">
-                  <Input value={data.contact.ctaLabel} onChange={(v) => updateContact("ctaLabel", v)} />
-                </Field>
-                <Field label="Email">
-                  <Input value={data.contact.email} onChange={(v) => updateContact("email", v)} />
-                </Field>
-              </div>
-            </Card>
+            <>
+              <Card title="Contact Section">
+                <div className="space-y-4">
+                  <p className="text-[11px] leading-relaxed text-[color:var(--fg-muted)]">
+                    Wrap any phrase in <code className="font-mono text-[color:var(--accent)]">{"{{em}}…{{/em}}"}</code> to render it italic in the accent color.
+                  </p>
+                  <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)]">
+                    Headline (2 lines)
+                  </h4>
+                  {[0, 1].map((i) => (
+                    <Field key={i} label={`Line ${i + 1}`}>
+                      <Input
+                        value={data.contact.headline?.[i] ?? ""}
+                        onChange={(v) => {
+                          const arr = [...(data.contact.headline ?? ["", ""])];
+                          arr[i] = v;
+                          updateContact("headline", arr);
+                        }}
+                      />
+                    </Field>
+                  ))}
+                  <Field label="Section title (legacy / used by AI doc only)">
+                    <Input value={data.contact.title} onChange={(v) => updateContact("title", v)} />
+                  </Field>
+                  <Field label="Description (paragraph beside CTA)">
+                    <TextArea value={data.contact.description} onChange={(v) => updateContact("description", v)} />
+                  </Field>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <Field label="CTA Label">
+                      <Input value={data.contact.ctaLabel} onChange={(v) => updateContact("ctaLabel", v)} />
+                    </Field>
+                    <Field label="Email">
+                      <Input value={data.contact.email} onChange={(v) => updateContact("email", v)} />
+                    </Field>
+                  </div>
+                </div>
+              </Card>
+              <Card title="Footer">
+                <div className="space-y-4">
+                  <Field label="Footer note (left-aligned)">
+                    <Input value={data.footer.note} onChange={(v) => updateFooter("note", v)} />
+                  </Field>
+                  <Field label="Version note (right-aligned, optional)">
+                    <Input
+                      value={data.footer.versionNote ?? ""}
+                      onChange={(v) => updateFooter("versionNote", v)}
+                      placeholder="v3.0 · last edit: today"
+                    />
+                  </Field>
+                  <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-2">
+                    Footer links (joined with site socials in the footer rail)
+                  </h4>
+                  {(data.footer.links ?? []).map((l, i) => (
+                    <div key={i} className="flex gap-2 items-center">
+                      <Input
+                        value={l.label}
+                        onChange={(v) => {
+                          const arr = [...(data.footer.links ?? [])];
+                          arr[i] = { ...arr[i], label: v };
+                          updateFooter("links", arr);
+                        }}
+                        placeholder="Admin"
+                      />
+                      <Input
+                        value={l.href}
+                        onChange={(v) => {
+                          const arr = [...(data.footer.links ?? [])];
+                          arr[i] = { ...arr[i], href: v };
+                          updateFooter("links", arr);
+                        }}
+                        placeholder="/admin"
+                      />
+                      <DangerButton
+                        onClick={() => updateFooter("links", (data.footer.links ?? []).filter((_, j) => j !== i))}
+                      >
+                        <X size={12} />
+                      </DangerButton>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => updateFooter("links", [...(data.footer.links ?? []), { label: "", href: "" }])}
+                    className="btn-secondary !py-1.5 !px-3 !text-[10px]"
+                  >
+                    <Plus size={12} /> Add footer link
+                  </button>
+                </div>
+              </Card>
+            </>
           )}
 
           {activeTab === "ai" && (

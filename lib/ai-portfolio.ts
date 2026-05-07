@@ -48,15 +48,29 @@ type PortfolioData = {
   site: { name: string; role: string; location: string; email: string; nav: NavItem[]; socials: SocialLink[] };
   hero: { eyebrow: string; titleLine1: string; titleLine2: string; subtitle: string;
           ctaPrimary: { label: string; href: string }; ctaSecondary: { label: string; href: string };
-          badges: string[]; showVivekaCta?: boolean; vivekaCta?: { label: string; href: string } };
-  about: { title: string; subtitle: string; body: string; highlights: string[]; portraitSrc?: string };
+          badges: string[]; showVivekaCta?: boolean; vivekaCta?: { label: string; href: string };
+          // Editorial-layout fields. Headline strings support inline italic accent via {{em}}…{{/em}}.
+          issueLabel?: string; dateLabel?: string;
+          headline?: string[]; masthead?: string;
+          tableOfContents?: Array<{ num: string; label: string; page: string; href: string }> };
+  about: { title: string; subtitle: string; body: string; highlights: string[]; portraitSrc?: string;
+           // Editorial-layout fields.
+           headline?: string[];                                              // {{em}}…{{/em}} supported
+           pillars?: Array<{ title: string; body: string }>;                 // 3 pillars under manifesto
+           log?: Array<{ year: string; org: string; role: string }>;         // CV log rows
+           meta?: Array<{ label: string; value: string }>;                   // sidebar table beside portrait
+           portraitLabel?: string; portraitMeta?: string };
   highlights: { title: string; description: string; items: Array<{ title: string; description: string }> };
   projects: { title: string; description: string; items: ProjectItem[] };
   photography: { title: string; description: string; categories: PhotographyCategory[] };
-  life: { eyebrow: string; title: string; snapshots: LifeSnapshot[]; books: LifeBook[];
-          places: LifePlace[]; entertainment: LifeEntertainment[] };
-  contact: { title: string; description: string; ctaLabel: string; email: string };
-  footer: { note: string; links: SocialLink[] };
+  life: { eyebrow: string; title: string;                                     // title supports {{em}}…{{/em}}
+          snapshots: LifeSnapshot[]; books: LifeBook[];
+          places: LifePlace[]; entertainment: LifeEntertainment[];
+          readingLabel?: string; placesLabel?: string };
+  contact: { title: string; description: string; ctaLabel: string; email: string;
+             // Two-line stylized headline; supports {{em}}…{{/em}}.
+             headline?: string[] };
+  footer: { note: string; links: SocialLink[]; versionNote?: string };
 };
 
 type ProjectItem   = {

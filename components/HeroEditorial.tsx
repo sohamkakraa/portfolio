@@ -1,6 +1,7 @@
 "use client";
 
 import type { HeroContent, SiteSettings } from "@/lib/portfolio-types";
+import { renderEm } from "@/lib/render-em";
 
 type Props = {
   hero: HeroContent;
@@ -25,8 +26,28 @@ function GridBackdrop() {
   );
 }
 
-export default function HeroEditorial(_props: Props) {
-  void _props;
+const DEFAULT_HEADLINE: string[] = [
+  "Building data",
+  "and AI products",
+  "that {{em}}feel human{{/em}}.",
+];
+
+const DEFAULT_TOC = [
+  { num: "01", label: "About", page: "p.02", href: "#about" },
+  { num: "02", label: "Selected work", page: "p.04", href: "#projects" },
+  { num: "03", label: "Photography", page: "p.08", href: "#photography" },
+  { num: "04", label: "Field notes", page: "p.12", href: "#life" },
+];
+
+export default function HeroEditorial({ hero, site }: Props) {
+  const issueLabel = hero.issueLabel ?? `Issue №07 · ${site.location.split(",")[0]}`;
+  const dateLabel = hero.dateLabel ?? "May 2026 / now reading";
+  const headline = hero.headline?.length ? hero.headline : DEFAULT_HEADLINE;
+  const masthead =
+    hero.masthead ??
+    `${site.name}. M.Sc. Data Science & AI at TU/e. Engineer of end-to-end systems — model logic to production UX.`;
+  const toc = hero.tableOfContents?.length ? hero.tableOfContents : DEFAULT_TOC;
+
   return (
     <section
       style={{
@@ -51,8 +72,8 @@ export default function HeroEditorial(_props: Props) {
             gap: 12,
           }}
         >
-          <span className="label">Issue №07 · Eindhoven</span>
-          <span className="label">May 2026 / now reading</span>
+          <span className="label">{issueLabel}</span>
+          <span className="label">{dateLabel}</span>
         </div>
 
         <h1
@@ -66,17 +87,11 @@ export default function HeroEditorial(_props: Props) {
             textWrap: "balance",
           }}
         >
-          Building data
-          <br />
-          and AI products
-          <br />
-          that{" "}
-          <em
-            style={{ fontStyle: "italic", fontWeight: 400, color: "var(--accent)" }}
-          >
-            feel human
-          </em>
-          .
+          {headline.map((line, i) => (
+            <span key={i} style={{ display: "block" }}>
+              {renderEm(line)}
+            </span>
+          ))}
         </h1>
 
         <div
@@ -87,6 +102,7 @@ export default function HeroEditorial(_props: Props) {
             gap: 64,
             alignItems: "end",
           }}
+          className="hero-grid"
         >
           <div>
             <div className="label" style={{ marginBottom: 14 }}>
@@ -100,8 +116,7 @@ export default function HeroEditorial(_props: Props) {
                 maxWidth: 320,
               }}
             >
-              Soham Kakra. M.Sc. Data Science &amp; AI at TU/e. Engineer of end-to-end systems —
-              model logic to production UX.
+              {masthead}
             </p>
           </div>
           <div style={{ borderLeft: "1px solid var(--line)", paddingLeft: 32 }}>
@@ -115,16 +130,12 @@ export default function HeroEditorial(_props: Props) {
                 gap: "10px 24px",
                 fontSize: 14,
               }}
+              className="hero-toc"
             >
-              {[
-                ["01", "About", "p.02", "#about"],
-                ["02", "Selected work", "p.04", "#projects"],
-                ["03", "Photography", "p.08", "#photography"],
-                ["04", "Field notes", "p.12", "#life"],
-              ].map(([n, t, p, href]) => (
+              {toc.map((t) => (
                 <a
-                  key={n}
-                  href={href}
+                  key={`${t.num}-${t.label}`}
+                  href={t.href}
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
@@ -136,12 +147,12 @@ export default function HeroEditorial(_props: Props) {
                 >
                   <span>
                     <span className="mono" style={{ color: "var(--ink-3)" }}>
-                      {n}
+                      {t.num}
                     </span>
-                    &nbsp;&nbsp;{t}
+                    &nbsp;&nbsp;{t.label}
                   </span>
                   <span className="mono" style={{ color: "var(--ink-3)" }}>
-                    {p}
+                    {t.page}
                   </span>
                 </a>
               ))}
