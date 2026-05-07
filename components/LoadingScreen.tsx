@@ -2,127 +2,129 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const FRAME_COUNT = 60;
-const FPS = 24;
-const FRAME_MS = 1000 / FPS;
-
 type Props = {
   visible: boolean;
   onComplete?: () => void;
 };
 
+type Line = { p: string; c: string; t: string; muted?: boolean; accent?: boolean };
+
+const LINES: Line[] = [
+  { p: "soham@portfolio", c: "$", t: "whoami" },
+  { p: "", c: "", t: "→ data scientist · full-stack engineer · photographer", muted: true },
+  { p: "soham@portfolio", c: "$", t: "ls projects/" },
+  { p: "", c: "", t: "uma  tabscape  robotrader  viveka  diagnostic-reasoning", muted: true },
+  { p: "soham@portfolio", c: "$", t: "load --portfolio --year=2026" },
+  { p: "", c: "", t: "ready.", muted: true, accent: true },
+];
+
 export default function LoadingScreen({ visible, onComplete }: Props) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const framesRef = useRef<HTMLImageElement[]>([]);
-  const rafRef = useRef<number>(0);
-  const frameIdxRef = useRef(0);
-  const lastTsRef = useRef(0);
+  const [shown, setShown] = useState<Line[]>([]);
+  const [typing, setTyping] = useState("");
+  const [idx, setIdx] = useState(0);
   const [hiding, setHiding] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const skipRef = useRef(false);
 
   useEffect(() => {
-    setMounted(true);
+    const skip = () => {
+      if (skipRef.current) return;
+      skipRef.current = true;
+      setShown(LINES);
+      setTyping("");
+      setIdx(LINES.length);
+    };
+    window.addEventListener("keydown", skip);
+    window.addEventListener("pointerdown", skip);
+    return () => {
+      window.removeEventListener("keydown", skip);
+      window.removeEventListener("pointerdown", skip);
+    };
   }, []);
 
-  // Preload all 60 frames
   useEffect(() => {
-    if (!mounted) return;
-    framesRef.current = Array.from({ length: FRAME_COUNT }, (_, i) => {
-      const img = new Image();
-      img.src = `/loading-frames/${String(i + 1).padStart(2, "0")}.jpg`;
-      return img;
-    });
-  }, [mounted]);
-
-  // Resize canvas to physical pixels (respects devicePixelRatio for Retina sharpness).
-  // This runs once on mount and on window resize — never inside the draw loop.
-  useEffect(() => {
-    if (!mounted) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      canvas.style.width = `${w}px`;
-      canvas.style.height = `${h}px`;
-      canvas.width = Math.round(w * dpr);
-      canvas.height = Math.round(h * dpr);
-    };
-
-    resize();
-    window.addEventListener("resize", resize);
-    return () => window.removeEventListener("resize", resize);
-  }, [mounted]);
-
-  // rAF draw loop — uses canvas.width/height (physical pixels) for crisp output
-  useEffect(() => {
-    if (!mounted) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d", { alpha: false });
-    if (!ctx) return;
-
-    let lastDrawnFrame = -1;
-
-    const draw = (ts: number) => {
-      const idx = frameIdxRef.current;
-      // Stop advancing once we've played through all frames exactly once
-      if (idx >= FRAME_COUNT) return;
-      rafRef.current = requestAnimationFrame(draw);
-      if (ts - lastTsRef.current < FRAME_MS) return;
-      lastTsRef.current = ts;
-
-      const img = framesRef.current[idx];
-
-      if (img?.complete && img.naturalWidth > 0) {
-        // object-cover in physical pixels
-        const cw = canvas.width;
-        const ch = canvas.height;
-        const iw = img.naturalWidth;
-        const ih = img.naturalHeight;
-        const scale = Math.max(cw / iw, ch / ih);
-        const dw = iw * scale;
-        const dh = ih * scale;
-        const dx = (cw - dw) / 2;
-        const dy = (ch - dh) / 2;
-        ctx.drawImage(img, dx, dy, dw, dh);
-        lastDrawnFrame = idx;
+    if (idx >= LINES.length) return;
+    const line = LINES[idx];
+    const speed = line.muted ? 14 : 38;
+    let i = 0;
+    const id = setInterval(() => {
+      if (skipRef.current) { clearInterval(id); return; }
+      i++;
+      setTyping(line.t.slice(0, i));
+      if (i >= line.t.length) {
+        clearInterval(id);
+        setTimeout(() => {
+          if (skipRef.current) return;
+          setShown((s) => [...s, line]);
+          setTyping("");
+          setIdx((x) => x + 1);
+        }, line.muted ? 220 : 320);
       }
-      // Advance; clamp at FRAME_COUNT to stop after one full play
-      frameIdxRef.current = idx + 1;
-      void lastDrawnFrame; // suppress lint
-    };
+    }, speed);
+    return () => clearInterval(id);
+  }, [idx]);
 
-    rafRef.current = requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [mounted]);
-
-  // Fade-out on hide
+  // dismiss when (typing finished) AND (parent says hide)
   useEffect(() => {
-    if (!visible) {
+    if (idx < LINES.length) return;
+    if (visible) return;
+    const t = setTimeout(() => {
       setHiding(true);
-      const t = setTimeout(() => onComplete?.(), 700);
-      return () => clearTimeout(t);
-    } else {
-      setHiding(false);
-    }
-  }, [visible, onComplete]);
-
-  if (!mounted) return null;
+      const t2 = setTimeout(() => onComplete?.(), 600);
+      return () => clearTimeout(t2);
+    }, 250);
+    return () => clearTimeout(t);
+  }, [idx, visible, onComplete]);
 
   return (
     <div
-      aria-label="Loading"
       role="status"
-      className="pointer-events-none fixed inset-0 z-[300]"
+      aria-label="Loading"
       style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 300,
+        background: "var(--bg)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 32,
         opacity: hiding ? 0 : 1,
-        transition: "opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1)",
+        transition: "opacity 0.6s",
       }}
     >
-      <canvas ref={canvasRef} className="block" />
+      <div className="mono" style={{ width: "min(620px, 100%)", fontSize: 14, lineHeight: 1.9 }}>
+        <div
+          style={{
+            color: "var(--ink-3)",
+            marginBottom: 18,
+            fontSize: 11,
+            letterSpacing: "0.2em",
+            textTransform: "uppercase",
+          }}
+        >
+          {"// booting portfolio.v3"}
+        </div>
+        {shown.map((l, i) => (
+          <div
+            key={i}
+            style={{
+              color: l.accent ? "var(--accent)" : l.muted ? "var(--ink-2)" : "var(--ink)",
+            }}
+          >
+            {l.p && <span style={{ color: "var(--ink-3)" }}>{l.p} </span>}
+            {l.c && <span style={{ color: "var(--accent)" }}>{l.c} </span>}
+            <span>{l.t}</span>
+          </div>
+        ))}
+        {idx < LINES.length && (
+          <div style={{ color: LINES[idx].muted ? "var(--ink-2)" : "var(--ink)" }}>
+            {LINES[idx].p && <span style={{ color: "var(--ink-3)" }}>{LINES[idx].p} </span>}
+            {LINES[idx].c && <span style={{ color: "var(--accent)" }}>{LINES[idx].c} </span>}
+            <span>{typing}</span>
+            <span className="cursor-blink">▌</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

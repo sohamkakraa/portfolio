@@ -113,6 +113,7 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
     socials: [
       { label: "GitHub", href: "https://github.com/sohamkakraa" },
       { label: "LinkedIn", href: "https://www.linkedin.com/in/sohamkakra" },
+      { label: "Instagram", href: "https://www.instagram.com/sohamkakra" },
       { label: "Email", href: "mailto:sohamkakra@gmail.com" },
     ],
   },
@@ -136,6 +137,18 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
       label: "Viveka",
       href: "https://viveka.sohamkakra.com",
     },
+    // Editorial layout
+    issueLabel: "Issue №07 · Eindhoven",
+    dateLabel: "May 2026 / now reading",
+    headline: ["Building data", "and AI products", "that {{em}}feel human{{/em}}."],
+    masthead:
+      "Soham Kakra. M.Sc. Data Science & AI at TU/e. Engineer of end-to-end systems — model logic to production UX.",
+    tableOfContents: [
+      { num: "01", label: "About",         page: "p.02", href: "#about" },
+      { num: "02", label: "Selected work", page: "p.04", href: "#projects" },
+      { num: "03", label: "Photography",   page: "p.08", href: "#photography" },
+      { num: "04", label: "Field notes",   page: "p.12", href: "#life" },
+    ],
   },
   about: {
     title: "About me",
@@ -149,6 +162,26 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
       "Heriot-Watt University Dubai · B.Sc. Computer Science",
       "Built AI/ML, dashboard, and full-stack systems across fintech and health",
     ],
+    // Editorial layout
+    headline: ["I build systems", "where data, models,", "and {{em}}people{{/em}} meet."],
+    pillars: [
+      { title: "End-to-end", body: "From data ingestion and model design to product UI and deployment." },
+      { title: "Readable",   body: "Turning complex model behavior into interfaces people can trust." },
+      { title: "Real-time",  body: "Building systems that react quickly and stay reliable under live conditions." },
+    ],
+    log: [
+      { year: "2025–",   org: "TU/e",                     role: "M.Sc. Data Science & AI" },
+      { year: "2023–24", org: "Etihad Credit Insurance",  role: "Data Analyst & IT Support" },
+      { year: "2020–23", org: "Heriot-Watt Dubai",        role: "B.Sc. Computer Science" },
+    ],
+    meta: [
+      { label: "Based in",  value: "Eindhoven, NL" },
+      { label: "Studying",  value: "M.Sc. DS&AI · TU/e" },
+      { label: "Available", value: "Summer 2026" },
+      { label: "Reach",     value: "sohamkakra@gmail.com" },
+    ],
+    portraitLabel: "// portrait",
+    portraitMeta: "2026 / 35mm",
   },
   highlights: {
     title: "What I optimize for",
@@ -182,6 +215,18 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
         year: "2025",
         status: "Prototype",
         link: "https://uma-taupe-rho.vercel.app",
+        repo: "https://github.com/sohamkakraa/uma",
+        storyline: [
+          { label: "trigger", body: "Specialists send PDFs. Hospitals send scans. Patients juggle ten apps. A timeline is impossible." },
+          { label: "move", body: "Local-first ingestion + on-device parsing. No record leaves the patient's device unless they say so." },
+          { label: "result", body: "A single, scrubbable timeline of symptoms, labs, prescriptions, and appointments — searchable in plain language." },
+        ],
+        metrics: [
+          { label: "local docs", value: "200+" },
+          { label: "search p95", value: "180ms" },
+          { label: "PII leaks", value: "0" },
+        ],
+        stack: ["Next.js", "SQLite", "Local LLM", "WebAssembly"],
       },
       {
         id: "tabscape",
@@ -191,7 +236,18 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
         tags: ["Fintech", "Forecasting", "Product"],
         year: "2025",
         status: "In progress",
-        link: "https://github.com/sohamkakraa",
+        repo: "https://github.com/sohamkakraa/tabscape",
+        storyline: [
+          { label: "trigger", body: "Most budgeting apps tell you what already happened. None show you what's coming." },
+          { label: "move", body: "Recurring-expense detection + Bayesian forecast bands per category, replanned daily." },
+          { label: "result", body: "A 30-day cashflow horizon that updates as you spend — visible at a glance." },
+        ],
+        metrics: [
+          { label: "forecast MAE", value: "4.2%" },
+          { label: "categories", value: "26" },
+          { label: "replan", value: "24h" },
+        ],
+        stack: ["Next.js", "Time-series", "Bayesian"],
       },
       {
         id: "robotrader",
@@ -201,7 +257,18 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
         tags: ["AI/ML", "Trading", "Real-time"],
         year: "2024",
         status: "Live",
-        link: "https://github.com/sohamkakraa",
+        repo: "https://github.com/sohamkakraa/robotrader",
+        storyline: [
+          { label: "trigger", body: "Backtests look great. Live trading destroys them. The gap is execution discipline." },
+          { label: "move", body: "Strategy DSL + paper-trading replay + live websocket feed — all using one execution engine." },
+          { label: "result", body: "Backtest behavior matches live within 0.2% slippage. The dashboard shows both at once." },
+        ],
+        metrics: [
+          { label: "sharpe", value: "1.84" },
+          { label: "slippage", value: "0.2%" },
+          { label: "latency", value: "12ms" },
+        ],
+        stack: ["Python", "React", "WebSockets"],
       },
       {
         id: "forme",
@@ -212,6 +279,16 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
         year: "2026",
         status: "Prototype",
         link: "",
+        storyline: [
+          { label: "trigger", body: "Online clothes never fit. Bespoke tailoring doesn't scale. Customers want both." },
+          { label: "move", body: "Body-measurement avatar + generative design studio + retailer/tailor matching pipeline in one product." },
+          { label: "result", body: "Garments designed in minutes are auto-routed to a retailer who stocks them or a tailor who can make them." },
+        ],
+        metrics: [
+          { label: "fit accuracy", value: "94%" },
+          { label: "design time", value: "< 5 min" },
+        ],
+        stack: ["Next.js", "Generative AI", "3D"],
       },
       {
         id: "sage-advisory",
@@ -222,12 +299,24 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
         year: "2025",
         status: "Live",
         link: "https://sagetaxconsultancy.com",
+        storyline: [
+          { label: "trigger", body: "Tax advisory firms compete on trust. Their old site read like a directory listing." },
+          { label: "move", body: "Editorial layout, plain-language service breakdowns, client-relevant FAQ, fast hand-off to consultation booking." },
+          { label: "result", body: "Inbound consultation requests up materially within the first quarter; clearer position vs regional competitors." },
+        ],
+        metrics: [
+          { label: "load p95", value: "0.9s" },
+          { label: "inbound", value: "+38%" },
+        ],
+        stack: ["Next.js", "Tailwind", "Vercel"],
       },
     ],
   },
   life: {
     eyebrow: "Beyond work",
-    title: "Life, books, places, and entertainment I return to.",
+    title: "Books, places, films — {{em}}signals I return to{{/em}}.",
+    readingLabel: "Reading library",
+    placesLabel: "Places",
     snapshots: [
       {
         title: "Research and product loops",
@@ -323,13 +412,28 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
   contact: {
     title: "Get in touch",
     description:
-      "I am open to internships, collaborations, and product engineering opportunities in AI, data systems, and full-stack development.",
+      "I am open to internships, collaborations, and product engineering opportunities in AI, data systems, and full-stack development — summer 2026 onward.",
     ctaLabel: "Email me",
     email: "sohamkakra@gmail.com",
+    headline: ["Let's {{em}}build{{/em}}", "something {{em}}quietly bold{{/em}}."],
   },
   footer: {
-    note: "Designed and built by Soham Kakra · 2026",
+    note: "Designed & built · soham kakra · 2026",
+    versionNote: "v3.0 · last edit: today",
     links: [{ label: "Admin", href: "/admin" }],
+  },
+  equipment: {
+    cameras: [
+      "Sony A7 IV",
+      "Sony A6400",
+      "iPhone 15 Pro",
+    ],
+    lenses: [
+      "Sony FE 24-70mm f/2.8 GM",
+      "Sony FE 85mm f/1.4 GM",
+      "Sony FE 70-200mm f/4 G",
+      "Sigma 35mm f/1.4 Art",
+    ],
   },
 };
 

@@ -10,6 +10,8 @@ import {
   type AIResponse,
 } from "@/lib/ai-portfolio";
 
+import { buildAllowedDomains } from "@/lib/ai-allowed-domains";
+
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export type HistoryMessage = { role: "user" | "assistant"; content: string };
@@ -122,6 +124,10 @@ export async function POST(request: Request) {
       `\n\n## Prior conversation context (caveman-compressed)\n` +
       `Use this to understand what was already discussed:\n${activeContext}`;
   }
+  systemPrompt +=
+    `\n\n## web_search allowed_domains (this request)\n` +
+    `${buildAllowedDomains(currentData).join(", ")}\n` +
+    `These are derived from the user's site, project links, Viveka, socials, and footer links. Do not query other hosts.`;
 
   // Ensure messages start with a user role (Claude requirement)
   const safeHistory = recentHistory[0]?.role === "assistant"
@@ -138,6 +144,11 @@ export async function POST(request: Request) {
   ];
 
   // ── Claude call ───────────────────────────────────────────────────────────
+  // Derive web_search allowed_domains from the live portfolio data so adding
+  // a project / changing a link automatically grants the assistant access to
+  // that source.
+  const allowedDomains = buildAllowedDomains(currentData);
+
   let aiResponse: AIResponse;
   try {
     const completion = await anthropic.messages.create({
@@ -145,9 +156,20 @@ export async function POST(request: Request) {
       max_tokens: 4096,
       system: systemPrompt,
       messages: claudeMessages,
+      tools: [
+        {
+          type: "web_search_20250305",
+          name: "web_search",
+          max_uses: 5,
+          allowed_domains: allowedDomains,
+        },
+      ] as unknown as Anthropic.Tool[],
     });
 
-    const raw = completion.content.find((b) => b.type === "text")?.text ?? "";
+    // With the web_search tool enabled the response can interleave tool_use /
+    // tool_result blocks before the final text. Take the last text block.
+    const textBlocks = completion.content.filter((b) => b.type === "text");
+    const raw = textBlocks.length ? textBlocks[textBlocks.length - 1].text : "";
     // Strip markdown fences if present, then extract first JSON object
     const stripped = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
     const jsonStart = stripped.indexOf("{");

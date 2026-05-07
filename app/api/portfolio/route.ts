@@ -31,11 +31,49 @@ const readStoredDataFromFile = (): PortfolioData | null => {
   return null;
 };
 
-/** Merge stored CMS JSON with build-time defaults (photography from disk, etc.). */
+// Merge stored project items over defaults by id so older payloads inherit
+// storyline / metrics / stack / discipline metadata instead of wiping them.
+function mergeProjects(defaults: PortfolioData["projects"], stored?: PortfolioData["projects"]): PortfolioData["projects"] {
+  if (!stored) return defaults;
+  const defaultsById = new Map(defaults.items.map((p) => [p.id, p]));
+  const items = (stored.items ?? []).map((s) => {
+    const d = defaultsById.get(s.id);
+    if (!d) return s;
+    return {
+      ...d,
+      ...s,
+      storyline: s.storyline?.length ? s.storyline : d.storyline,
+      metrics: s.metrics?.length ? s.metrics : d.metrics,
+      stack: s.stack?.length ? s.stack : d.stack,
+    };
+  });
+  // Append any default items that the stored payload dropped (rare, but keeps
+  // the editorial defaults visible after a partial save).
+  const seen = new Set(items.map((p) => p.id));
+  for (const d of defaults.items) if (!seen.has(d.id)) items.push(d);
+  return {
+    ...defaults,
+    ...stored,
+    items,
+  };
+}
+
+/** Merge stored CMS JSON with build-time defaults (photography from disk, etc.).
+ * Deep-merges per top-level section so older stored payloads that pre-date
+ * editorial fields still inherit those defaults instead of nulling them out.
+ */
 function mergeStoredWithDefaults(stored: PortfolioData, defaults: PortfolioData): PortfolioData {
   const merged: PortfolioData = {
     ...defaults,
     ...stored,
+    site: { ...defaults.site, ...stored.site },
+    hero: { ...defaults.hero, ...stored.hero },
+    about: { ...defaults.about, ...stored.about },
+    highlights: { ...defaults.highlights, ...stored.highlights },
+    projects: mergeProjects(defaults.projects, stored.projects),
+    life: { ...defaults.life, ...stored.life },
+    contact: { ...defaults.contact, ...stored.contact },
+    footer: { ...defaults.footer, ...stored.footer },
     photography: {
       ...defaults.photography,
       ...stored.photography,
@@ -46,7 +84,7 @@ function mergeStoredWithDefaults(stored: PortfolioData, defaults: PortfolioData)
         return {
           ...defCat,
           ...storedCat,
-            images: storedImages?.length ? storedImages : defCat.images,
+          images: storedImages?.length ? storedImages : defCat.images,
         };
       }),
     },

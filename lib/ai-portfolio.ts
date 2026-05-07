@@ -48,18 +48,45 @@ type PortfolioData = {
   site: { name: string; role: string; location: string; email: string; nav: NavItem[]; socials: SocialLink[] };
   hero: { eyebrow: string; titleLine1: string; titleLine2: string; subtitle: string;
           ctaPrimary: { label: string; href: string }; ctaSecondary: { label: string; href: string };
-          badges: string[]; showVivekaCta?: boolean; vivekaCta?: { label: string; href: string } };
-  about: { title: string; subtitle: string; body: string; highlights: string[]; portraitSrc?: string };
+          badges: string[]; showVivekaCta?: boolean; vivekaCta?: { label: string; href: string };
+          // Editorial-layout fields. Headline strings support inline italic accent via {{em}}…{{/em}}.
+          issueLabel?: string; dateLabel?: string;
+          headline?: string[]; masthead?: string;
+          tableOfContents?: Array<{ num: string; label: string; page: string; href: string }> };
+  about: { title: string; subtitle: string; body: string; highlights: string[]; portraitSrc?: string;
+           // Editorial-layout fields.
+           headline?: string[];                                              // {{em}}…{{/em}} supported
+           pillars?: Array<{ title: string; body: string }>;                 // 3 pillars under manifesto
+           log?: Array<{ year: string; org: string; role: string }>;         // CV log rows
+           meta?: Array<{ label: string; value: string }>;                   // sidebar table beside portrait
+           portraitLabel?: string; portraitMeta?: string };
   highlights: { title: string; description: string; items: Array<{ title: string; description: string }> };
   projects: { title: string; description: string; items: ProjectItem[] };
   photography: { title: string; description: string; categories: PhotographyCategory[] };
-  life: { eyebrow: string; title: string; snapshots: LifeSnapshot[]; books: LifeBook[];
-          places: LifePlace[]; entertainment: LifeEntertainment[] };
-  contact: { title: string; description: string; ctaLabel: string; email: string };
-  footer: { note: string; links: SocialLink[] };
+  life: { eyebrow: string; title: string;                                     // title supports {{em}}…{{/em}}
+          snapshots: LifeSnapshot[]; books: LifeBook[];
+          places: LifePlace[]; entertainment: LifeEntertainment[];
+          readingLabel?: string; placesLabel?: string };
+  contact: { title: string; description: string; ctaLabel: string; email: string;
+             // Two-line stylized headline; supports {{em}}…{{/em}}.
+             headline?: string[] };
+  footer: { note: string; links: SocialLink[]; versionNote?: string };
 };
 
-type ProjectItem   = { id: string; title: string; summary: string; tags: string[]; year: string; status?: string; link?: string };
+type ProjectItem   = {
+  id: string;
+  title: string;
+  summary: string;
+  tags: string[];
+  year: string;
+  status?: string;
+  link?: string;        // live site / demo URL
+  repo?: string;        // source-code repository URL
+  // Optional — populated to drive the hover-expand "Selected work" cards.
+  storyline?: Array<{ label: "trigger" | "move" | "result"; body: string }>;
+  metrics?: Array<{ label: string; value: string }>;
+  stack?: string[];
+};
 type PhotographyCategory = { slug: string; title: string; description: string; accent: string; hidden?: boolean; images: PhotoItem[] };
 type PhotoItem     = { id: string; src: string; title: string; description: string; meta?: PhotoMeta; hidden?: boolean };
 type LifeBook      = { title: string; author: string; theme: string; palette: string; coverSrc?: string; isbn?: string };
@@ -73,6 +100,25 @@ type LifeEntertainment = { title: string; kind: "film"|"music"|"show"; picks: st
 \`\`\`json
 ${JSON.stringify(currentData, null, 2)}
 \`\`\`
+
+## Web search tool
+
+You have access to a server-side \`web_search\` tool. The runtime injects an
+\`allowed_domains\` list at request time, derived from the user's GitHub plus
+the live project links, Viveka URL, socials, and footer links in the current
+portfolio data. The exact list for this request is appended below; consult
+that list before searching. Adding a new project or changing a link
+automatically opens that hostname for future requests — no prompt edit
+needed.
+
+Use the tool when the user asks to populate or verify content from these
+sources — e.g. pulling a README summary into a project's storyline, copying
+a Viveka essay's title / pull-quote, or grabbing a live tagline. Quote facts
+faithfully. Do NOT search hosts outside the allowed list (the runtime will
+reject them).
+
+After any tool use, the FINAL message you return must still be the JSON
+response below — no commentary outside the JSON, no markdown fences.
 
 ## Response format
 

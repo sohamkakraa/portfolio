@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { Github, Globe, Instagram, Linkedin, Mail, Settings2 } from "lucide-react";
 import type { SocialLink } from "@/lib/portfolio-types";
 
 type FooterProps = {
@@ -11,60 +9,46 @@ type FooterProps = {
   links?: SocialLink[];
 };
 
-const iconForSocial = (label: string, href: string) => {
-  const lookup = `${label} ${href}`.toLowerCase();
-  if (lookup.includes("github")) return Github;
-  if (lookup.includes("linkedin")) return Linkedin;
-  if (lookup.includes("instagram")) return Instagram;
-  if (lookup.includes("mail") || lookup.includes("email")) return Mail;
-  return Globe;
-};
-
 export default function Footer({ name, note, socials, links = [] }: FooterProps) {
+  const all = [...socials, ...links];
   return (
-    <footer className="border-t border-[color:var(--border)]">
-      <div className="section-container flex min-h-[13rem] flex-col justify-center py-20 md:min-h-[11rem]">
-        <div className="flex flex-col items-center justify-between gap-8 text-center md:flex-row md:items-center md:text-left">
-          {/* Branding + note (note already carries attribution / year from content) */}
-          <div className="max-w-md md:max-w-none">
-            <p className="text-lg font-bold tracking-tight text-[color:var(--fg)]">
-              {name}
-            </p>
-            <p className="mt-2 text-xs tracking-[0.15em] uppercase text-[color:var(--fg-muted)]">
-              {note}
-            </p>
-          </div>
-
-          {/* Socials, admin, Viveka */}
-          <div className="flex flex-wrap items-center justify-center gap-3 md:justify-end">
-            {socials.map((item) => {
-              const Icon = iconForSocial(item.label, item.href);
-              return (
-                <a
-                  key={`${item.href}-${item.label}`}
-                  href={item.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={item.label}
-                  title={item.label}
-                  className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--border)] text-[color:var(--fg-muted)] transition-all hover:-translate-y-0.5 hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
-                >
-                  <Icon size={16} />
-                </a>
-              );
-            })}
-
+    <footer style={{ borderTop: "1px solid var(--line)" }}>
+      <div className="section-container flex flex-col gap-4 py-10 md:flex-row md:items-center md:justify-between">
+        <div className="mono-label" style={{ color: "var(--ink-3)" }}>
+          {note || `Designed and built by ${name} · 2026`}
+        </div>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+          {all.map((item) => (
             <a
-              href="https://viveka.sohamkakra.com"
-              target="_blank"
+              key={`${item.href}-${item.label}`}
+              href={item.href}
+              target={item.href.startsWith("http") ? "_blank" : undefined}
               rel="noreferrer"
-              className="inline-flex h-10 items-center rounded-full border border-[color:var(--border)] px-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[color:var(--fg-muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+              className="mono-label relative no-underline"
+              style={{ color: "var(--ink-2)", paddingBottom: 4 }}
             >
-              Viveka
+              <span className="footer-link-text">{item.label}</span>
             </a>
-          </div>
+          ))}
         </div>
       </div>
+      <style jsx global>{`
+        footer .footer-link-text {
+          position: relative;
+          display: inline-block;
+        }
+        footer .footer-link-text::after {
+          content: "";
+          position: absolute;
+          left: 0; right: 100%;
+          bottom: -4px;
+          height: 1px;
+          background: var(--accent);
+          transition: right 0.22s var(--ease-page);
+        }
+        footer a:hover .footer-link-text { color: var(--ink); }
+        footer a:hover .footer-link-text::after { right: 0; }
+      `}</style>
     </footer>
   );
 }

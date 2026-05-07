@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   Bot,
   Camera,
+  Aperture,
   Check,
   Compass,
   Eye,
@@ -18,7 +19,6 @@ import {
   Plus,
   Save,
   Settings,
-  Sparkles,
   Trash2,
   Upload,
   User,
@@ -35,12 +35,52 @@ import type {
   PhotographyCategory,
   PhotoItem,
   PhotoMeta,
+  EquipmentList,
   PortfolioData,
   ProjectItem,
+  ProjectStorylineStep,
+  ProjectMetric,
 } from "@/lib/portfolio-types";
 import ImageCropDialog from "@/components/admin/ImageCropDialog";
 import AIChatPanel from "@/components/admin/AIChatPanel";
 import { extractExif } from "@/lib/photo-meta";
+import PHOTO_LOCATIONS from "@/data/photo-locations.json";
+import WORLD_LOCATIONS from "@/data/world-locations.json";
+
+type EnrichedLoc = { city: string; country: string; countryCode?: string; lat: number; lon: number };
+const PHOTO_LOC_MAP = PHOTO_LOCATIONS as Record<string, EnrichedLoc>;
+
+type WorldCountry = { name: string; iso2?: string; emoji?: string; cities: string[] };
+type WorldLocations = { generated: string; countries: WorldCountry[] };
+const WORLD = WORLD_LOCATIONS as WorldLocations;
+
+// Numeric helpers — keep PhotoMeta values as their final formatted strings
+// (e.g. "35mm", "f/4", "400") so the lightbox can render directly.
+function formatFocal(raw: string): string | undefined {
+  const trimmed = raw.trim();
+  if (!trimmed) return undefined;
+  const n = parseFloat(trimmed);
+  if (Number.isFinite(n) && trimmed.match(/^\d+\.?\d*$/)) return `${n}mm`;
+  return trimmed; // already formatted, leave it
+}
+function formatAperture(raw: string): string | undefined {
+  const trimmed = raw.trim();
+  if (!trimmed) return undefined;
+  const n = parseFloat(trimmed);
+  if (Number.isFinite(n) && trimmed.match(/^\d+\.?\d*$/)) return `f/${n}`;
+  return trimmed.startsWith("f/") ? trimmed : trimmed;
+}
+function formatIso(raw: string): string | undefined {
+  const trimmed = raw.trim();
+  if (!trimmed) return undefined;
+  const n = parseInt(trimmed.replace(/[^\d]/g, ""), 10);
+  return Number.isFinite(n) ? String(n) : trimmed;
+}
+// Strip the formatting suffix so the input shows just the numeric portion.
+function stripUnit(value: string | undefined, pattern: RegExp): string {
+  if (!value) return "";
+  return value.replace(pattern, "").trim();
+}
 
 type AdminPanelProps = {
   defaultData: PortfolioData;
@@ -51,9 +91,9 @@ const TABS = [
   { id: "site", label: "Site", icon: Globe },
   { id: "hero", label: "Hero", icon: Layout },
   { id: "about", label: "About", icon: User },
-  { id: "highlights", label: "Highlights", icon: Sparkles },
   { id: "projects", label: "Projects", icon: FileText },
   { id: "photography", label: "Photography", icon: Camera },
+  { id: "equipment", label: "My equipment", icon: Aperture },
   { id: "life", label: "Beyond work", icon: Compass },
   { id: "contact", label: "Contact", icon: Settings },
   { id: "ai", label: "AI Assistant", icon: Bot },
@@ -127,6 +167,52 @@ function TextArea({
   );
 }
 
+function NumericUnitInput({
+  value,
+  unit,
+  unitPosition,
+  step,
+  placeholder,
+  onChange,
+}: {
+  value: string;
+  unit: string;
+  unitPosition: "prefix" | "suffix";
+  step?: string;
+  placeholder?: string;
+  onChange: (raw: string) => void;
+}) {
+  return (
+    <div className="relative flex items-center">
+      {unitPosition === "prefix" && (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute left-2 text-[10px] font-mono text-[color:var(--fg-muted)] uppercase tracking-[0.15em]"
+        >
+          {unit}
+        </span>
+      )}
+      <input
+        type="number"
+        inputMode="decimal"
+        step={step}
+        className={`!py-1.5 !text-xs w-full ${unitPosition === "prefix" ? "!pl-7" : "!pr-9"}`}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+      />
+      {unitPosition === "suffix" && (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute right-2 text-[10px] font-mono text-[color:var(--fg-muted)] uppercase tracking-[0.15em]"
+        >
+          {unit}
+        </span>
+      )}
+    </div>
+  );
+}
+
 function Card({ children, title }: { children: React.ReactNode; title?: string }) {
   return (
     <div className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--bg-surface)] p-6">
@@ -170,6 +256,13 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
   const [statusMessage, setStatusMessage] = useState("");
   const [assetUploadHint, setAssetUploadHint] = useState<string | null>(null);
   const [photoDropSlug, setPhotoDropSlug] = useState<string | null>(null);
+  const [photoCategoryFilter, setPhotoCategoryFilter] = useState<string>("");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
   const [aboutDropActive, setAboutDropActive] = useState(false);
   const [bookDropIndex, setBookDropIndex] = useState<number | null>(null);
   const [photoUploadBusy, setPhotoUploadBusy] = useState(false);
@@ -181,6 +274,49 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
     scope: "about" | "books";
     bookIndex?: number;
   } | null>(null);
+
+  // Union of cities/countries known from globe metadata + any already-set on
+  // a photo's meta. Used to populate datalists in the image metadata editor.
+  const { countryOptions, cityToCountry, citiesByCountry } = useMemo(() => {
+    const countries = new Set<string>();
+    const c2c = new Map<string, string>();
+    const byCountry = new Map<string, Set<string>>();
+
+    const note = (city?: string, country?: string) => {
+      if (country) countries.add(country);
+      if (city && country) {
+        if (!c2c.has(city)) c2c.set(city, country);
+        if (!byCountry.has(country)) byCountry.set(country, new Set());
+        byCountry.get(country)!.add(city);
+      }
+    };
+
+    // 1. Seed from the world dataset (250 countries, ~140k cities).
+    for (const c of WORLD.countries) {
+      countries.add(c.name);
+      if (!byCountry.has(c.name)) byCountry.set(c.name, new Set());
+      const bucket = byCountry.get(c.name)!;
+      for (const city of c.cities) {
+        bucket.add(city);
+        if (!c2c.has(city)) c2c.set(city, c.name);
+      }
+    }
+
+    // 2. Layer in any extras already on photos / from photo-locations.json.
+    for (const v of Object.values(PHOTO_LOC_MAP)) note(v.city, v.country);
+    for (const c of data.photography.categories) {
+      for (const img of c.images) note(img.meta?.city, img.meta?.country);
+    }
+
+    return {
+      countryOptions: Array.from(countries).sort(),
+      cityToCountry: c2c,
+      citiesByCountry: byCountry,
+    };
+  }, [data.photography.categories]);
+
+  // datalist id-safe slug
+  const slugifyCountry = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
   const showAssetHint = useCallback((text: string) => {
     if (assetHintTimer.current) clearTimeout(assetHintTimer.current);
@@ -323,9 +459,6 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
     setData((prev) => ({ ...prev, about: { ...prev.about, [field]: value } }));
   };
 
-  const updateHighlights = (field: keyof PortfolioData["highlights"], value: unknown) => {
-    setData((prev) => ({ ...prev, highlights: { ...prev.highlights, [field]: value } }));
-  };
 
   const updateProjects = (field: keyof PortfolioData["projects"], value: unknown) => {
     setData((prev) => ({ ...prev, projects: { ...prev.projects, [field]: value } }));
@@ -335,12 +468,27 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
     setData((prev) => ({ ...prev, photography: { ...prev.photography, [field]: value } }));
   };
 
-  const updateContact = (field: keyof ContactSection, value: string) => {
+  const updateContact = (field: keyof ContactSection, value: unknown) => {
     setData((prev) => ({ ...prev, contact: { ...prev.contact, [field]: value } }));
   };
 
   const updateLife = (field: keyof LifeSection, value: unknown) => {
     setData((prev) => ({ ...prev, life: { ...prev.life, [field]: value } }));
+  };
+
+  const updateFooter = (field: keyof PortfolioData["footer"], value: unknown) => {
+    setData((prev) => ({ ...prev, footer: { ...prev.footer, [field]: value } }));
+  };
+
+  const updateEquipment = (field: keyof EquipmentList, value: string[]) => {
+    setData((prev) => ({
+      ...prev,
+      equipment: {
+        cameras: prev.equipment?.cameras ?? [],
+        lenses: prev.equipment?.lenses ?? [],
+        [field]: value,
+      },
+    }));
   };
 
   const closeCrop = () => {
@@ -438,6 +586,69 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
       ...prev,
       projects: { ...prev.projects, items: prev.projects.items.filter((_, i) => i !== idx) },
     }));
+  };
+
+  const updateStoryline = (pIdx: number, sIdx: number, field: keyof ProjectStorylineStep, value: string) => {
+    setData((prev) => {
+      const items = [...prev.projects.items];
+      const story = [...(items[pIdx].storyline ?? [])];
+      story[sIdx] = { ...story[sIdx], [field]: value } as ProjectStorylineStep;
+      items[pIdx] = { ...items[pIdx], storyline: story };
+      return { ...prev, projects: { ...prev.projects, items } };
+    });
+  };
+  const addStorylineStep = (pIdx: number) => {
+    setData((prev) => {
+      const items = [...prev.projects.items];
+      const story = [...(items[pIdx].storyline ?? [])];
+      const usedLabels = new Set(story.map((s) => s.label));
+      const next = (["trigger", "move", "result"] as const).find((l) => !usedLabels.has(l)) ?? "result";
+      story.push({ label: next, body: "" });
+      items[pIdx] = { ...items[pIdx], storyline: story };
+      return { ...prev, projects: { ...prev.projects, items } };
+    });
+  };
+  const removeStorylineStep = (pIdx: number, sIdx: number) => {
+    setData((prev) => {
+      const items = [...prev.projects.items];
+      const story = (items[pIdx].storyline ?? []).filter((_, i) => i !== sIdx);
+      items[pIdx] = { ...items[pIdx], storyline: story };
+      return { ...prev, projects: { ...prev.projects, items } };
+    });
+  };
+
+  const updateMetric = (pIdx: number, mIdx: number, field: keyof ProjectMetric, value: string) => {
+    setData((prev) => {
+      const items = [...prev.projects.items];
+      const metrics = [...(items[pIdx].metrics ?? [])];
+      metrics[mIdx] = { ...metrics[mIdx], [field]: value };
+      items[pIdx] = { ...items[pIdx], metrics };
+      return { ...prev, projects: { ...prev.projects, items } };
+    });
+  };
+  const addMetric = (pIdx: number) => {
+    setData((prev) => {
+      const items = [...prev.projects.items];
+      const metrics = [...(items[pIdx].metrics ?? []), { label: "", value: "" }];
+      items[pIdx] = { ...items[pIdx], metrics };
+      return { ...prev, projects: { ...prev.projects, items } };
+    });
+  };
+  const removeMetric = (pIdx: number, mIdx: number) => {
+    setData((prev) => {
+      const items = [...prev.projects.items];
+      const metrics = (items[pIdx].metrics ?? []).filter((_, i) => i !== mIdx);
+      items[pIdx] = { ...items[pIdx], metrics };
+      return { ...prev, projects: { ...prev.projects, items } };
+    });
+  };
+
+  const updateStack = (pIdx: number, value: string[]) => {
+    setData((prev) => {
+      const items = [...prev.projects.items];
+      items[pIdx] = { ...items[pIdx], stack: value };
+      return { ...prev, projects: { ...prev.projects, items } };
+    });
   };
 
   const addCategory = () => {
@@ -870,164 +1081,300 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
 
           {/* ── Hero ── */}
           {activeTab === "hero" && (
-            <Card title="Hero Section">
-              <div className="space-y-4">
-                <Field label="Eyebrow text">
-                  <Input value={data.hero.eyebrow} onChange={(v) => updateHero("eyebrow", v)} />
-                </Field>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="Title Line 1">
-                    <Input value={data.hero.titleLine1} onChange={(v) => updateHero("titleLine1", v)} />
-                  </Field>
-                  <Field label="Title Line 2 (gradient)">
-                    <Input value={data.hero.titleLine2} onChange={(v) => updateHero("titleLine2", v)} />
-                  </Field>
-                </div>
-                <Field label="Subtitle">
-                  <TextArea value={data.hero.subtitle} onChange={(v) => updateHero("subtitle", v)} />
-                </Field>
-
-                <label className="flex cursor-pointer items-center gap-2 pt-2 text-xs text-[color:var(--fg-muted)]">
-                  <input
-                    type="checkbox"
-                    checked={data.hero.showVivekaCta !== false}
-                    onChange={(e) => updateHero("showVivekaCta", e.target.checked)}
-                    className="rounded border-[color:var(--border)]"
-                  />
-                  Show third CTA (Viveka) in hero and about
-                </label>
-
-                <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-4">
-                  Call to Actions
-                </h4>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="Primary CTA Label">
-                    <Input
-                      value={data.hero.ctaPrimary.label}
-                      onChange={(v) => updateHero("ctaPrimary", { ...data.hero.ctaPrimary, label: v })}
-                    />
-                  </Field>
-                  <Field label="Primary CTA Link">
-                    <Input
-                      value={data.hero.ctaPrimary.href}
-                      onChange={(v) => updateHero("ctaPrimary", { ...data.hero.ctaPrimary, href: v })}
-                    />
-                  </Field>
-                  <Field label="Secondary CTA Label">
-                    <Input
-                      value={data.hero.ctaSecondary.label}
-                      onChange={(v) => updateHero("ctaSecondary", { ...data.hero.ctaSecondary, label: v })}
-                    />
-                  </Field>
-                  <Field label="Secondary CTA Link">
-                    <Input
-                      value={data.hero.ctaSecondary.href}
-                      onChange={(v) => updateHero("ctaSecondary", { ...data.hero.ctaSecondary, href: v })}
-                    />
-                  </Field>
-                </div>
-
-                <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-4">
-                  Viveka CTA
-                </h4>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="Label">
-                    <Input
-                      value={data.hero.vivekaCta?.label ?? ""}
-                      onChange={(v) =>
-                        updateHero("vivekaCta", {
-                          label: v,
-                          href: data.hero.vivekaCta?.href ?? "https://viveka.sohamkakra.com",
-                        })
-                      }
-                    />
-                  </Field>
-                  <Field label="URL">
-                    <Input
-                      value={data.hero.vivekaCta?.href ?? ""}
-                      onChange={(v) =>
-                        updateHero("vivekaCta", {
-                          label: data.hero.vivekaCta?.label ?? "Viveka",
-                          href: v,
-                        })
-                      }
-                    />
-                  </Field>
-                </div>
-
-                <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-4">
-                  Badges
-                </h4>
-                <div className="space-y-2">
-                  {data.hero.badges.map((badge, i) => (
-                    <div key={i} className="flex gap-2 items-center">
-                      <input
-                        className="flex-1"
-                        value={badge}
-                        onChange={(e) => {
-                          const badges = [...data.hero.badges];
-                          badges[i] = e.target.value;
-                          updateHero("badges", badges);
+            <>
+              <Card title="Editorial Hero (visible on site)">
+                <div className="space-y-4">
+                  <p className="text-[11px] leading-relaxed text-[color:var(--fg-muted)]">
+                    Wrap any phrase in <code className="font-mono text-[color:var(--accent)]">{"{{em}}…{{/em}}"}</code> to render it italic in the accent color (used for the hero headline).
+                  </p>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <Field label="Issue label (top-left)">
+                      <Input value={data.hero.issueLabel ?? ""} onChange={(v) => updateHero("issueLabel", v)} />
+                    </Field>
+                    <Field label="Date label (top-right)">
+                      <Input value={data.hero.dateLabel ?? ""} onChange={(v) => updateHero("dateLabel", v)} />
+                    </Field>
+                  </div>
+                  <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-2">
+                    Headline (3 lines)
+                  </h4>
+                  {[0, 1, 2].map((i) => (
+                    <Field key={i} label={`Line ${i + 1}`}>
+                      <Input
+                        value={data.hero.headline?.[i] ?? ""}
+                        onChange={(v) => {
+                          const arr = [...(data.hero.headline ?? ["", "", ""])];
+                          arr[i] = v;
+                          updateHero("headline", arr);
                         }}
                       />
-                      <DangerButton onClick={() => updateHero("badges", data.hero.badges.filter((_, j) => j !== i))}>
+                    </Field>
+                  ))}
+                  <Field label="Masthead paragraph">
+                    <TextArea
+                      value={data.hero.masthead ?? ""}
+                      onChange={(v) => updateHero("masthead", v)}
+                      rows={3}
+                    />
+                  </Field>
+                  <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-2">
+                    In this issue (table of contents)
+                  </h4>
+                  {(data.hero.tableOfContents ?? []).map((entry, i) => (
+                    <div key={i} className="grid gap-2 sm:grid-cols-[60px_1fr_60px_1fr_auto] items-center">
+                      <Input
+                        value={entry.num}
+                        onChange={(v) => {
+                          const arr = [...(data.hero.tableOfContents ?? [])];
+                          arr[i] = { ...arr[i], num: v };
+                          updateHero("tableOfContents", arr);
+                        }}
+                        placeholder="01"
+                      />
+                      <Input
+                        value={entry.label}
+                        onChange={(v) => {
+                          const arr = [...(data.hero.tableOfContents ?? [])];
+                          arr[i] = { ...arr[i], label: v };
+                          updateHero("tableOfContents", arr);
+                        }}
+                        placeholder="About"
+                      />
+                      <Input
+                        value={entry.page}
+                        onChange={(v) => {
+                          const arr = [...(data.hero.tableOfContents ?? [])];
+                          arr[i] = { ...arr[i], page: v };
+                          updateHero("tableOfContents", arr);
+                        }}
+                        placeholder="p.02"
+                      />
+                      <Input
+                        value={entry.href}
+                        onChange={(v) => {
+                          const arr = [...(data.hero.tableOfContents ?? [])];
+                          arr[i] = { ...arr[i], href: v };
+                          updateHero("tableOfContents", arr);
+                        }}
+                        placeholder="#about"
+                      />
+                      <DangerButton
+                        onClick={() => {
+                          const arr = (data.hero.tableOfContents ?? []).filter((_, j) => j !== i);
+                          updateHero("tableOfContents", arr);
+                        }}
+                      >
                         <X size={12} />
                       </DangerButton>
                     </div>
                   ))}
                   <button
                     type="button"
-                    onClick={() => updateHero("badges", [...data.hero.badges, ""])}
+                    onClick={() => {
+                      const arr = [...(data.hero.tableOfContents ?? []), { num: "", label: "", page: "", href: "" }];
+                      updateHero("tableOfContents", arr);
+                    }}
                     className="btn-secondary !py-1.5 !px-3 !text-[10px]"
                   >
-                    <Plus size={12} /> Add Badge
+                    <Plus size={12} /> Add entry
                   </button>
                 </div>
-              </div>
-            </Card>
+              </Card>
+            </>
           )}
 
           {/* ── About ── */}
           {activeTab === "about" && (
-            <Card title="About Section">
-              <div className="space-y-4">
-                <Field label="Section Title">
-                  <Input value={data.about.title} onChange={(v) => updateAbout("title", v)} />
-                </Field>
-                <Field label="Subtitle">
-                  <Input value={data.about.subtitle} onChange={(v) => updateAbout("subtitle", v)} />
-                </Field>
-                <Field label="Body">
-                  <TextArea value={data.about.body} onChange={(v) => updateAbout("body", v)} rows={5} />
-                </Field>
-                <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-2">
-                  Highlights
-                </h4>
-                {data.about.highlights.map((h, i) => (
-                  <div key={i} className="flex gap-2 items-center">
-                    <input
-                      className="flex-1"
-                      value={h}
-                      onChange={(e) => {
-                        const hl = [...data.about.highlights];
-                        hl[i] = e.target.value;
-                        updateAbout("highlights", hl);
-                      }}
-                    />
-                    <DangerButton onClick={() => updateAbout("highlights", data.about.highlights.filter((_, j) => j !== i))}>
-                      <X size={12} />
-                    </DangerButton>
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => updateAbout("highlights", [...data.about.highlights, ""])}
-                  className="btn-secondary !py-1.5 !px-3 !text-[10px]"
-                >
-                  <Plus size={12} /> Add Highlight
-                </button>
+            <>
+              <Card title="Editorial About (visible on site)">
+                <div className="space-y-4">
+                  <p className="text-[11px] leading-relaxed text-[color:var(--fg-muted)]">
+                    Wrap any phrase in <code className="font-mono text-[color:var(--accent)]">{"{{em}}…{{/em}}"}</code> to render it italic in the accent color.
+                  </p>
+                  <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)]">
+                    Headline (3 lines)
+                  </h4>
+                  {[0, 1, 2].map((i) => (
+                    <Field key={i} label={`Line ${i + 1}`}>
+                      <Input
+                        value={data.about.headline?.[i] ?? ""}
+                        onChange={(v) => {
+                          const arr = [...(data.about.headline ?? ["", "", ""])];
+                          arr[i] = v;
+                          updateAbout("headline", arr);
+                        }}
+                      />
+                    </Field>
+                  ))}
 
-                <Field label="Portrait photo">
+                  <Field label="Body paragraph (under headline)">
+                    <TextArea
+                      value={data.about.body}
+                      onChange={(v) => updateAbout("body", v)}
+                      rows={5}
+                    />
+                  </Field>
+
+                  <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-2">
+                    Three pillars
+                  </h4>
+                  {(data.about.pillars ?? []).map((p, i) => (
+                    <div key={i} className="grid gap-2 sm:grid-cols-[160px_1fr_auto] items-start">
+                      <Input
+                        value={p.title}
+                        onChange={(v) => {
+                          const arr = [...(data.about.pillars ?? [])];
+                          arr[i] = { ...arr[i], title: v };
+                          updateAbout("pillars", arr);
+                        }}
+                        placeholder="End-to-end"
+                      />
+                      <TextArea
+                        value={p.body}
+                        onChange={(v) => {
+                          const arr = [...(data.about.pillars ?? [])];
+                          arr[i] = { ...arr[i], body: v };
+                          updateAbout("pillars", arr);
+                        }}
+                        rows={2}
+                      />
+                      <DangerButton
+                        onClick={() => {
+                          const arr = (data.about.pillars ?? []).filter((_, j) => j !== i);
+                          updateAbout("pillars", arr);
+                        }}
+                      >
+                        <X size={12} />
+                      </DangerButton>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const arr = [...(data.about.pillars ?? []), { title: "", body: "" }];
+                      updateAbout("pillars", arr);
+                    }}
+                    className="btn-secondary !py-1.5 !px-3 !text-[10px]"
+                  >
+                    <Plus size={12} /> Add pillar
+                  </button>
+
+                  <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-2">
+                    CV log
+                  </h4>
+                  {(data.about.log ?? []).map((entry, i) => (
+                    <div key={i} className="grid gap-2 sm:grid-cols-[100px_1fr_2fr_auto] items-center">
+                      <Input
+                        value={entry.year}
+                        onChange={(v) => {
+                          const arr = [...(data.about.log ?? [])];
+                          arr[i] = { ...arr[i], year: v };
+                          updateAbout("log", arr);
+                        }}
+                        placeholder="2025–"
+                      />
+                      <Input
+                        value={entry.org}
+                        onChange={(v) => {
+                          const arr = [...(data.about.log ?? [])];
+                          arr[i] = { ...arr[i], org: v };
+                          updateAbout("log", arr);
+                        }}
+                        placeholder="TU/e"
+                      />
+                      <Input
+                        value={entry.role}
+                        onChange={(v) => {
+                          const arr = [...(data.about.log ?? [])];
+                          arr[i] = { ...arr[i], role: v };
+                          updateAbout("log", arr);
+                        }}
+                        placeholder="M.Sc. Data Science & AI"
+                      />
+                      <DangerButton
+                        onClick={() => {
+                          const arr = (data.about.log ?? []).filter((_, j) => j !== i);
+                          updateAbout("log", arr);
+                        }}
+                      >
+                        <X size={12} />
+                      </DangerButton>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const arr = [...(data.about.log ?? []), { year: "", org: "", role: "" }];
+                      updateAbout("log", arr);
+                    }}
+                    className="btn-secondary !py-1.5 !px-3 !text-[10px]"
+                  >
+                    <Plus size={12} /> Add log entry
+                  </button>
+
+                  <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-2">
+                    Portrait meta table (sidebar under photo)
+                  </h4>
+                  {(data.about.meta ?? []).map((row, i) => (
+                    <div key={i} className="grid gap-2 sm:grid-cols-[180px_1fr_auto] items-center">
+                      <Input
+                        value={row.label}
+                        onChange={(v) => {
+                          const arr = [...(data.about.meta ?? [])];
+                          arr[i] = { ...arr[i], label: v };
+                          updateAbout("meta", arr);
+                        }}
+                        placeholder="Based in"
+                      />
+                      <Input
+                        value={row.value}
+                        onChange={(v) => {
+                          const arr = [...(data.about.meta ?? [])];
+                          arr[i] = { ...arr[i], value: v };
+                          updateAbout("meta", arr);
+                        }}
+                        placeholder="Eindhoven, NL"
+                      />
+                      <DangerButton
+                        onClick={() => {
+                          const arr = (data.about.meta ?? []).filter((_, j) => j !== i);
+                          updateAbout("meta", arr);
+                        }}
+                      >
+                        <X size={12} />
+                      </DangerButton>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const arr = [...(data.about.meta ?? []), { label: "", value: "" }];
+                      updateAbout("meta", arr);
+                    }}
+                    className="btn-secondary !py-1.5 !px-3 !text-[10px]"
+                  >
+                    <Plus size={12} /> Add meta row
+                  </button>
+
+                  <div className="grid gap-4 sm:grid-cols-2 pt-2">
+                    <Field label="Portrait label (top-left watermark)">
+                      <Input
+                        value={data.about.portraitLabel ?? ""}
+                        onChange={(v) => updateAbout("portraitLabel", v)}
+                      />
+                    </Field>
+                    <Field label="Portrait meta (bottom-right watermark)">
+                      <Input
+                        value={data.about.portraitMeta ?? ""}
+                        onChange={(v) => updateAbout("portraitMeta", v)}
+                      />
+                    </Field>
+                  </div>
+                </div>
+              </Card>
+              <Card title="Portrait photo">
+                <div className="space-y-4">
+                  <Field label="Portrait photo (3:4 crop)">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
                     {data.about.portraitSrc ? (
                       /* eslint-disable-next-line @next/next/no-img-element */
@@ -1097,66 +1444,7 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
                 </Field>
               </div>
             </Card>
-          )}
-
-          {/* ── Highlights ── */}
-          {activeTab === "highlights" && (
-            <Card title="Highlights Section">
-              <div className="space-y-4">
-                <Field label="Section Title">
-                  <Input value={data.highlights.title} onChange={(v) => updateHighlights("title", v)} />
-                </Field>
-                <Field label="Description">
-                  <Input value={data.highlights.description} onChange={(v) => updateHighlights("description", v)} />
-                </Field>
-                <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-2">
-                  Items
-                </h4>
-                {data.highlights.items.map((item, i) => (
-                  <div key={i} className="rounded-xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-4 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-[color:var(--fg-muted)]">Item {i + 1}</span>
-                      <DangerButton onClick={() => updateHighlights("items", data.highlights.items.filter((_, j) => j !== i))}>
-                        <Trash2 size={12} />
-                      </DangerButton>
-                    </div>
-                    <input
-                      className="w-full"
-                      value={item.title}
-                      onChange={(e) => {
-                        const items = [...data.highlights.items];
-                        items[i] = { ...items[i], title: e.target.value };
-                        updateHighlights("items", items);
-                      }}
-                      placeholder="Title"
-                    />
-                    <textarea
-                      className="w-full resize-y"
-                      value={item.description}
-                      onChange={(e) => {
-                        const items = [...data.highlights.items];
-                        items[i] = { ...items[i], description: e.target.value };
-                        updateHighlights("items", items);
-                      }}
-                      placeholder="Description"
-                      rows={2}
-                    />
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={() =>
-                    updateHighlights("items", [
-                      ...data.highlights.items,
-                      { title: "", description: "" },
-                    ])
-                  }
-                  className="btn-secondary !py-1.5 !px-3 !text-[10px]"
-                >
-                  <Plus size={12} /> Add Item
-                </button>
-              </div>
-            </Card>
+            </>
           )}
 
           {/* ── Projects ── */}
@@ -1186,10 +1474,24 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
                       <Field label="Status">
                         <Input value={project.status || ""} onChange={(v) => updateProject(i, "status", v)} />
                       </Field>
-                      <Field label="Link">
-                        <Input value={project.link || ""} onChange={(v) => updateProject(i, "link", v)} />
+                      <Field label="Live site">
+                        <Input
+                          value={project.link || ""}
+                          onChange={(v) => updateProject(i, "link", v)}
+                          placeholder="https://example.com"
+                        />
+                      </Field>
+                      <Field label="GitHub repo">
+                        <Input
+                          value={project.repo || ""}
+                          onChange={(v) => updateProject(i, "repo", v)}
+                          placeholder="https://github.com/user/repo"
+                        />
                       </Field>
                     </div>
+                    <p className="text-[11px] text-[color:var(--fg-muted)] -mt-2">
+                      If both are set, the project card shows two buttons (Open site / View repo). If only one is set, the entire card is clickable to whichever is present.
+                    </p>
                     <Field label="Summary">
                       <TextArea value={project.summary} onChange={(v) => updateProject(i, "summary", v)} />
                     </Field>
@@ -1199,6 +1501,102 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
                         onChange={(v) => updateProject(i, "tags", v.split(",").map((t) => t.trim()).filter(Boolean))}
                       />
                     </Field>
+                    <Field label="Stack (comma-separated)">
+                      <Input
+                        value={(project.stack ?? []).join(", ")}
+                        onChange={(v) => updateStack(i, v.split(",").map((t) => t.trim()).filter(Boolean))}
+                      />
+                    </Field>
+
+                    {/* Storyline */}
+                    <div className="rounded-xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-3">
+                      <div className="mb-2 flex items-center justify-between">
+                        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[color:var(--fg-muted)]">
+                          Storyline (trigger / move / result)
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => addStorylineStep(i)}
+                          className="text-[11px] font-medium text-[color:var(--accent)] hover:underline"
+                        >
+                          + Add step
+                        </button>
+                      </div>
+                      <div className="space-y-2">
+                        {(project.storyline ?? []).map((step, sIdx) => (
+                          <div key={sIdx} className="grid gap-2 sm:grid-cols-[120px_1fr_auto] items-start">
+                            <select
+                              value={step.label}
+                              onChange={(e) => updateStoryline(i, sIdx, "label", e.target.value)}
+                              className="rounded-lg border border-[color:var(--border)] bg-[color:var(--bg-surface)] px-2 py-2 text-xs"
+                            >
+                              <option value="trigger">trigger</option>
+                              <option value="move">move</option>
+                              <option value="result">result</option>
+                            </select>
+                            <TextArea
+                              value={step.body}
+                              onChange={(v) => updateStoryline(i, sIdx, "body", v)}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removeStorylineStep(i, sIdx)}
+                              className="rounded-lg border border-[color:var(--border)] bg-transparent px-2 py-1 text-[11px] text-[color:var(--fg-muted)] hover:text-[color:var(--fg)]"
+                              aria-label="Remove step"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                        ))}
+                        {!project.storyline?.length && (
+                          <p className="text-[11px] text-[color:var(--fg-subtle)]">No storyline steps yet.</p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Metrics */}
+                    <div className="rounded-xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-3">
+                      <div className="mb-2 flex items-center justify-between">
+                        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[color:var(--fg-muted)]">
+                          Metrics
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => addMetric(i)}
+                          className="text-[11px] font-medium text-[color:var(--accent)] hover:underline"
+                        >
+                          + Add metric
+                        </button>
+                      </div>
+                      <div className="space-y-2">
+                        {(project.metrics ?? []).map((m, mIdx) => (
+                          <div key={mIdx} className="grid gap-2 sm:grid-cols-[1fr_1fr_auto] items-center">
+                            <Input
+                              value={m.label}
+                              onChange={(v) => updateMetric(i, mIdx, "label", v)}
+                              placeholder="label (e.g. latency)"
+                            />
+                            <Input
+                              value={m.value}
+                              onChange={(v) => updateMetric(i, mIdx, "value", v)}
+                              placeholder="value (e.g. 240ms)"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removeMetric(i, mIdx)}
+                              className="rounded-lg border border-[color:var(--border)] bg-transparent px-2 py-1 text-[11px] text-[color:var(--fg-muted)] hover:text-[color:var(--fg)]"
+                              aria-label="Remove metric"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                        ))}
+                        {!project.metrics?.length && (
+                          <p className="text-[11px] text-[color:var(--fg-subtle)]">No metrics yet.</p>
+                        )}
+                      </div>
+                    </div>
+
                     <DangerButton onClick={() => removeProject(i)}>
                       <Trash2 size={12} /> Remove Project
                     </DangerButton>
@@ -1242,7 +1640,28 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
                 API.
               </p>
 
-              {data.photography.categories.map((cat, ci) => (
+              <div className="flex items-center gap-3 rounded-xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] px-4 py-3">
+                <label className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)]">
+                  Category
+                </label>
+                <select
+                  className="flex-1 !py-1.5 !text-sm"
+                  value={photoCategoryFilter}
+                  onChange={(e) => setPhotoCategoryFilter(e.target.value)}
+                >
+                  <option value="">All categories ({data.photography.categories.length})</option>
+                  {data.photography.categories.map((c) => (
+                    <option key={c.slug} value={c.slug}>
+                      {c.title} · {c.images.length}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {data.photography.categories
+                .map((cat, ci) => ({ cat, ci }))
+                .filter(({ cat }) => !photoCategoryFilter || cat.slug === photoCategoryFilter)
+                .map(({ cat, ci }) => (
                 <Card key={cat.slug} title={cat.title || `Category ${ci + 1}`}>
                   <div className="space-y-4">
                     <div className="grid gap-4 sm:grid-cols-3">
@@ -1342,65 +1761,179 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
                       <p className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)]">
                         {cat.images.length} images
                       </p>
-                      {cat.images.map((img, ii) => (
-                        <div
-                          key={img.id}
-                          className="flex gap-3 items-start rounded-xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-3"
-                        >
-                          <div className="h-16 w-20 shrink-0 overflow-hidden rounded-lg bg-[color:var(--bg)]">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img key={img.src} src={img.src} alt="" className="h-full w-full object-cover" />
+                      {cat.images.map((img, ii) => {
+                        const setMeta = (field: keyof PhotoMeta, value: string) => {
+                          const images = [...cat.images];
+                          const existing = images[ii].meta ?? {};
+                          const trimmed = value.trim();
+                          const nextMeta = { ...existing, [field]: trimmed || undefined };
+                          // Drop the field entirely if empty so PhotoMeta stays clean.
+                          if (!trimmed) delete (nextMeta as Record<string, unknown>)[field];
+                          images[ii] = { ...images[ii], meta: nextMeta };
+                          updateCategory(ci, "images", images);
+                        };
+                        const m = img.meta ?? {};
+                        return (
+                          <div
+                            key={img.id}
+                            className="rounded-xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] p-3 space-y-2"
+                          >
+                            <div className="flex gap-3 items-start">
+                              <div className="h-16 w-20 shrink-0 overflow-hidden rounded-lg bg-[color:var(--bg)]">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img key={img.src} src={img.src} alt="" className="h-full w-full object-cover" />
+                              </div>
+                              <div className="flex-1 space-y-2">
+                                <input
+                                  className="w-full !py-1.5 !text-sm"
+                                  value={img.title}
+                                  onChange={(e) => {
+                                    const images = [...cat.images];
+                                    images[ii] = { ...images[ii], title: e.target.value };
+                                    updateCategory(ci, "images", images);
+                                  }}
+                                  placeholder="Title"
+                                />
+                                <input
+                                  className="w-full !py-1.5 !text-xs"
+                                  value={img.description}
+                                  onChange={(e) => {
+                                    const images = [...cat.images];
+                                    images[ii] = { ...images[ii], description: e.target.value };
+                                    updateCategory(ci, "images", images);
+                                  }}
+                                  placeholder="Description"
+                                />
+                              </div>
+                              <div className="flex flex-col gap-1">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const images = [...cat.images];
+                                    images[ii] = { ...images[ii], hidden: !images[ii].hidden };
+                                    updateCategory(ci, "images", images);
+                                  }}
+                                  className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-[color:var(--border)] text-[color:var(--fg-muted)]"
+                                  aria-label={img.hidden ? "Show image" : "Hide image"}
+                                  title={img.hidden ? "Show" : "Hide"}
+                                >
+                                  {img.hidden ? <EyeOff size={12} /> : <Eye size={12} />}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const images = cat.images.filter((_, j) => j !== ii);
+                                    updateCategory(ci, "images", images);
+                                  }}
+                                  className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-red-500/20 text-red-400"
+                                  aria-label="Remove image"
+                                >
+                                  <Trash2 size={12} />
+                                </button>
+                              </div>
+                            </div>
+
+                            <details className="group">
+                              <summary className="cursor-pointer list-none text-[10px] font-bold uppercase tracking-[0.2em] text-[color:var(--fg-muted)] hover:text-[color:var(--fg)] [&::-webkit-details-marker]:hidden">
+                                <span className="inline-block group-open:hidden">▸ Metadata / EXIF</span>
+                                <span className="hidden group-open:inline-block">▾ Metadata / EXIF</span>
+                              </summary>
+                              <div className="grid grid-cols-2 gap-2 pt-2">
+                                <input
+                                  className="!py-1.5 !text-xs"
+                                  list="equipment-cameras"
+                                  value={m.camera ?? ""}
+                                  onChange={(e) => setMeta("camera", e.target.value)}
+                                  placeholder="Camera"
+                                />
+                                <input
+                                  className="!py-1.5 !text-xs"
+                                  list="equipment-lenses"
+                                  value={m.lens ?? ""}
+                                  onChange={(e) => setMeta("lens", e.target.value)}
+                                  placeholder="Lens"
+                                />
+                                <NumericUnitInput
+                                  value={stripUnit(m.aperture, /^f\/|f$/i)}
+                                  unit="f/"
+                                  unitPosition="prefix"
+                                  step="0.1"
+                                  placeholder="Aperture"
+                                  onChange={(raw) => setMeta("aperture", formatAperture(raw) ?? "")}
+                                />
+                                <input
+                                  className="!py-1.5 !text-xs"
+                                  value={m.shutter ?? ""}
+                                  onChange={(e) => setMeta("shutter", e.target.value)}
+                                  placeholder="Shutter (e.g. 1/250s)"
+                                />
+                                <NumericUnitInput
+                                  value={stripUnit(m.iso, /\D/g)}
+                                  unit="iso"
+                                  unitPosition="prefix"
+                                  step="1"
+                                  placeholder="ISO"
+                                  onChange={(raw) => setMeta("iso", formatIso(raw) ?? "")}
+                                />
+                                <NumericUnitInput
+                                  value={stripUnit(m.focalLength, /mm$/i)}
+                                  unit="mm"
+                                  unitPosition="suffix"
+                                  step="1"
+                                  placeholder="Focal length"
+                                  onChange={(raw) => setMeta("focalLength", formatFocal(raw) ?? "")}
+                                />
+                                <input
+                                  className="!py-1.5 !text-xs"
+                                  type="date"
+                                  value={m.date ?? ""}
+                                  onChange={(e) => setMeta("date", e.target.value)}
+                                  placeholder="Date"
+                                />
+                                <input
+                                  className="!py-1.5 !text-xs"
+                                  list="equipment-countries"
+                                  value={m.country ?? ""}
+                                  onChange={(e) => setMeta("country", e.target.value)}
+                                  placeholder="Country"
+                                />
+                                <input
+                                  className="!py-1.5 !text-xs"
+                                  list={
+                                    m.country
+                                      ? `cities-${slugifyCountry(m.country)}`
+                                      : "equipment-cities"
+                                  }
+                                  value={m.city ?? ""}
+                                  onChange={(e) => {
+                                    const newCity = e.target.value;
+                                    const images = [...cat.images];
+                                    const existing = images[ii].meta ?? {};
+                                    const trimmed = newCity.trim();
+                                    const nextMeta: Record<string, unknown> = { ...existing };
+                                    if (trimmed) nextMeta.city = trimmed;
+                                    else delete nextMeta.city;
+                                    // Auto-set country if known and country not already set.
+                                    if (trimmed && !existing.country) {
+                                      const known = cityToCountry.get(trimmed);
+                                      if (known) nextMeta.country = known;
+                                    }
+                                    images[ii] = { ...images[ii], meta: nextMeta as PhotoMeta };
+                                    updateCategory(ci, "images", images);
+                                  }}
+                                  placeholder={m.country ? `City in ${m.country}` : "City"}
+                                />
+                                <input
+                                  className="!py-1.5 !text-xs col-span-2"
+                                  value={m.landmark ?? ""}
+                                  onChange={(e) => setMeta("landmark", e.target.value)}
+                                  placeholder="Landmark / point of interest (e.g. Masai Mara National Park)"
+                                />
+                              </div>
+                            </details>
                           </div>
-                          <div className="flex-1 space-y-2">
-                            <input
-                              className="w-full !py-1.5 !text-sm"
-                              value={img.title}
-                              onChange={(e) => {
-                                const images = [...cat.images];
-                                images[ii] = { ...images[ii], title: e.target.value };
-                                updateCategory(ci, "images", images);
-                              }}
-                              placeholder="Title"
-                            />
-                            <input
-                              className="w-full !py-1.5 !text-xs"
-                              value={img.description}
-                              onChange={(e) => {
-                                const images = [...cat.images];
-                                images[ii] = { ...images[ii], description: e.target.value };
-                                updateCategory(ci, "images", images);
-                              }}
-                              placeholder="Description"
-                            />
-                          </div>
-                          <div className="flex flex-col gap-1">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const images = [...cat.images];
-                                images[ii] = { ...images[ii], hidden: !images[ii].hidden };
-                                updateCategory(ci, "images", images);
-                              }}
-                              className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-[color:var(--border)] text-[color:var(--fg-muted)]"
-                              aria-label={img.hidden ? "Show image" : "Hide image"}
-                              title={img.hidden ? "Show" : "Hide"}
-                            >
-                              {img.hidden ? <EyeOff size={12} /> : <Eye size={12} />}
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const images = cat.images.filter((_, j) => j !== ii);
-                                updateCategory(ci, "images", images);
-                              }}
-                              className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-red-500/20 text-red-400"
-                              aria-label="Remove image"
-                            >
-                              <Trash2 size={12} />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
 
                     <div className="flex items-center justify-between pt-2">
@@ -1432,12 +1965,31 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
             <>
               <Card title="Section header">
                 <div className="space-y-4">
-                  <Field label="Eyebrow">
+                  <p className="text-[11px] leading-relaxed text-[color:var(--fg-muted)]">
+                    Wrap any phrase in <code className="font-mono text-[color:var(--accent)]">{"{{em}}…{{/em}}"}</code> to render it italic in the accent color.
+                  </p>
+                  <Field label="Eyebrow (rendered as `// 04 · …`)">
                     <Input value={data.life.eyebrow} onChange={(v) => updateLife("eyebrow", v)} />
                   </Field>
-                  <Field label="Title">
+                  <Field label="Title (supports {{em}}…{{/em}})">
                     <Input value={data.life.title} onChange={(v) => updateLife("title", v)} />
                   </Field>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <Field label="Reading column label">
+                      <Input
+                        value={data.life.readingLabel ?? ""}
+                        onChange={(v) => updateLife("readingLabel", v)}
+                        placeholder="Reading library"
+                      />
+                    </Field>
+                    <Field label="Places column label">
+                      <Input
+                        value={data.life.placesLabel ?? ""}
+                        onChange={(v) => updateLife("placesLabel", v)}
+                        placeholder="Places"
+                      />
+                    </Field>
+                  </div>
                 </div>
               </Card>
 
@@ -1823,20 +2375,177 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
 
           {/* ── Contact ── */}
           {activeTab === "contact" && (
-            <Card title="Contact Section">
-              <div className="space-y-4">
-                <Field label="Section Title">
-                  <Input value={data.contact.title} onChange={(v) => updateContact("title", v)} />
-                </Field>
-                <Field label="Description">
-                  <TextArea value={data.contact.description} onChange={(v) => updateContact("description", v)} />
-                </Field>
-                <Field label="CTA Label">
-                  <Input value={data.contact.ctaLabel} onChange={(v) => updateContact("ctaLabel", v)} />
-                </Field>
-                <Field label="Email">
-                  <Input value={data.contact.email} onChange={(v) => updateContact("email", v)} />
-                </Field>
+            <>
+              <Card title="Contact Section">
+                <div className="space-y-4">
+                  <p className="text-[11px] leading-relaxed text-[color:var(--fg-muted)]">
+                    Wrap any phrase in <code className="font-mono text-[color:var(--accent)]">{"{{em}}…{{/em}}"}</code> to render it italic in the accent color.
+                  </p>
+                  <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)]">
+                    Headline (2 lines)
+                  </h4>
+                  {[0, 1].map((i) => (
+                    <Field key={i} label={`Line ${i + 1}`}>
+                      <Input
+                        value={data.contact.headline?.[i] ?? ""}
+                        onChange={(v) => {
+                          const arr = [...(data.contact.headline ?? ["", ""])];
+                          arr[i] = v;
+                          updateContact("headline", arr);
+                        }}
+                      />
+                    </Field>
+                  ))}
+                  <Field label="Section title (legacy / used by AI doc only)">
+                    <Input value={data.contact.title} onChange={(v) => updateContact("title", v)} />
+                  </Field>
+                  <Field label="Description (paragraph beside CTA)">
+                    <TextArea value={data.contact.description} onChange={(v) => updateContact("description", v)} />
+                  </Field>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <Field label="CTA Label">
+                      <Input value={data.contact.ctaLabel} onChange={(v) => updateContact("ctaLabel", v)} />
+                    </Field>
+                    <Field label="Email">
+                      <Input value={data.contact.email} onChange={(v) => updateContact("email", v)} />
+                    </Field>
+                  </div>
+                </div>
+              </Card>
+              <Card title="Footer">
+                <div className="space-y-4">
+                  <Field label="Footer note (left-aligned)">
+                    <Input value={data.footer.note} onChange={(v) => updateFooter("note", v)} />
+                  </Field>
+                  <Field label="Version note (right-aligned, optional)">
+                    <Input
+                      value={data.footer.versionNote ?? ""}
+                      onChange={(v) => updateFooter("versionNote", v)}
+                      placeholder="v3.0 · last edit: today"
+                    />
+                  </Field>
+                  <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-2">
+                    Footer links (joined with site socials in the footer rail)
+                  </h4>
+                  {(data.footer.links ?? []).map((l, i) => (
+                    <div key={i} className="flex gap-2 items-center">
+                      <Input
+                        value={l.label}
+                        onChange={(v) => {
+                          const arr = [...(data.footer.links ?? [])];
+                          arr[i] = { ...arr[i], label: v };
+                          updateFooter("links", arr);
+                        }}
+                        placeholder="Admin"
+                      />
+                      <Input
+                        value={l.href}
+                        onChange={(v) => {
+                          const arr = [...(data.footer.links ?? [])];
+                          arr[i] = { ...arr[i], href: v };
+                          updateFooter("links", arr);
+                        }}
+                        placeholder="/admin"
+                      />
+                      <DangerButton
+                        onClick={() => updateFooter("links", (data.footer.links ?? []).filter((_, j) => j !== i))}
+                      >
+                        <X size={12} />
+                      </DangerButton>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => updateFooter("links", [...(data.footer.links ?? []), { label: "", href: "" }])}
+                    className="btn-secondary !py-1.5 !px-3 !text-[10px]"
+                  >
+                    <Plus size={12} /> Add footer link
+                  </button>
+                </div>
+              </Card>
+            </>
+          )}
+
+          {activeTab === "equipment" && (
+            <Card title="My equipment (autofill source)">
+              <div className="space-y-6">
+                <p className="text-[11px] leading-relaxed text-[color:var(--fg-muted)]">
+                  Items listed here suggest as you type into the camera / lens
+                  fields on each photo. Add the gear you actually use so the
+                  Photography tab fills out faster.
+                </p>
+
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] mb-2">
+                    Cameras
+                  </h4>
+                  <div className="space-y-2">
+                    {(data.equipment?.cameras ?? []).map((c, i) => (
+                      <div key={i} className="flex gap-2 items-center">
+                        <Input
+                          value={c}
+                          onChange={(v) => {
+                            const arr = [...(data.equipment?.cameras ?? [])];
+                            arr[i] = v;
+                            updateEquipment("cameras", arr);
+                          }}
+                          placeholder="Sony A7 IV"
+                        />
+                        <DangerButton
+                          onClick={() => {
+                            const arr = (data.equipment?.cameras ?? []).filter((_, j) => j !== i);
+                            updateEquipment("cameras", arr);
+                          }}
+                        >
+                          <X size={12} />
+                        </DangerButton>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => updateEquipment("cameras", [...(data.equipment?.cameras ?? []), ""])}
+                      className="btn-secondary !py-1.5 !px-3 !text-[10px]"
+                    >
+                      <Plus size={12} /> Add camera
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] mb-2">
+                    Lenses
+                  </h4>
+                  <div className="space-y-2">
+                    {(data.equipment?.lenses ?? []).map((l, i) => (
+                      <div key={i} className="flex gap-2 items-center">
+                        <Input
+                          value={l}
+                          onChange={(v) => {
+                            const arr = [...(data.equipment?.lenses ?? [])];
+                            arr[i] = v;
+                            updateEquipment("lenses", arr);
+                          }}
+                          placeholder="Sony FE 24-70mm f/2.8 GM"
+                        />
+                        <DangerButton
+                          onClick={() => {
+                            const arr = (data.equipment?.lenses ?? []).filter((_, j) => j !== i);
+                            updateEquipment("lenses", arr);
+                          }}
+                        >
+                          <X size={12} />
+                        </DangerButton>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => updateEquipment("lenses", [...(data.equipment?.lenses ?? []), ""])}
+                      className="btn-secondary !py-1.5 !px-3 !text-[10px]"
+                    >
+                      <Plus size={12} /> Add lens
+                    </button>
+                  </div>
+                </div>
               </div>
             </Card>
           )}
@@ -1850,6 +2559,60 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
           )}
         </main>
       </div>
+
+      {/* Datalists for autofill — render post-mount to avoid SSR/client divergence */}
+      {mounted && (
+        <>
+          <datalist id="equipment-cameras">
+            {(data.equipment?.cameras ?? []).filter(Boolean).map((c) => (
+              <option key={c} value={c} />
+            ))}
+          </datalist>
+          <datalist id="equipment-lenses">
+            {(data.equipment?.lenses ?? []).filter(Boolean).map((l) => (
+              <option key={l} value={l} />
+            ))}
+          </datalist>
+          {/* Cities-without-country fallback: only photos already labelled. */}
+          <datalist id="equipment-cities">
+            {Array.from(
+              new Set(
+                data.photography.categories.flatMap((c) =>
+                  c.images.map((i) => i.meta?.city).filter(Boolean) as string[]
+                )
+              )
+            )
+              .sort()
+              .map((c) => (
+                <option key={c} value={c} />
+              ))}
+          </datalist>
+          <datalist id="equipment-countries">
+            {countryOptions.map((c) => (
+              <option key={c} value={c} />
+            ))}
+          </datalist>
+          {(() => {
+            const used = new Set<string>();
+            for (const c of data.photography.categories) {
+              for (const img of c.images) {
+                if (img.meta?.country) used.add(img.meta.country);
+              }
+            }
+            return Array.from(used)
+              .filter((country) => citiesByCountry.has(country))
+              .map((country) => (
+                <datalist key={country} id={`cities-${slugifyCountry(country)}`}>
+                  {Array.from(citiesByCountry.get(country)!)
+                    .sort()
+                    .map((c) => (
+                      <option key={c} value={c} />
+                    ))}
+                </datalist>
+              ));
+          })()}
+        </>
+      )}
 
       <ImageCropDialog
         open={!!crop}
