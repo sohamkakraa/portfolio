@@ -1,4 +1,22 @@
 {
+  "light-trails/Lightrail 1.webp": {
+    "city": "Port",
+    "country": "France",
+    "countryCode": "FR",
+    "lat": 46.1635975,
+    "lon": 5.5710285,
+    "source": "nominatim",
+    "raw": "Port"
+  },
+  "light-trails/Startrail 10.webp": {
+    "city": "Hawaii",
+    "country": "United States",
+    "countryCode": "US",
+    "lat": 19.5938015,
+    "lon": -155.4283701,
+    "source": "nominatim",
+    "raw": "Hawaii"
+  },
   "astrophotography/Humpi.webp": {
     "city": "Hampi",
     "country": "India",
@@ -7,6 +25,33 @@
     "lon": 76.4610201,
     "source": "nominatim",
     "raw": "Hampi, Karnataka, India"
+  },
+  "astrophotography/Humpta Pass.webp": {
+    "city": "Himachal Pradesh",
+    "country": "India",
+    "countryCode": "IN",
+    "lat": 31.9292352,
+    "lon": 77.1828462,
+    "source": "nominatim",
+    "raw": "Himachal Pradesh"
+  },
+  "astrophotography/IMG_7033.webp": {
+    "city": "Himalayas",
+    "country": "China",
+    "countryCode": "CN",
+    "lat": 30.5231861,
+    "lon": 80.5727039,
+    "source": "nominatim",
+    "raw": "Himalayas"
+  },
+  "astrophotography/Nagaru Night Sky.webp": {
+    "city": "Nepal",
+    "country": "Nepal",
+    "countryCode": "NP",
+    "lat": 28.3780464,
+    "lon": 83.9999901,
+    "source": "nominatim",
+    "raw": "Nepal"
   },
   "astrophotography/Sar Pass 1.webp": {
     "city": "Bhuntar",
@@ -62,6 +107,15 @@
     "source": "nominatim",
     "raw": "Sar Pass, Himachal Pradesh, India"
   },
+  "astrophotography/Starry Night.webp": {
+    "city": "United States",
+    "country": "United States",
+    "countryCode": "US",
+    "lat": 39.7837304,
+    "lon": -100.445882,
+    "source": "nominatim",
+    "raw": "United States"
+  },
   "astrophotography/Tosh Village.webp": {
     "city": "Tosh",
     "country": "India",
@@ -71,9 +125,18 @@
     "source": "nominatim",
     "raw": "Tosh Village, Himachal Pradesh, India"
   },
+  "automobile/Masi Airfield.webp": {
+    "city": "Kenya",
+    "country": "Kenya",
+    "countryCode": "KE",
+    "lat": 1.4419683,
+    "lon": 38.4313975,
+    "source": "nominatim",
+    "raw": "Kenya"
+  },
   "automobile/Mustang 2.webp": {
-    "city": "دبي",
-    "country": "الإمارات العربية المتحدة",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
     "countryCode": "AE",
     "lat": 25.0742823,
     "lon": 55.1885387,
@@ -81,8 +144,8 @@
     "raw": "Dubai, United Arab Emirates"
   },
   "automobile/Mustang 4.webp": {
-    "city": "دبي",
-    "country": "الإمارات العربية المتحدة",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
     "countryCode": "AE",
     "lat": 25.0742823,
     "lon": 55.1885387,
@@ -91,7 +154,7 @@
   },
   "cityscapes/Amsterdam 1.webp": {
     "city": "Amsterdam",
-    "country": "Nederland",
+    "country": "Netherlands",
     "countryCode": "NL",
     "lat": 52.3730796,
     "lon": 4.8924534,
@@ -100,7 +163,7 @@
   },
   "cityscapes/Amsterdam 2.webp": {
     "city": "Amsterdam",
-    "country": "Nederland",
+    "country": "Netherlands",
     "countryCode": "NL",
     "lat": 52.3730796,
     "lon": 4.8924534,
@@ -109,7 +172,7 @@
   },
   "cityscapes/Amsterdam 3.webp": {
     "city": "Amsterdam",
-    "country": "Nederland",
+    "country": "Netherlands",
     "countryCode": "NL",
     "lat": 52.3730796,
     "lon": 4.8924534,
@@ -118,7 +181,7 @@
   },
   "cityscapes/Amsterdam 4.webp": {
     "city": "Amsterdam",
-    "country": "Nederland",
+    "country": "Netherlands",
     "countryCode": "NL",
     "lat": 52.3730796,
     "lon": 4.8924534,
@@ -127,7 +190,7 @@
   },
   "cityscapes/Amsterdam 5.webp": {
     "city": "Amsterdam",
-    "country": "Nederland",
+    "country": "Netherlands",
     "countryCode": "NL",
     "lat": 52.3730796,
     "lon": 4.8924534,
@@ -135,8 +198,8 @@
     "raw": "Amsterdam, Netherlands"
   },
   "cityscapes/Burj Al Arab.webp": {
-    "city": "دبي",
-    "country": "الإمارات العربية المتحدة",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
     "countryCode": "AE",
     "lat": 25.1413271,
     "lon": 55.1853967,
@@ -144,17 +207,17 @@
     "raw": "Burj Al Arab, Dubai, United Arab Emirates"
   },
   "cityscapes/Burj Khalifa 1.webp": {
-    "city": "دبي",
-    "country": "الإمارات العربية المتحدة",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
     "countryCode": "AE",
-    "lat": 25.1947582,
+    "lat": 25.1947581,
     "lon": 55.2780591,
     "source": "nominatim",
     "raw": "Downtown Dubai, United Arab Emirates"
   },
   "cityscapes/Burj Khalifa 2.webp": {
-    "city": "دبي",
-    "country": "الإمارات العربية المتحدة",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
     "countryCode": "AE",
     "lat": 25.1970336,
     "lon": 55.2741329,
@@ -172,7 +235,7 @@
   },
   "cityscapes/Eindhoven.webp": {
     "city": "Eindhoven",
-    "country": "Nederland",
+    "country": "Netherlands",
     "countryCode": "NL",
     "lat": 51.4392648,
     "lon": 5.478633,
@@ -180,35 +243,53 @@
     "raw": "Eindhoven, Netherlands"
   },
   "cityscapes/Expo2020 1.webp": {
-    "city": "دبي",
-    "country": "الإمارات العربية المتحدة",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
     "countryCode": "AE",
-    "lat": 24.9601316,
-    "lon": 55.1510926,
+    "lat": 24.9623268,
+    "lon": 55.1429901,
     "source": "nominatim",
     "raw": "Expo 2020, Dubai, United Arab Emirates"
   },
   "cityscapes/Expo2020 2.webp": {
-    "city": "دبي",
-    "country": "الإمارات العربية المتحدة",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
     "countryCode": "AE",
-    "lat": 24.9601316,
-    "lon": 55.1510926,
+    "lat": 24.9623268,
+    "lon": 55.1429901,
     "source": "nominatim",
     "raw": "Expo 2020, Dubai, United Arab Emirates"
   },
+  "cityscapes/Florence.webp": {
+    "city": "Florence",
+    "country": "Italy",
+    "countryCode": "IT",
+    "lat": 43.7697955,
+    "lon": 11.2556404,
+    "source": "nominatim",
+    "raw": "Florence"
+  },
   "cityscapes/Rome 2.webp": {
-    "city": "Roma",
-    "country": "Italia",
+    "city": "Rome",
+    "country": "Italy",
     "countryCode": "IT",
     "lat": 41.8916414,
     "lon": 12.4867296,
     "source": "nominatim",
     "raw": "Roman Forum, Rome, Italy"
   },
+  "cityscapes/Rome 3.webp": {
+    "city": "Deir Sharaf",
+    "country": "Palestinian Territories",
+    "countryCode": "PS",
+    "lat": 32.2769073,
+    "lon": 35.1921543,
+    "source": "nominatim",
+    "raw": "Roman Forum area"
+  },
   "cityscapes/Rome 4.webp": {
-    "city": "Roma",
-    "country": "Italia",
+    "city": "Rome",
+    "country": "Italy",
     "countryCode": "IT",
     "lat": 41.8909421,
     "lon": 12.491903,
@@ -216,8 +297,8 @@
     "raw": "Colosseum, Rome, Italy"
   },
   "cityscapes/Rome.webp": {
-    "city": "Roma",
-    "country": "Italia",
+    "city": "Rome",
+    "country": "Italy",
     "countryCode": "IT",
     "lat": 41.8909421,
     "lon": 12.491903,
@@ -260,14 +341,113 @@
     "source": "nominatim",
     "raw": "Amboseli National Park, Kenya"
   },
+  "landscape/Austria.webp": {
+    "city": "Upper Austria",
+    "country": "Austria",
+    "countryCode": "AT",
+    "lat": 47.7919131,
+    "lon": 13.5719295,
+    "source": "nominatim",
+    "raw": "Salzkammergut"
+  },
   "landscape/Capri 2.webp": {
     "city": "Capri",
-    "country": "Italia",
+    "country": "Italy",
     "countryCode": "IT",
     "lat": 40.5497361,
     "lon": 14.2467361,
     "source": "nominatim",
     "raw": "Faraglioni, Capri, Italy"
+  },
+  "landscape/Chandartal Lake.webp": {
+    "city": "Himachal Pradesh",
+    "country": "India",
+    "countryCode": "IN",
+    "lat": 31.9292352,
+    "lon": 77.1828462,
+    "source": "nominatim",
+    "raw": "Himachal Pradesh"
+  },
+  "landscape/Flowers 1.webp": {
+    "city": "Alps",
+    "country": "Italy",
+    "countryCode": "IT",
+    "lat": 45.9083263,
+    "lon": 9.1420628,
+    "source": "nominatim",
+    "raw": "Alps"
+  },
+  "landscape/Himalayas 1.webp": {
+    "city": "Himalayas",
+    "country": "China",
+    "countryCode": "CN",
+    "lat": 30.5231861,
+    "lon": 80.5727039,
+    "source": "nominatim",
+    "raw": "Himalayas"
+  },
+  "landscape/Himalayas 10.webp": {
+    "city": "India",
+    "country": "India",
+    "countryCode": "IN",
+    "lat": 22.3511148,
+    "lon": 78.6677428,
+    "source": "nominatim",
+    "raw": "India"
+  },
+  "landscape/Himalayas 11.webp": {
+    "city": "Himalayas",
+    "country": "China",
+    "countryCode": "CN",
+    "lat": 30.5231861,
+    "lon": 80.5727039,
+    "source": "nominatim",
+    "raw": "Himalayas"
+  },
+  "landscape/Himalayas 12.webp": {
+    "city": "Himalayas",
+    "country": "China",
+    "countryCode": "CN",
+    "lat": 30.5231861,
+    "lon": 80.5727039,
+    "source": "nominatim",
+    "raw": "Himalayas"
+  },
+  "landscape/Himalayas 13.webp": {
+    "city": "Himalayas",
+    "country": "China",
+    "countryCode": "CN",
+    "lat": 30.5231861,
+    "lon": 80.5727039,
+    "source": "nominatim",
+    "raw": "Himalayas"
+  },
+  "landscape/Himalayas 14.webp": {
+    "city": "Himalayas",
+    "country": "China",
+    "countryCode": "CN",
+    "lat": 30.5231861,
+    "lon": 80.5727039,
+    "source": "nominatim",
+    "raw": "Himalayas"
+  },
+  "landscape/Himalayas 15.webp": {
+    "city": "Himalayas",
+    "country": "China",
+    "countryCode": "CN",
+    "lat": 30.5231861,
+    "lon": 80.5727039,
+    "source": "nominatim",
+    "raw": "Himalayas"
+  },
+  "landscape/Himalayas 16.webp": {
+    "city": "Uttarakhand",
+    "country": "India",
+    "countryCode": "IN",
+    "lat": 30.9635733,
+    "lon": 78.6362521,
+    "source": "nominatim",
+    "raw": "Uttarkashi District"
   },
   "landscape/Himalayas 17.webp": {
     "city": "Great Himalayan Range",
@@ -278,14 +458,68 @@
     "source": "nominatim",
     "raw": "Himalayan region, India"
   },
+  "landscape/Himalayas 2.webp": {
+    "city": "Himalayas",
+    "country": "China",
+    "countryCode": "CN",
+    "lat": 30.5231861,
+    "lon": 80.5727039,
+    "source": "nominatim",
+    "raw": "Himalayas"
+  },
   "landscape/Himalayas 3.webp": {
-    "city": "Chennai Corporation",
+    "city": "Chennai",
     "country": "India",
     "countryCode": "IN",
     "lat": 12.9656364,
     "lon": 80.205007,
     "source": "nominatim",
     "raw": "Himalayas, India"
+  },
+  "landscape/Himalayas 4.webp": {
+    "city": "Himalayas",
+    "country": "China",
+    "countryCode": "CN",
+    "lat": 30.5231861,
+    "lon": 80.5727039,
+    "source": "nominatim",
+    "raw": "Himalayas"
+  },
+  "landscape/Himalayas 5.webp": {
+    "city": "Himalayas",
+    "country": "China",
+    "countryCode": "CN",
+    "lat": 30.5231861,
+    "lon": 80.5727039,
+    "source": "nominatim",
+    "raw": "Himalayas"
+  },
+  "landscape/Himalayas 6.webp": {
+    "city": "Himalayas",
+    "country": "China",
+    "countryCode": "CN",
+    "lat": 30.5231861,
+    "lon": 80.5727039,
+    "source": "nominatim",
+    "raw": "Himalayas"
+  },
+  "landscape/Himalayas 7.webp": {
+    "city": "Great Himalayan Range",
+    "country": "India",
+    "countryCode": "IN",
+    "lat": 32.6742376,
+    "lon": 76.8197781,
+    "source": "nominatim",
+    "raw": "Himalayan region"
+  },
+  "landscape/Himalayas 8.webp": {
+    "city": "Himalayas",
+    "country": "China",
+    "countryCode": "CN",
+    "lat": 30.5231861,
+    "lon": 80.5727039,
+    "source": "nominatim",
+    "raw": "Himalayas"
   },
   "landscape/Himalayas 9.webp": {
     "city": "Great Himalayan Range",
@@ -296,14 +530,41 @@
     "source": "nominatim",
     "raw": "Himalayan region, India"
   },
+  "landscape/Humpta Pass 1.webp": {
+    "city": "Himachal Pradesh",
+    "country": "India",
+    "countryCode": "IN",
+    "lat": 31.9292352,
+    "lon": 77.1828462,
+    "source": "nominatim",
+    "raw": "Himachal Pradesh"
+  },
+  "landscape/Humpta Pass 2.webp": {
+    "city": "Himachal Pradesh",
+    "country": "India",
+    "countryCode": "IN",
+    "lat": 31.9292352,
+    "lon": 77.1828462,
+    "source": "nominatim",
+    "raw": "Himachal Pradesh"
+  },
   "landscape/Manali.webp": {
     "city": "Kullu",
     "country": "India",
     "countryCode": "IN",
-    "lat": 31.9443352,
-    "lon": 77.109386,
+    "lat": 31.9228255,
+    "lon": 77.1501968,
     "source": "nominatim",
     "raw": "Kullu Valley, Himachal Pradesh, India"
+  },
+  "landscape/Masi 2.webp": {
+    "city": "Tanzania",
+    "country": "Tanzania",
+    "countryCode": "TZ",
+    "lat": -6.5247123,
+    "lon": 35.7878438,
+    "source": "nominatim",
+    "raw": "Tanzania"
   },
   "landscape/Masi Airspace.webp": {
     "city": "Narok",
@@ -349,6 +610,60 @@
     "lon": 77.4518636,
     "source": "nominatim",
     "raw": "Tosh, Himachal Pradesh, India"
+  },
+  "wildlife/Elephant.webp": {
+    "city": "Nairobi",
+    "country": "Kenya",
+    "countryCode": "KE",
+    "lat": -1.2686662,
+    "lon": 36.8161377,
+    "source": "nominatim",
+    "raw": "East Africa Kenya"
+  },
+  "wildlife/Giraffe 1.webp": {
+    "city": "Botswana",
+    "country": "Botswana",
+    "countryCode": "BW",
+    "lat": -23.1681782,
+    "lon": 24.5928742,
+    "source": "nominatim",
+    "raw": "Botswana"
+  },
+  "wildlife/Giraffe 2.webp": {
+    "city": "Tanzania",
+    "country": "Tanzania",
+    "countryCode": "TZ",
+    "lat": -6.5247123,
+    "lon": 35.7878438,
+    "source": "nominatim",
+    "raw": "Tanzania"
+  },
+  "wildlife/Giraffe 3.webp": {
+    "city": "Kenya",
+    "country": "Kenya",
+    "countryCode": "KE",
+    "lat": 1.4419683,
+    "lon": 38.4313975,
+    "source": "nominatim",
+    "raw": "Kenya"
+  },
+  "wildlife/Great Egret 2.webp": {
+    "city": "Langley",
+    "country": "United States",
+    "countryCode": "US",
+    "lat": 37.5170432,
+    "lon": -82.805994,
+    "source": "nominatim",
+    "raw": "Eastern United States"
+  },
+  "wildlife/Herd of Elephants 1.webp": {
+    "city": "Nairobi",
+    "country": "Kenya",
+    "countryCode": "KE",
+    "lat": -1.2686662,
+    "lon": 36.8161377,
+    "source": "nominatim",
+    "raw": "East Africa Kenya"
   },
   "wildlife/Herd of Elephants 2.webp": {
     "city": "Loitokitok",
