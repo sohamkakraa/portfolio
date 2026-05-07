@@ -149,73 +149,199 @@ export default function PhotographyGlobe({ section }: Props) {
   const previewFrames = filtered.slice(0, 12);
   const lightboxFrames = lightboxScope === "all" ? filtered : previewFrames;
 
+  const ddStyle: React.CSSProperties = {
+    appearance: "none",
+    padding: "10px 36px 10px 14px",
+    borderRadius: 99,
+    border: "1px solid var(--line-2)",
+    background: "var(--bg-2)",
+    color: "var(--ink)",
+    fontFamily: "var(--font-jetbrains), monospace",
+    fontSize: 11,
+    letterSpacing: "0.15em",
+    textTransform: "uppercase",
+    cursor: "pointer",
+    backgroundImage:
+      "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23999' stroke-width='1.2' fill='none'/%3E%3C/svg%3E\")",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "right 14px center",
+  };
+
   return (
     <section
       id="photography"
-      className="scroll-mt-24"
-      style={{ paddingTop: "clamp(5rem, 10vw, 8rem)", paddingBottom: "clamp(5rem, 10vw, 8rem)" }}
+      style={{
+        padding: "120px 0",
+        borderTop: "1px solid var(--line)",
+      }}
     >
-      <div className="section-container">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between mb-8">
+      <div className="container">
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-end",
+            flexWrap: "wrap",
+            gap: 24,
+            marginBottom: 32,
+          }}
+        >
           <div>
-            <p className="section-label">{"// 03 · field journal"}</p>
-            <h2 className="section-title mt-3">
+            <div className="label">{"// 03 · field journal"}</div>
+            <h2
+              className="serif"
+              style={{
+                marginTop: 12,
+                fontSize: "clamp(40px, 5.5vw, 72px)",
+                fontWeight: 300,
+                lineHeight: 1,
+                letterSpacing: "-0.03em",
+                color: "var(--ink)",
+              }}
+            >
               <em style={{ color: "var(--accent)", fontStyle: "italic" }}>Photographs</em>, mapped to memory.
             </h2>
-            <p className="body mt-4 max-w-xl" style={{ color: "var(--ink-2)" }}>
+            <p
+              style={{
+                marginTop: 16,
+                fontSize: 15,
+                color: "var(--ink-2)",
+                maxWidth: 540,
+              }}
+            >
               Filter by category or city. The globe re-aims at the densest region of whatever you select.
             </p>
           </div>
-          <div className="mono-label" style={{ color: "var(--ink-3)" }}>
+          <div
+            className="mono"
+            style={{
+              fontSize: 11,
+              color: "var(--ink-3)",
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+            }}
+          >
             {filtered.length} / {allFrames.length} frames
           </div>
         </div>
 
-        {/* Filter bar */}
-        <div className="flex flex-wrap items-center gap-3 mb-8">
-          <span className="mono-label" style={{ color: "var(--ink-3)" }}>filters →</span>
-          <FilterDropdown
-            label="All categories"
-            value={category}
-            onChange={(v) => setCategory(v)}
-            options={categoryOptions.map((c) => ({ value: c.slug, label: `${c.title} · ${c.count}` }))}
-          />
-          <FilterDropdown
-            label="All cities"
-            value={city}
-            onChange={(v) => setCity(v)}
-            options={cityOptions.map((c) => ({ value: c.name, label: `${c.name} · ${c.count}` }))}
-          />
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 12,
+            marginBottom: 32,
+            alignItems: "center",
+          }}
+        >
+          <div
+            className="mono"
+            style={{
+              fontSize: 10,
+              color: "var(--ink-3)",
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              marginRight: 4,
+            }}
+          >
+            filters →
+          </div>
+          <select
+            value={category || ""}
+            onChange={(e) => setCategory(e.target.value || null)}
+            style={{
+              ...ddStyle,
+              ...(category
+                ? { borderColor: "var(--accent)", color: "var(--accent)" }
+                : {}),
+            }}
+          >
+            <option value="">All categories</option>
+            {categoryOptions.map((c) => (
+              <option key={c.slug} value={c.slug}>
+                {c.title} · {c.count}
+              </option>
+            ))}
+          </select>
+          <select
+            value={city || ""}
+            onChange={(e) => setCity(e.target.value || null)}
+            style={{
+              ...ddStyle,
+              ...(city
+                ? { borderColor: "var(--accent)", color: "var(--accent)" }
+                : {}),
+            }}
+          >
+            <option value="">All cities</option>
+            {cityOptions.map((c) => (
+              <option key={c.name} value={c.name}>
+                {c.name} · {c.count}
+              </option>
+            ))}
+          </select>
           {(category || city) && (
             <button
-              onClick={() => { setCategory(null); setCity(null); }}
-              className="mono-label"
+              onClick={() => {
+                setCategory(null);
+                setCity(null);
+              }}
+              className="mono"
               style={{
-                padding: "8px 12px",
+                fontSize: 10,
                 color: "var(--ink-2)",
-                border: "1px solid var(--line-2)",
-                borderRadius: 99,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                padding: "10px 14px",
                 background: "transparent",
+                border: "none",
                 cursor: "pointer",
               }}
             >
               clear ✕
             </button>
           )}
-          <div className="flex-1" />
+          <div style={{ flex: 1 }} />
           <button
             onClick={() => setViewAll(true)}
-            className="btn-primary"
-            style={{ padding: "10px 16px" }}
+            className="mono"
+            style={{
+              padding: "10px 18px",
+              borderRadius: 99,
+              border: "1px solid var(--ink)",
+              background: "var(--ink)",
+              color: "var(--bg)",
+              fontSize: 10,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
           >
             View all {filtered.length} →
           </button>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] items-start">
-          {/* Globe */}
-          <div className="lg:sticky lg:top-24">
-            <div style={{ aspectRatio: "1 / 1", maxWidth: "min(560px, 50vw)", margin: "0 auto", position: "relative" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1.2fr)",
+            gap: 40,
+            alignItems: "start",
+            maxHeight: "calc(100vh - 120px)",
+          }}
+          className="globe-wall-grid"
+        >
+          <div>
+            <div
+              style={{
+                aspectRatio: "1 / 1",
+                maxHeight: "calc(100vh - 240px)",
+                position: "relative",
+                margin: "0 auto",
+                maxWidth: "calc(100vh - 240px)",
+              }}
+            >
               <Globe
                 frames={allFrames}
                 locations={LOCATIONS}
@@ -224,42 +350,92 @@ export default function PhotographyGlobe({ section }: Props) {
                 onPickCity={(name) => setCity((c) => (c === name ? null : name))}
               />
             </div>
-            <div className="mono-label flex justify-between mt-3" style={{ color: "var(--ink-3)" }}>
+            <div
+              className="mono"
+              style={{
+                marginTop: 14,
+                fontSize: 10,
+                color: "var(--ink-3)",
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
               <span>drag to rotate</span>
-              <span>{LOCATIONS.length} cities · {allFrames.length} frames</span>
+              <span>
+                {LOCATIONS.length} cities · {allFrames.length} frames
+              </span>
             </div>
           </div>
 
-          {/* Curator wall */}
-          <div>
-            <div className="flex justify-between items-baseline mb-4">
-              <h3 className="display-md font-display" style={{ color: "var(--ink)" }}>
-                {city ?? (category ? section.categories.find((c) => c.slug === category)?.title : "All work")}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              maxHeight: "calc(100vh - 180px)",
+              minHeight: 0,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "baseline",
+                marginBottom: 14,
+                flexShrink: 0,
+              }}
+            >
+              <h3
+                className="serif"
+                style={{
+                  fontSize: 26,
+                  fontWeight: 400,
+                  letterSpacing: "-0.02em",
+                  color: "var(--ink)",
+                }}
+              >
+                {city ??
+                  (category
+                    ? section.categories.find((c) => c.slug === category)?.title
+                    : "All work")}
               </h3>
-              <span className="mono-label" style={{ color: "var(--ink-3)" }}>
+              <span
+                className="mono"
+                style={{
+                  fontSize: 10,
+                  color: "var(--ink-3)",
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                }}
+              >
                 preview · {Math.min(filtered.length, 12)} of {filtered.length}
               </span>
             </div>
             <div
               style={{
-                position: "relative",
-                maskImage: filtered.length > 12 ? "linear-gradient(to bottom, black 84%, transparent 100%)" : "none",
-                WebkitMaskImage: filtered.length > 12 ? "linear-gradient(to bottom, black 84%, transparent 100%)" : "none",
+                overflow: "hidden",
+                flex: 1,
+                minHeight: 0,
+                maskImage:
+                  filtered.length > 12
+                    ? "linear-gradient(to bottom, black 80%, transparent 100%)"
+                    : "none",
+                WebkitMaskImage:
+                  filtered.length > 12
+                    ? "linear-gradient(to bottom, black 80%, transparent 100%)"
+                    : "none",
               }}
             >
-              <Mosaic
-                frames={previewFrames}
-                onPick={(idx) => { setLightbox(idx); setLightboxScope("preview"); }}
-              />
+              <Mosaic frames={previewFrames} onPick={(idx) => { setLightbox(idx); setLightboxScope("preview"); }} />
               {!filtered.length && (
                 <div
-                  className="mono-label"
+                  className="mono"
                   style={{
                     padding: "60px 20px",
                     textAlign: "center",
                     border: "1px dashed var(--line-2)",
                     color: "var(--ink-3)",
-                    borderRadius: 8,
                   }}
                 >
                   no frames match this filter
@@ -291,112 +467,6 @@ export default function PhotographyGlobe({ section }: Props) {
         />
       )}
     </section>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────────
-// Filter dropdown — pill button + panel
-// ─────────────────────────────────────────────────────────────────────
-function FilterDropdown({
-  label,
-  value,
-  onChange,
-  options,
-}: {
-  label: string;
-  value: string | null;
-  onChange: (v: string | null) => void;
-  options: { value: string; label: string }[];
-}) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (!ref.current?.contains(e.target as Node)) setOpen(false);
-    };
-    window.addEventListener("pointerdown", handler);
-    return () => window.removeEventListener("pointerdown", handler);
-  }, [open]);
-
-  const selected = options.find((o) => o.value === value);
-  const display = selected ? selected.label : label;
-
-  return (
-    <div ref={ref} style={{ position: "relative" }}>
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="mono-label"
-        style={{
-          padding: "10px 14px",
-          paddingRight: 30,
-          background: "var(--bg-2)",
-          border: `1px solid ${value ? "var(--accent)" : "var(--line-2)"}`,
-          borderRadius: 99,
-          color: value ? "var(--accent)" : "var(--ink)",
-          cursor: "pointer",
-          position: "relative",
-        }}
-      >
-        {display}
-        <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)" }}>▾</span>
-      </button>
-      {open && (
-        <div
-          style={{
-            position: "absolute",
-            top: "calc(100% + 6px)",
-            left: 0,
-            zIndex: 30,
-            minWidth: 200,
-            background: "var(--bg-2)",
-            border: "1px solid var(--line-2)",
-            borderRadius: 12,
-            padding: 6,
-            boxShadow: "0 12px 30px rgba(0, 0, 0, 0.25)",
-          }}
-        >
-          <button
-            onClick={() => { onChange(null); setOpen(false); }}
-            className="mono-label"
-            style={{
-              display: "block",
-              width: "100%",
-              textAlign: "left",
-              padding: "8px 12px",
-              border: "none",
-              background: !value ? "var(--bg-3)" : "transparent",
-              color: "var(--ink-2)",
-              borderRadius: 8,
-              cursor: "pointer",
-            }}
-          >
-            {label}
-          </button>
-          {options.map((o) => (
-            <button
-              key={o.value}
-              onClick={() => { onChange(o.value); setOpen(false); }}
-              className="mono-label"
-              style={{
-                display: "block",
-                width: "100%",
-                textAlign: "left",
-                padding: "8px 12px",
-                border: "none",
-                background: value === o.value ? "var(--bg-3)" : "transparent",
-                color: value === o.value ? "var(--accent)" : "var(--ink)",
-                borderRadius: 8,
-                cursor: "pointer",
-              }}
-            >
-              {o.label}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
   );
 }
 
@@ -660,8 +730,19 @@ function Globe({
 }
 
 // ─────────────────────────────────────────────────────────────────────
-// Curator wall mosaic — every 7th tile is 2x2
+// Curator wall mosaic — 8-position size pattern from prototype
 // ─────────────────────────────────────────────────────────────────────
+const SIZES: { c: string; r: string }[] = [
+  { c: "span 2", r: "span 2" },
+  { c: "span 1", r: "span 1" },
+  { c: "span 1", r: "span 1" },
+  { c: "span 2", r: "span 1" },
+  { c: "span 1", r: "span 2" },
+  { c: "span 1", r: "span 1" },
+  { c: "span 1", r: "span 1" },
+  { c: "span 1", r: "span 1" },
+];
+
 function Mosaic({
   frames,
   onPick,
@@ -671,24 +752,26 @@ function Mosaic({
 }) {
   return (
     <div
-      className="grid gap-2"
       style={{
+        display: "grid",
         gridTemplateColumns: "repeat(4, 1fr)",
         gridAutoRows: "120px",
+        gap: 8,
         gridAutoFlow: "dense",
       }}
     >
-      {frames.map((f, i) => {
-        const big = i % 7 === 0;
+      {frames.slice(0, 24).map((f, i) => {
+        const s = SIZES[i % SIZES.length];
         return (
           <button
             key={f.id}
             onClick={() => onPick(i)}
             className="photo-tile"
             style={{
-              gridColumn: big ? "span 2" : "span 1",
-              gridRow: big ? "span 2" : "span 1",
+              gridColumn: s.c,
+              gridRow: s.r,
               minHeight: 0,
+              padding: 0,
             }}
             aria-label={f.title}
           >
@@ -745,91 +828,159 @@ function Lightbox({
         position: "fixed",
         inset: 0,
         zIndex: 220,
-        background: "color-mix(in oklab, var(--bg) 92%, transparent)",
-        backdropFilter: "blur(12px)",
-        display: "flex",
-        flexDirection: "column",
-        padding: "32px",
+        background: "rgba(8,8,9,0.96)",
+        backdropFilter: "blur(8px)",
+        display: "grid",
+        gridTemplateColumns: "1fr 320px",
       }}
-      onClick={onClose}
+      className="lightbox"
     >
       <div
-        onClick={(e) => e.stopPropagation()}
         style={{
-          flex: 1,
+          position: "relative",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          gap: 16,
-          minHeight: 0,
+          padding: 56,
         }}
       >
+        <div
+          style={{
+            width: "min(90%, 1000px)",
+            height: "min(85vh, 800px)",
+            position: "relative",
+          }}
+        >
+          <Image src={f.src} alt={f.title} fill sizes="80vw" style={{ objectFit: "contain" }} />
+        </div>
+        <button
+          onClick={onClose}
+          className="mono"
+          style={{
+            position: "absolute",
+            top: 24,
+            right: 24,
+            color: "var(--ink-2)",
+            background: "transparent",
+            border: "none",
+            cursor: "pointer",
+            fontSize: 12,
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+          }}
+        >
+          ✕ Close
+        </button>
         <button
           onClick={() => onIndex(Math.max(0, index - 1))}
-          className="mono-label"
-          style={{ color: "var(--ink-2)", padding: 12, background: "transparent", border: "none", cursor: "pointer" }}
+          className="mono"
+          style={{
+            position: "absolute",
+            left: 16,
+            top: "50%",
+            transform: "translateY(-50%)",
+            color: "var(--ink-2)",
+            background: "transparent",
+            border: "none",
+            cursor: "pointer",
+            fontSize: 11,
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+          }}
           aria-label="Previous"
           disabled={index === 0}
         >
           ← prev
         </button>
-        <div
-          style={{
-            width: "min(80vw, 1200px)",
-            height: "min(80vh, 800px)",
-            position: "relative",
-          }}
-        >
-          <Image
-            src={f.src}
-            alt={f.title}
-            fill
-            sizes="80vw"
-            style={{ objectFit: "contain" }}
-          />
-        </div>
         <button
           onClick={() => onIndex(Math.min(frames.length - 1, index + 1))}
-          className="mono-label"
-          style={{ color: "var(--ink-2)", padding: 12, background: "transparent", border: "none", cursor: "pointer" }}
+          className="mono"
+          style={{
+            position: "absolute",
+            right: 56,
+            top: "50%",
+            transform: "translateY(-50%)",
+            color: "var(--ink-2)",
+            background: "transparent",
+            border: "none",
+            cursor: "pointer",
+            fontSize: 11,
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+          }}
           aria-label="Next"
           disabled={index === frames.length - 1}
         >
           next →
         </button>
       </div>
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 mono-label"
-        style={{ color: "var(--ink-3)" }}
-      >
-        <span style={{ color: "var(--ink-2)" }}>{f.title}</span>
-        <span>·</span>
-        <span>{f.city}</span>
-        {f.date && <><span>·</span><span>{f.date}</span></>}
-        {f.exif.lens && <><span>·</span><span>lens {f.exif.lens}</span></>}
-        {f.exif.iso && <><span>·</span><span>iso {f.exif.iso}</span></>}
-        {f.exif.shutter && <><span>·</span><span>{f.exif.shutter}</span></>}
-        {f.exif.aperture && <><span>·</span><span>f/{String(f.exif.aperture).replace(/^f\//, "")}</span></>}
-      </div>
-      <button
-        onClick={onClose}
-        aria-label="Close"
-        className="mono-label"
-        style={{
-          position: "absolute",
-          top: 24,
-          right: 24,
-          color: "var(--ink-2)",
-          background: "transparent",
-          border: "1px solid var(--line-2)",
-          borderRadius: 99,
-          padding: "8px 14px",
-          cursor: "pointer",
-        }}
-      >
-        ✕ close
-      </button>
+      <aside style={{ borderLeft: "1px solid var(--line)", padding: "56px 32px", overflowY: "auto" }}>
+        <div
+          className="mono"
+          style={{
+            fontSize: 10,
+            letterSpacing: "0.2em",
+            textTransform: "uppercase",
+            color: "var(--accent)",
+          }}
+        >
+          {f.categoryTitle}
+        </div>
+        <h3
+          className="serif"
+          style={{
+            marginTop: 8,
+            fontSize: 28,
+            fontWeight: 400,
+            color: "var(--ink)",
+            letterSpacing: "-0.02em",
+          }}
+        >
+          {f.title}
+        </h3>
+        <p
+          className="mono"
+          style={{ marginTop: 12, fontSize: 12, color: "var(--ink-2)" }}
+        >
+          {f.city}
+          {f.country ? ` · ${f.country}` : ""}
+          {f.date ? ` · ${f.date}` : ""}
+        </p>
+        {f.description && (
+          <p style={{ marginTop: 14, fontSize: 13, color: "var(--ink-2)", lineHeight: 1.55 }}>
+            {f.description}
+          </p>
+        )}
+        <table
+          className="mono"
+          style={{
+            marginTop: 32,
+            width: "100%",
+            fontSize: 12,
+            borderCollapse: "collapse",
+          }}
+        >
+          <tbody>
+            {[
+              ["Lens", f.exif.lens],
+              ["ISO", f.exif.iso],
+              ["Shutter", f.exif.shutter],
+              ["Aperture", f.exif.aperture],
+            ]
+              .filter(([, v]) => v)
+              .map(([k, v]) => (
+                <tr key={k}>
+                  <td style={{ color: "var(--ink-3)", padding: "8px 0", borderBottom: "1px dotted var(--line)" }}>
+                    {k}
+                  </td>
+                  <td style={{ textAlign: "right", padding: "8px 0", borderBottom: "1px dotted var(--line)" }}>
+                    {v}
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </aside>
     </div>
   );
 }

@@ -1,13 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-
-const MODES = [
-  { id: "light", label: "Light", Icon: Sun },
-  { id: "dark", label: "Dark", Icon: Moon },
-] as const;
 
 export default function ThemeToggle() {
   const { theme, resolvedTheme, setTheme } = useTheme();
@@ -16,39 +10,34 @@ export default function ThemeToggle() {
     () => true,
     () => false
   );
-
   const selected = isClient
     ? theme === "system"
       ? resolvedTheme ?? "dark"
       : theme ?? "dark"
     : "dark";
+  const dark = selected === "dark";
 
   return (
-    <div
-      className="inline-flex items-center gap-0.5 rounded-full border border-[color:var(--border)] bg-[color:var(--bg-surface)] p-1"
-      role="group"
-      aria-label="Display preference"
+    <button
+      type="button"
+      onClick={() => setTheme(dark ? "light" : "dark")}
+      aria-label="Toggle theme"
+      title={dark ? "Switch to light" : "Switch to dark"}
+      style={{
+        width: 36,
+        height: 36,
+        borderRadius: "50%",
+        border: "1px solid var(--line-2)",
+        color: "var(--ink-2)",
+        fontSize: 13,
+        background: "transparent",
+        cursor: "pointer",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
     >
-      {MODES.map((mode) => {
-        const active = selected === mode.id;
-        return (
-          <button
-            key={mode.id}
-            type="button"
-            onClick={() => setTheme(mode.id)}
-            title={mode.label}
-            aria-label={mode.label}
-            aria-pressed={active}
-            className={`inline-flex h-7 w-7 items-center justify-center rounded-full transition-all ${
-              active
-                ? "bg-[color:var(--fg)] text-[color:var(--bg)]"
-                : "text-[color:var(--fg-muted)] hover:text-[color:var(--fg)]"
-            }`}
-          >
-            <mode.Icon size={14} strokeWidth={2} />
-          </button>
-        );
-      })}
-    </div>
+      {dark ? "◐" : "◑"}
+    </button>
   );
 }

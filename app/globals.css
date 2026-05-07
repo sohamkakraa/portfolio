@@ -210,8 +210,23 @@
 }
 
 /* ════════════════════════════════════════════════════════════════════
-   Editorial typography utilities
+   Prototype-faithful utilities — match handoff JSX class names directly
    ──────────────────────────────────────────────────────────────────── */
+.serif { font-family: var(--font-fraunces), Georgia, serif; font-optical-sizing: auto; font-weight: 300; }
+.mono  { font-family: var(--font-jetbrains), ui-monospace, monospace; }
+.label {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+}
+
 .font-display { font-family: var(--font-fraunces), Georgia, serif; font-optical-sizing: auto; }
 .font-body    { font-family: var(--font-inter), system-ui, sans-serif; }
 .font-mono    { font-family: var(--font-jetbrains), ui-monospace, monospace; }
@@ -496,6 +511,36 @@
 /* ── Globe ── */
 .globe-svg { width: 100%; height: 100%; user-select: none; touch-action: none; cursor: grab; }
 .globe-svg:active { cursor: grabbing; }
+
+@media (max-width: 1024px) {
+  .globe-wall-grid {
+    grid-template-columns: 1fr !important;
+    max-height: none !important;
+  }
+  .lightbox {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: 1fr auto !important;
+  }
+  .about-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .about-pillars,
+  .life-2col,
+  .entertainment-3col {
+    grid-template-columns: 1fr !important;
+  }
+  .books-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  .contact-2col {
+    grid-template-columns: 1fr !important;
+  }
+}
+@media (max-width: 600px) {
+  .books-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
 
 /* ── Reveal animation ── */
 .reveal {

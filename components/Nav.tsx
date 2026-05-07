@@ -1,8 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
-import { Menu, X, ArrowUpRight } from "lucide-react";
+import { useEffect, useState } from "react";
 import type { NavItem } from "@/lib/portfolio-types";
 import ThemeToggle from "@/components/ThemeToggle";
 import LogoOrbit from "@/components/LogoOrbit";
@@ -12,169 +10,121 @@ type NavProps = {
   nav: NavItem[];
 };
 
-export default function Nav({ name, nav }: NavProps) {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+const SECTIONS: { id: string; label: string }[] = [
+  { id: "top", label: "00" },
+  { id: "about", label: "01 about" },
+  { id: "projects", label: "02 work" },
+  { id: "photography", label: "03 photo" },
+  { id: "life", label: "04 life" },
+  { id: "contact", label: "05 contact" },
+];
 
-  const handleScroll = useCallback(() => {
-    setScrolled(window.scrollY > 60);
+export default function Nav({ name }: NavProps) {
+  const [active, setActive] = useState("top");
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive(e.target.id);
+        }),
+      { rootMargin: "-40% 0px -55% 0px" }
+    );
+    SECTIONS.forEach((s) => {
+      const el = document.getElementById(s.id);
+      if (el) obs.observe(el);
+    });
+    return () => obs.disconnect();
   }, []);
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [handleScroll]);
-
-  useEffect(() => {
-    document.body.style.overflow = mobileOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [mobileOpen]);
+  const scrollTo = (id: string) => {
+    if (id === "top") return window.scrollTo({ top: 0, behavior: "smooth" });
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
-    <>
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "nav-floating" : ""}`}
+    <header
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 50,
+        backdropFilter: "blur(12px)",
+        background: "color-mix(in oklab, var(--bg) 75%, transparent)",
+        borderBottom: "1px solid var(--line)",
+      }}
+    >
+      <div
+        className="container"
+        style={{
+          height: 64,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 12,
+        }}
       >
-        <div className="section-container">
-          <div className="flex h-20 items-center justify-between md:h-[80px]">
-            {/* Mark + wordmark */}
-            <Link
-              href="/#top"
-              className="group relative inline-flex items-center gap-3 no-underline"
-              aria-label={`${name} — home`}
-            >
-              <LogoOrbit size={48} ink="var(--ink)" />
-              <span
-                className="hidden sm:inline relative font-mono text-[11px] font-semibold uppercase"
-                style={{ letterSpacing: "0.2em", color: "var(--ink)" }}
-              >
-                {name}
-                <span
-                  className="absolute -bottom-1 left-0 h-[2px] w-0 transition-all duration-300 group-hover:w-full"
-                  style={{ background: "var(--accent)" }}
-                />
-              </span>
-            </Link>
-
-            {/* Desktop nav */}
-            <nav className="hidden items-center gap-1 md:flex">
-              {nav.map((item) => (
-                <Link
-                  key={`${item.href}-${item.label}`}
-                  href={item.href}
-                  className="mono-label relative rounded-full px-3 py-2 no-underline transition-colors"
-                  style={{ color: "var(--ink-2)" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--ink)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--ink-2)")}
-                >
-                  {item.label}
-                </Link>
-              ))}
-
-              <a
-                href="https://viveka.sohamkakra.com"
-                target="_blank"
-                rel="noreferrer"
-                className="ml-3 inline-flex items-center gap-2 mono-label"
-                style={{
-                  padding: "8px 12px",
-                  background: "var(--accent)",
-                  color: "var(--bg)",
-                  borderRadius: 4,
-                }}
-              >
-                <span>Viveka</span>
-                <ArrowUpRight size={12} />
-              </a>
-
-              <div className="ml-3">
-                <ThemeToggle />
-              </div>
-            </nav>
-
-            {/* Mobile controls */}
-            <div className="flex items-center gap-2 md:hidden">
-              <ThemeToggle />
-              <button
-                type="button"
-                onClick={() => setMobileOpen(!mobileOpen)}
-                className="inline-flex h-10 w-10 items-center justify-center"
-                style={{
-                  border: "1px solid var(--line-2)",
-                  borderRadius: 99,
-                  color: "var(--ink)",
-                  background: "transparent",
-                }}
-                aria-label="Toggle menu"
-              >
-                {mobileOpen ? <X size={18} /> : <Menu size={18} />}
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Mobile menu overlay */}
-      {mobileOpen && (
-        <div
-          className="fixed inset-0 z-[100] flex flex-col md:hidden"
+        <button
+          onClick={() => scrollTo("top")}
           style={{
-            background: "color-mix(in oklab, var(--bg) 96%, transparent)",
-            backdropFilter: "blur(20px)",
-            paddingTop: "max(0px, env(safe-area-inset-top))",
-            paddingBottom: "max(0px, env(safe-area-inset-bottom))",
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            background: "transparent",
+            border: "none",
+            cursor: "pointer",
+            padding: 0,
+            color: "inherit",
+          }}
+          aria-label="Home"
+        >
+          <LogoOrbit size={32} ink="var(--ink)" />
+          <span
+            className="mono"
+            style={{
+              fontSize: 11,
+              letterSpacing: "0.3em",
+              textTransform: "uppercase",
+              color: "var(--ink)",
+              fontWeight: 600,
+            }}
+          >
+            {name}
+          </span>
+        </button>
+        <nav
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
+            flexWrap: "wrap",
           }}
         >
-          <div className="flex h-16 items-center justify-between px-6">
-            <LogoOrbit size={40} ink="var(--ink)" />
+          {SECTIONS.map((s) => (
             <button
-              type="button"
-              onClick={() => setMobileOpen(false)}
-              className="inline-flex h-10 w-10 items-center justify-center"
+              key={s.id}
+              onClick={() => scrollTo(s.id)}
               style={{
-                border: "1px solid var(--line-2)",
+                padding: "8px 14px",
                 borderRadius: 99,
-                color: "var(--ink)",
-                background: "transparent",
+                fontFamily: "var(--font-jetbrains), monospace",
+                fontSize: 10,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: active === s.id ? "var(--ink)" : "var(--ink-3)",
+                background: active === s.id ? "var(--bg-3)" : "transparent",
+                transition: "all 0.18s",
+                border: "none",
+                cursor: "pointer",
               }}
-              aria-label="Close menu"
             >
-              <X size={18} />
+              {s.label}
             </button>
-          </div>
-          <nav className="flex flex-1 flex-col items-center justify-center gap-8">
-            {nav.map((item) => (
-              <Link
-                key={`mobile-${item.href}`}
-                href={item.href}
-                onClick={() => setMobileOpen(false)}
-                className="display-md font-display no-underline"
-                style={{ color: "var(--ink)" }}
-              >
-                {item.label}
-              </Link>
-            ))}
-            <a
-              href="https://viveka.sohamkakra.com"
-              target="_blank"
-              rel="noreferrer"
-              className="mt-4 inline-flex items-center gap-2 mono-label"
-              style={{
-                padding: "12px 18px",
-                background: "var(--accent)",
-                color: "var(--bg)",
-                borderRadius: 4,
-              }}
-              onClick={() => setMobileOpen(false)}
-            >
-              <span>Viveka</span>
-              <ArrowUpRight size={14} />
-            </a>
-          </nav>
-        </div>
-      )}
-    </>
+          ))}
+          <ThemeToggle />
+        </nav>
+      </div>
+    </header>
   );
 }
