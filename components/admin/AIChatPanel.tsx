@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { Bot, ChevronRight, Layers, Loader2, MessageSquare, Send, Undo2, X } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { Bot, ChevronRight, Globe, Layers, Loader2, MessageSquare, Send, Undo2, X } from "lucide-react";
 import type { PortfolioData } from "@/lib/portfolio-types";
 import type { AIPatchOperation } from "@/lib/ai-portfolio";
 import type { HistoryMessage } from "@/app/api/ai/route";
+import { buildAllowedDomains } from "@/lib/ai-allowed-domains";
 
 interface Message {
   role: "user" | "assistant";
@@ -43,8 +44,11 @@ export default function AIChatPanel({ data, csrfToken, onDataChange }: AIChatPan
   const [contextSummary, setContextSummary] = useState("");
   const [compressedCount, setCompressedCount] = useState(0);
   const [view, setView] = useState<"chat" | "context">("chat");
+  const [accessOpen, setAccessOpen] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const allowedDomains = useMemo(() => buildAllowedDomains(data), [data]);
 
   const scrollToBottom = () =>
     setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
@@ -215,6 +219,24 @@ export default function AIChatPanel({ data, csrfToken, onDataChange }: AIChatPan
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Site access disclosure */}
+          <button
+            type="button"
+            onClick={() => setAccessOpen((o) => !o)}
+            className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[11px] font-medium transition ${
+              accessOpen
+                ? "border-[color:var(--accent)] bg-[color:var(--accent)]/10 text-[color:var(--accent)]"
+                : "border-[color:var(--border)] bg-[color:var(--bg)] text-[color:var(--fg-muted)] hover:text-[color:var(--fg)]"
+            }`}
+            title="Sites the assistant can search via web_search"
+          >
+            <Globe size={11} />
+            Site access
+            <span className="ml-0.5 rounded-full bg-[color:var(--accent)]/20 px-1.5 py-0.5 text-[9px] font-bold text-[color:var(--accent)]">
+              {allowedDomains.length}
+            </span>
+          </button>
+
           {/* View toggle */}
           <div className="flex rounded-lg border border-[color:var(--border)] bg-[color:var(--bg)] p-0.5">
             <button
@@ -260,6 +282,46 @@ export default function AIChatPanel({ data, csrfToken, onDataChange }: AIChatPan
           )}
         </div>
       </div>
+
+      {/* ── Site access panel ─────────────────────────────────────────────── */}
+      {accessOpen && (
+        <div className="border-b border-[color:var(--border)] bg-[color:var(--bg)] px-5 py-3">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1 min-w-0">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[color:var(--accent)]">
+                web_search · allowed domains
+              </p>
+              <p className="mt-1 text-[11px] leading-relaxed text-[color:var(--fg-muted)]">
+                Hosts the assistant can fetch via the built-in web search tool.
+                Derived live from your site, project links, Viveka URL, socials,
+                and footer links — adding a project or changing a link updates
+                this list on the next message.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {allowedDomains.map((d) => (
+                  <a
+                    key={d}
+                    href={`https://${d}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 rounded-full border border-[color:var(--border)] bg-[color:var(--bg-surface)] px-2.5 py-0.5 font-mono text-[10px] text-[color:var(--fg-muted)] hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+                  >
+                    {d}
+                  </a>
+                ))}
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setAccessOpen(false)}
+              className="text-[color:var(--fg-muted)] hover:text-[color:var(--fg)]"
+              aria-label="Close site access"
+            >
+              <X size={14} />
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ── Context view ──────────────────────────────────────────────────── */}
       {view === "context" && (
