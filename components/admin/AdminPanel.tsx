@@ -49,30 +49,6 @@ import PHOTO_LOCATIONS from "@/data/photo-locations.json";
 type EnrichedLoc = { city: string; country: string; countryCode?: string; lat: number; lon: number };
 const PHOTO_LOC_MAP = PHOTO_LOCATIONS as Record<string, EnrichedLoc>;
 
-function matchesPhotoQuery(img: PhotoItem, q: string): boolean {
-  if (!q) return true;
-  const m = img.meta || {};
-  const haystack = [
-    img.title,
-    img.description,
-    img.id,
-    m.camera,
-    m.lens,
-    m.city,
-    m.country,
-    m.location,
-    m.iso,
-    m.aperture,
-    m.shutter,
-    m.focalLength,
-    m.date,
-  ]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
-  return haystack.includes(q);
-}
-
 // Numeric helpers — keep PhotoMeta values as their final formatted strings
 // (e.g. "35mm", "f/4", "400") so the lightbox can render directly.
 function formatFocal(raw: string): string | undefined {
@@ -275,7 +251,13 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
   const [statusMessage, setStatusMessage] = useState("");
   const [assetUploadHint, setAssetUploadHint] = useState<string | null>(null);
   const [photoDropSlug, setPhotoDropSlug] = useState<string | null>(null);
-  const [photoFilters, setPhotoFilters] = useState<Record<string, string>>({});
+  const [photoCategoryFilter, setPhotoCategoryFilter] = useState<string>("");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
   const [aboutDropActive, setAboutDropActive] = useState(false);
   const [bookDropIndex, setBookDropIndex] = useState<number | null>(null);
   const [photoUploadBusy, setPhotoUploadBusy] = useState(false);
@@ -1620,7 +1602,28 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
                 API.
               </p>
 
-              {data.photography.categories.map((cat, ci) => (
+              <div className="flex items-center gap-3 rounded-xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] px-4 py-3">
+                <label className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)]">
+                  Category
+                </label>
+                <select
+                  className="flex-1 !py-1.5 !text-sm"
+                  value={photoCategoryFilter}
+                  onChange={(e) => setPhotoCategoryFilter(e.target.value)}
+                >
+                  <option value="">All categories ({data.photography.categories.length})</option>
+                  {data.photography.categories.map((c) => (
+                    <option key={c.slug} value={c.slug}>
+                      {c.title} · {c.images.length}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {data.photography.categories
+                .map((cat, ci) => ({ cat, ci }))
+                .filter(({ cat }) => !photoCategoryFilter || cat.slug === photoCategoryFilter)
+                .map(({ cat, ci }) => (
                 <Card key={cat.slug} title={cat.title || `Category ${ci + 1}`}>
                   <div className="space-y-4">
                     <div className="grid gap-4 sm:grid-cols-3">
@@ -1717,36 +1720,10 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
 
                     {/* Image list */}
                     <div className="space-y-3">
-                      <div className="flex items-center justify-between gap-3 flex-wrap">
-                        <p className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)]">
-                          {(() => {
-                            const q = (photoFilters[cat.slug] || "").toLowerCase();
-                            const total = cat.images.length;
-                            const shown = q
-                              ? cat.images.filter((im) =>
-                                  matchesPhotoQuery(im, q)
-                                ).length
-                              : total;
-                            return q ? `${shown} of ${total} images` : `${total} images`;
-                          })()}
-                        </p>
-                        <input
-                          className="!py-1.5 !text-xs flex-1 min-w-[180px] max-w-xs"
-                          value={photoFilters[cat.slug] || ""}
-                          onChange={(e) =>
-                            setPhotoFilters((p) => ({ ...p, [cat.slug]: e.target.value }))
-                          }
-                          placeholder="Filter by title, city, lens…"
-                        />
-                      </div>
-                      {cat.images
-                        .map((img, ii) => ({ img, ii }))
-                        .filter(({ img }) => {
-                          const q = (photoFilters[cat.slug] || "").toLowerCase().trim();
-                          if (!q) return true;
-                          return matchesPhotoQuery(img, q);
-                        })
-                        .map(({ img, ii }) => {
+                      <p className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)]">
+                        {cat.images.length} images
+                      </p>
+                      {cat.images.map((img, ii) => {
                         const setMeta = (field: keyof PhotoMeta, value: string) => {
                           const images = [...cat.images];
                           const existing = images[ii].meta ?? {};
@@ -2520,27 +2497,31 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
         </main>
       </div>
 
-      {/* Datalists for autofill — referenced from per-image meta inputs */}
-      <datalist id="equipment-cameras">
-        {(data.equipment?.cameras ?? []).filter(Boolean).map((c) => (
-          <option key={c} value={c} />
-        ))}
-      </datalist>
-      <datalist id="equipment-lenses">
-        {(data.equipment?.lenses ?? []).filter(Boolean).map((l) => (
-          <option key={l} value={l} />
-        ))}
-      </datalist>
-      <datalist id="equipment-cities">
-        {cityOptions.map((c) => (
-          <option key={c} value={c} />
-        ))}
-      </datalist>
-      <datalist id="equipment-countries">
-        {countryOptions.map((c) => (
-          <option key={c} value={c} />
-        ))}
-      </datalist>
+      {/* Datalists for autofill — render post-mount to avoid SSR/client divergence */}
+      {mounted && (
+        <>
+          <datalist id="equipment-cameras">
+            {(data.equipment?.cameras ?? []).filter(Boolean).map((c) => (
+              <option key={c} value={c} />
+            ))}
+          </datalist>
+          <datalist id="equipment-lenses">
+            {(data.equipment?.lenses ?? []).filter(Boolean).map((l) => (
+              <option key={l} value={l} />
+            ))}
+          </datalist>
+          <datalist id="equipment-cities">
+            {cityOptions.map((c) => (
+              <option key={c} value={c} />
+            ))}
+          </datalist>
+          <datalist id="equipment-countries">
+            {countryOptions.map((c) => (
+              <option key={c} value={c} />
+            ))}
+          </datalist>
+        </>
+      )}
 
       <ImageCropDialog
         open={!!crop}
