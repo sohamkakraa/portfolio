@@ -145,9 +145,33 @@ export async function POST(request: Request) {
       max_tokens: 4096,
       system: systemPrompt,
       messages: claudeMessages,
+      // Anthropic's server-side web search tool. Restricted to the user's
+      // own GitHub repos + personal sites so the model can pull live facts
+      // (READMEs, project pages, Viveka essays, etc.) when populating
+      // portfolio fields. Uses are capped per request to bound spend.
+      tools: [
+        {
+          type: "web_search_20250305",
+          name: "web_search",
+          max_uses: 5,
+          allowed_domains: [
+            "github.com",
+            "raw.githubusercontent.com",
+            "gist.github.com",
+            "sohamkakra.com",
+            "www.sohamkakra.com",
+            "viveka.sohamkakra.com",
+            "uma-taupe-rho.vercel.app",
+            "sagetaxconsultancy.com",
+          ],
+        },
+      ] as unknown as Anthropic.Tool[],
     });
 
-    const raw = completion.content.find((b) => b.type === "text")?.text ?? "";
+    // With the web_search tool enabled the response can interleave tool_use /
+    // tool_result blocks before the final text. Take the last text block.
+    const textBlocks = completion.content.filter((b) => b.type === "text");
+    const raw = textBlocks.length ? textBlocks[textBlocks.length - 1].text : "";
     // Strip markdown fences if present, then extract first JSON object
     const stripped = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
     const jsonStart = stripped.indexOf("{");
