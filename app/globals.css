@@ -501,6 +501,13 @@
 .globe-svg:active { cursor: grabbing; }
 
 @media (max-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+  .hero-toc {
+    grid-template-columns: 1fr !important;
+  }
   .globe-wall-grid {
     grid-template-columns: 1fr !important;
     max-height: none !important;
@@ -589,6 +596,18 @@
   backdrop-filter: blur(14px) saturate(1.4);
   -webkit-backdrop-filter: blur(14px) saturate(1.4);
   border-bottom: 1px solid var(--line);
+}
+
+/* Desktop nav: flex on wide, hidden on narrow. Mobile controls invert. */
+.nav-desktop { display: flex; }
+.nav-mobile  { display: none; }
+.nav-wordmark { display: inline; }
+@media (max-width: 820px) {
+  .nav-desktop  { display: none; }
+  .nav-mobile   { display: flex; }
+}
+@media (max-width: 380px) {
+  .nav-wordmark { display: none; }
 }
 
 /* ── Reduced motion ── */
