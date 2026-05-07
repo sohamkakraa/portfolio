@@ -55,9 +55,14 @@ function ArtifactCard({
     palette: ["#2a2a3a", "#0e0e18", "#7a7aa0"] as [string, string, string],
     artifact: "status",
   };
-  const Wrapper: React.ElementType = p.link ? "a" : "article";
-  const wrapperProps: Record<string, unknown> = p.link
-    ? { href: p.link, target: p.link.startsWith("http") ? "_blank" : undefined, rel: "noreferrer" }
+  const hasSite = !!p.link;
+  const hasRepo = !!p.repo;
+  // If only one is set, the whole card becomes a link to it.
+  // If both are set, render as <article> and surface two buttons in the reveal.
+  const soleHref = hasSite && !hasRepo ? p.link : !hasSite && hasRepo ? p.repo : null;
+  const Wrapper: React.ElementType = soleHref ? "a" : "article";
+  const wrapperProps: Record<string, unknown> = soleHref
+    ? { href: soleHref, target: soleHref.startsWith("http") ? "_blank" : undefined, rel: "noreferrer" }
     : {};
 
   return (
@@ -238,6 +243,59 @@ function ArtifactCard({
             ))}
           </div>
         ) : null}
+
+        {hasSite && hasRepo && (
+          <div
+            style={{
+              display: "flex",
+              gap: 10,
+              marginTop: 18,
+              paddingTop: 14,
+              borderTop: "1px solid var(--line)",
+              flexWrap: "wrap",
+            }}
+          >
+            <a
+              href={p.link}
+              target={p.link!.startsWith("http") ? "_blank" : undefined}
+              rel="noreferrer"
+              className="mono"
+              style={{
+                padding: "8px 14px",
+                background: "var(--ink)",
+                color: "var(--bg)",
+                fontSize: 10,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                fontWeight: 600,
+                textDecoration: "none",
+                borderRadius: 4,
+              }}
+            >
+              Open site →
+            </a>
+            <a
+              href={p.repo}
+              target={p.repo!.startsWith("http") ? "_blank" : undefined}
+              rel="noreferrer"
+              className="mono"
+              style={{
+                padding: "8px 14px",
+                background: "transparent",
+                color: "var(--ink)",
+                fontSize: 10,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                fontWeight: 600,
+                textDecoration: "none",
+                borderRadius: 4,
+                border: "1px solid var(--line-2)",
+              }}
+            >
+              View repo ↗
+            </a>
+          </div>
+        )}
       </div>
 
       {/* Footer chip — fades on hover */}

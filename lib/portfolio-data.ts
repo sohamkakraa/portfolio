@@ -214,6 +214,7 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
         year: "2025",
         status: "Prototype",
         link: "https://uma-taupe-rho.vercel.app",
+        repo: "https://github.com/sohamkakraa/uma",
         storyline: [
           { label: "trigger", body: "Specialists send PDFs. Hospitals send scans. Patients juggle ten apps. A timeline is impossible." },
           { label: "move", body: "Local-first ingestion + on-device parsing. No record leaves the patient's device unless they say so." },
@@ -234,7 +235,7 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
         tags: ["Fintech", "Forecasting", "Product"],
         year: "2025",
         status: "In progress",
-        link: "https://github.com/sohamkakraa",
+        repo: "https://github.com/sohamkakraa/tabscape",
         storyline: [
           { label: "trigger", body: "Most budgeting apps tell you what already happened. None show you what's coming." },
           { label: "move", body: "Recurring-expense detection + Bayesian forecast bands per category, replanned daily." },
@@ -255,7 +256,7 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
         tags: ["AI/ML", "Trading", "Real-time"],
         year: "2024",
         status: "Live",
-        link: "https://github.com/sohamkakraa",
+        repo: "https://github.com/sohamkakraa/robotrader",
         storyline: [
           { label: "trigger", body: "Backtests look great. Live trading destroys them. The gap is execution discipline." },
           { label: "move", body: "Strategy DSL + paper-trading replay + live websocket feed — all using one execution engine." },

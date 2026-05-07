@@ -80,7 +80,8 @@ type ProjectItem   = {
   tags: string[];
   year: string;
   status?: string;
-  link?: string;
+  link?: string;        // live site / demo URL
+  repo?: string;        // source-code repository URL
   // Optional — populated to drive the hover-expand "Selected work" cards.
   storyline?: Array<{ label: "trigger" | "move" | "result"; body: string }>;
   metrics?: Array<{ label: string; value: string }>;

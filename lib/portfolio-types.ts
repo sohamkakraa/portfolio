@@ -165,7 +165,10 @@ export type ProjectItem = {
   tags: string[];
   year: string;
   status?: string;
+  /** Live website / demo URL. */
   link?: string;
+  /** Source code / repository URL. */
+  repo?: string;
   /** Optional 3-step storyline used by the hover-expand projects grid. */
   storyline?: ProjectStorylineStep[];
   /** Optional 2-4 quantitative metrics shown on expand. */

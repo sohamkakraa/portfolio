@@ -1474,10 +1474,24 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
                       <Field label="Status">
                         <Input value={project.status || ""} onChange={(v) => updateProject(i, "status", v)} />
                       </Field>
-                      <Field label="Link">
-                        <Input value={project.link || ""} onChange={(v) => updateProject(i, "link", v)} />
+                      <Field label="Live site">
+                        <Input
+                          value={project.link || ""}
+                          onChange={(v) => updateProject(i, "link", v)}
+                          placeholder="https://example.com"
+                        />
+                      </Field>
+                      <Field label="GitHub repo">
+                        <Input
+                          value={project.repo || ""}
+                          onChange={(v) => updateProject(i, "repo", v)}
+                          placeholder="https://github.com/user/repo"
+                        />
                       </Field>
                     </div>
+                    <p className="text-[11px] text-[color:var(--fg-muted)] -mt-2">
+                      If both are set, the project card shows two buttons (Open site / View repo). If only one is set, the entire card is clickable to whichever is present.
+                    </p>
                     <Field label="Summary">
                       <TextArea value={project.summary} onChange={(v) => updateProject(i, "summary", v)} />
                     </Field>

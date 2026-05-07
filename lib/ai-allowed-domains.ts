@@ -34,7 +34,10 @@ export function buildAllowedDomains(data: PortfolioData): string[] {
     if (!host.startsWith("www.")) set.add(`www.${host}`);
   };
 
-  for (const p of data.projects?.items ?? []) add(hostFromUrl(p.link));
+  for (const p of data.projects?.items ?? []) {
+    add(hostFromUrl(p.link));
+    add(hostFromUrl(p.repo));
+  }
 
   add(hostFromUrl(data.hero?.vivekaCta?.href));
   add(hostFromUrl(data.hero?.ctaPrimary?.href));
