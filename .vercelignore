@@ -1,6 +1,5 @@
-# Large local photo originals — served from Cloudflare R2 in production
+# Large local photo originals (RAW) — never shipped
 public/photography
-public/photography-webp
 
 # Orphaned sub-app (deleted, files still on disk)
 apps/
