@@ -3,6 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import type { PhotoMeta } from "@/lib/portfolio-types";
 import { verifyAdminSession } from "@/lib/auth";
 import { checkAIRateLimit } from "@/lib/ai-portfolio";
+import { isAllowedUpload } from "@/lib/upload-validation";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -37,6 +38,11 @@ export async function POST(request: Request) {
 
   if (!file) {
     return NextResponse.json({ error: "No file" }, { status: 400 });
+  }
+
+  const uploadCheck = isAllowedUpload(file);
+  if (!uploadCheck.ok) {
+    return NextResponse.json({ error: uploadCheck.message }, { status: 400 });
   }
 
   let existingMeta: PhotoMeta = {};

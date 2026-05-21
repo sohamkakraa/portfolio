@@ -7,12 +7,23 @@ const codeClass =
 const escapeHtml = (value: string) =>
   value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
+/** Allow only http(s), mailto, and same-page hash links in CMS markdown. */
+export function sanitizeMarkdownHref(raw: string): string | null {
+  const href = raw.trim();
+  if (!href) return null;
+  if (href.startsWith("#") || href.startsWith("/")) return escapeHtml(href);
+  if (/^https?:\/\//i.test(href)) return escapeHtml(href);
+  if (/^mailto:/i.test(href)) return escapeHtml(href);
+  return null;
+}
+
 const formatInline = (value: string) => {
   let output = escapeHtml(value);
-  output = output.replace(
-    /\[([^\]]+)\]\(([^)]+)\)/g,
-    `<a class="${linkClass}" href="$2">$1</a>`
-  );
+  output = output.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_match, label: string, href: string) => {
+    const safeHref = sanitizeMarkdownHref(href);
+    if (!safeHref) return escapeHtml(label);
+    return `<a class="${linkClass}" href="${safeHref}" rel="noopener noreferrer">${escapeHtml(label)}</a>`;
+  });
   output = output.replace(/`([^`]+)`/g, `<code class="${codeClass}">$1</code>`);
   output = output.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
   output = output.replace(/\*([^*]+)\*/g, "<em>$1</em>");

@@ -11,11 +11,11 @@ const securityHeaders = [
     value: [
       "default-src 'self'",
       // Next.js App Router requires unsafe-eval in dev; unsafe-inline for hydration scripts
-      "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://va.vercel-scripts.com",
       "style-src 'self' 'unsafe-inline'",
-      // data: for SVG grain overlay; blob: for image previews; openlibrary for book covers
-      "img-src 'self' data: blob: https://covers.openlibrary.org https://*.public.blob.vercel-storage.com https://photography.sohamkakra.com",
-      "connect-src 'self'",
+      // data: for SVG grain overlay; blob: for image previews; book covers proxied via /api/book-cover
+      "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://photography.sohamkakra.com",
+      "connect-src 'self' https://va.vercel-scripts.com vitals.vercel-insights.com",
       "font-src 'self'",
       "frame-ancestors 'none'",
       "form-action 'self'",

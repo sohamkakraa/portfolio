@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import { verifyAdminSession } from "@/lib/auth";
+import { isAllowedUpload } from "@/lib/upload-validation";
 
 const BLOB_CONFIGURED = Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
 const ON_VERCEL = process.env.VERCEL === "1";
@@ -66,6 +67,14 @@ export async function POST(request: Request) {
           message: `File is too large (max ${Math.floor(MAX_BYTES / (1024 * 1024))}MB).`,
         },
         { status: 413 }
+      );
+    }
+
+    const uploadCheck = isAllowedUpload(file);
+    if (!uploadCheck.ok) {
+      return NextResponse.json(
+        { success: false, message: uploadCheck.message },
+        { status: 400 }
       );
     }
 
