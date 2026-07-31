@@ -1,9 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import Link from "next/link";
-import FilmOverlay from "@/lib/lab/FilmOverlay";
-import { ROUTE_CHAPTERS, WORK, WORK_ARC } from "@/lib/lab/lab-content";
-import { Blanks, LabBack } from "@/lib/lab/ui";
+import FilmOverlay from "@/lib/journey/FilmOverlay";
+import { ROUTE_CHAPTERS, WORK, WORK_ARC } from "@/lib/journey/content";
+import { Blanks, JourneyBack } from "@/lib/journey/ui";
 
 export const metadata = {
   title: "Work · Soham Kakra",
@@ -42,7 +42,7 @@ export default function WorkPage() {
   return (
     <div className="lab">
       <FilmOverlay vignette={0.42} grain={0.045} />
-      <LabBack />
+      <JourneyBack />
 
       <div className="lab-doc">
         <header>
@@ -63,16 +63,14 @@ export default function WorkPage() {
               alignItems: "baseline",
             }}
           >
+            {/* Absent until a PDF exists, and silent about why. The note here used to explain where
+                to drop the file, which is a message to me appearing on a page for readers. */}
             {resume ? (
               <a href={resume} className="lab-exit" download>
                 download the résumé ↓
               </a>
-            ) : (
-              <span className="lab-small">
-                <Blanks text="[no résumé file yet — drop a PDF in public/resume/ and this becomes a download]" />
-              </span>
-            )}
-            <Link href="/lab/route" className="lab-exit">
+            ) : null}
+            <Link href="/" className="lab-exit">
               or walk it as a route →
             </Link>
           </div>
@@ -121,7 +119,7 @@ export default function WorkPage() {
                     region without asserting a place I have not confirmed. */}
                 {chapter && !r.city.includes("[") ? (
                   <Link
-                    href={`/lab/route#${chapter.id}`}
+                    href={`/#${chapter.id}`}
                     className="lab-exit"
                     style={{ marginTop: "var(--l-3)", display: "inline-block" }}
                   >

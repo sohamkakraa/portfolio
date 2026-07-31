@@ -1,15 +1,19 @@
 import { getDefaultPortfolioData } from "@/lib/portfolio-data";
-import {
-  isPortfolioRedisConfigured,
-  readPortfolioFromRedis,
-} from "@/lib/portfolio-redis";
-import PortfolioPage from "@/components/PortfolioPage";
+import { isPortfolioRedisConfigured, readPortfolioFromRedis } from "@/lib/portfolio-redis";
 import { stripHiddenContent } from "@/lib/portfolio-visibility";
 import type { PortfolioData } from "@/lib/portfolio-types";
 
-// Project per-item merge: stored items inherit storyline / metrics / stack
-// defaults so older stored payloads don't blank those fields out on the live
-// portfolio page.
+/**
+ * Reads the CMS payload for a server-rendered page.
+ *
+ * This used to live in app/page.tsx, when there was one page that needed it. The homepage is the
+ * journey now and the CMS-backed sections have their own surfaces, so the merge rules had to become
+ * shared rather than get copied per page — the last time editorial defaults were merged in two
+ * places the site spent a while claiming a student with one finished job.
+ */
+
+// Stored items inherit storyline, metrics and stack from the defaults so an older stored payload
+// does not blank those fields out.
 function mergeStoredProjects(
   defaults: PortfolioData["projects"],
   stored?: PortfolioData["projects"]
@@ -32,25 +36,21 @@ function mergeStoredProjects(
   return { ...defaults, ...stored, items };
 }
 
-// Force dynamic rendering so server always fetches latest CMS data from Redis
-export const dynamic = "force-dynamic";
-
-async function getPortfolioData() {
+export async function getPortfolioData(): Promise<PortfolioData> {
   const defaults = getDefaultPortfolioData();
 
   if (isPortfolioRedisConfigured()) {
     try {
       const stored = await readPortfolioFromRedis();
       if (stored) {
-        return {
+        return stripHiddenContent({
           ...defaults,
           ...stored,
-          // Deep-merge each section so older stored payloads inherit editorial defaults.
           site: { ...defaults.site, ...stored.site },
           hero: { ...defaults.hero, ...stored.hero },
-          // `log` is deliberately not overridable: it is projected from lib/work.ts, and a
-          // stored payload saved before a job existed was how the site came to claim a
-          // student with one finished role. Work facts belong to the code now.
+          // `log` is deliberately not overridable: it is projected from lib/work.ts, and a stored
+          // payload saved before a job existed was how the site came to describe an out-of-date
+          // career. Work facts belong to the code.
           about: { ...defaults.about, ...stored.about, log: defaults.about.log },
           highlights: { ...defaults.highlights, ...stored.highlights },
           projects: mergeStoredProjects(defaults.projects, stored.projects),
@@ -61,33 +61,21 @@ async function getPortfolioData() {
             ...defaults.photography,
             ...stored.photography,
             categories: defaults.photography.categories.map((defCat) => {
-              const storedCat = stored.photography?.categories?.find(
-                (c) => c.slug === defCat.slug
-              );
+              const storedCat = stored.photography?.categories?.find((c) => c.slug === defCat.slug);
               if (!storedCat) return defCat;
               return {
                 ...defCat,
                 ...storedCat,
-                images:
-                  storedCat.images?.length
-                    ? storedCat.images
-                    : defCat.images,
+                images: storedCat.images?.length ? storedCat.images : defCat.images,
               };
             }),
           },
-        };
+        });
       }
     } catch (e) {
-      console.error("[page] Redis read failed, using defaults:", e);
+      console.error("[portfolio-server] Redis read failed, using defaults:", e);
     }
   }
 
-  return defaults;
-}
-
-export default async function HomePage() {
-  const data = await getPortfolioData();
-  // Hidden frames are stripped here rather than in the gallery, so a hidden photograph's title
-  // and src never reach the browser at all — not in the HTML, not in the hydration payload.
-  return <PortfolioPage initialData={stripHiddenContent(data)} />;
+  return stripHiddenContent(defaults);
 }

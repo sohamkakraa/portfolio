@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { useCallback, useRef, useState } from "react";
-import FilmOverlay from "@/lib/lab/FilmOverlay";
-import { measureTier, useDeviceTier, type TierReport } from "@/lib/lab/device-tier";
-import { ROUTE_CHAPTERS, ROUTE_ORIGIN } from "@/lib/lab/lab-content";
-import { useJourneyScene } from "@/lib/lab/scene";
-import { Blanks, LabBack, LabImage, Reveal, TierBadge, useActiveByProgress, useScrollDriver } from "@/lib/lab/ui";
+import FilmOverlay from "@/lib/journey/FilmOverlay";
+import { measureTier, useDeviceTier, type TierReport } from "@/lib/journey/device-tier";
+import { ROUTE_CHAPTERS, ROUTE_ORIGIN } from "@/lib/journey/content";
+import { useJourneyScene } from "@/lib/journey/scene";
+import { Blanks, JourneyExits, LabImage, Reveal, TierBadge, useActiveByProgress, useScrollDriver } from "@/lib/journey/ui";
 import { buildRouteScene, liteRouteBackground } from "./route-scene";
 
 const DECIDED_LABEL: Record<string, string> = {
@@ -75,7 +75,7 @@ export default function RouteSpine() {
       )}
       <div className="lab-text-scrim" aria-hidden />
       <FilmOverlay vignette={0.45} />
-      <LabBack />
+      <JourneyExits />
 
       <div className="lab-hud lab-hud--bottom-left lab-hud--floor">
         <div className="lab-eyebrow">{chapter.kind === "detour" ? "detour" : "now entering"}</div>
@@ -110,7 +110,7 @@ export default function RouteSpine() {
       <div className="lab-content">
         <div className="lab-track">
           <section className="lab-mark lab-mark--left lab-mark--hero" style={{ top: markTop(0) }}>
-            <div className="lab-eyebrow lab-eyebrow--accent">SPINE A · PLACE IS THE AXIS</div>
+            <div className="lab-eyebrow lab-eyebrow--accent">Soham Kakra</div>
             <h1
               className="lab-display lab-h2"
               style={{ marginTop: "var(--l-3)", maxWidth: "21ch" }}
@@ -189,13 +189,13 @@ export default function RouteSpine() {
                           that it happened and hands the substance to the work page. */}
                       {c.work.map((w) => (
                         <p key={w.id} className="lab-small" style={{ marginTop: "var(--l-1)" }}>
-                          <Link href={`/lab/work#${w.id}`} className="lab-role-link">
+                          <Link href={`/work#${w.id}`} className="lab-role-link">
                             <Blanks text={w.line} />
                           </Link>
                         </p>
                       ))}
                       <Link
-                        href="/lab/work"
+                        href="/work"
                         className="lab-exit"
                         style={{ marginTop: "var(--l-2)", display: "inline-block" }}
                       >
@@ -259,11 +259,11 @@ export default function RouteSpine() {
               The road continues past the last frame.
             </p>
             <div className="lab-exits">
-              <Link href="/lab" className="lab-exit">
-                all spines
+              <Link href="/journeys" className="lab-exit">
+                walk one properly →
               </Link>
-              <Link href="/lab/ascent" className="lab-exit">
-                the journeys →
+              <Link href="/work" className="lab-exit">
+                what I do →
               </Link>
             </div>
           </section>

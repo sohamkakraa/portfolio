@@ -1,7 +1,7 @@
 "use client";
 
 import type * as THREE_NS from "three";
-import { CLIMB_STOPS } from "@/lib/lab/lab-content";
+import { CLIMB_STOPS } from "@/lib/journey/content";
 import {
   disposeObject,
   rampColor,
@@ -9,7 +9,7 @@ import {
   smoothstep,
   type SceneApi,
   type SceneHandle,
-} from "@/lib/lab/scene";
+} from "@/lib/journey/scene";
 
 /**
  * The Climb — a port of the Landscape reference, rebuilt for React and three r185.

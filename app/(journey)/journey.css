@@ -335,6 +335,67 @@ html.light .lab:not(.lab--on-snow) .lab-route-stop {
   mix-blend-mode: difference;
 }
 
+/* The exits from the road. Top right, opposite the back link, and deliberately not a bar: a full
+   width header over a live scene reads as chrome bolted onto a view, and the horizon is usually
+   somewhere near it. Wraps to a row on narrow screens where the corner is too small to stack in. */
+.lab-exits-fixed {
+  position: fixed;
+  top: var(--l-3);
+  right: var(--l-3);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--l-1);
+}
+
+/* Below 900px the panels run gutter to gutter, so there is no corner left for a fixed element to
+   hide in — anything on the fixed layer will be crossed by a panel on its way past. Rather than
+   pretend otherwise, the exits become a band: a single row along the top with a scrim under it, so
+   a panel passing beneath reads as passing beneath something, which is what the HUD already does
+   with its halos over live scenes. */
+@media (max-width: 900px) {
+  .lab-exits-fixed {
+    top: 0;
+    left: 0;
+    right: 0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--l-2);
+    padding: var(--l-2) var(--l-gutter) calc(var(--l-2) * 1.6);
+    /* Strong enough for a chapter caption to read as passing underneath rather than colliding —
+       at a weaker scrim the two sets of small caps landed on the same baseline and fought. */
+    background: linear-gradient(
+      to bottom,
+      var(--l-glass) 0%,
+      var(--l-scrim) 62%,
+      transparent 100%
+    );
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    /* The band is a mask over the scene; only the links themselves should take a tap. */
+    pointer-events: none;
+  }
+
+  .lab-exits-fixed > * {
+    pointer-events: auto;
+  }
+}
+
+/* Responsive label text: the long word on wide screens, the short one once the exits are a row. */
+.lab-exit-short {
+  display: none;
+}
+@media (max-width: 900px) {
+  .lab-exit-long {
+    display: none;
+  }
+  .lab-exit-short {
+    display: inline;
+  }
+}
+
 .lab-hud {
   position: fixed;
   z-index: 18;

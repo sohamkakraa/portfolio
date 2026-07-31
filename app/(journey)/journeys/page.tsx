@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import FilmOverlay from "@/lib/lab/FilmOverlay";
-import { HUB_JOURNEYS } from "@/lib/lab/lab-content";
-import { LabBack } from "@/lib/lab/ui";
+import FilmOverlay from "@/lib/journey/FilmOverlay";
+import { HUB_JOURNEYS } from "@/lib/journey/content";
+import { JourneyBack } from "@/lib/journey/ui";
 
 export default function AscentHub() {
   const major = HUB_JOURNEYS.slice(0, 3);
@@ -12,7 +12,7 @@ export default function AscentHub() {
     <div className="lab lab-hub">
       <div className="lab-hub-glow" aria-hidden />
       <FilmOverlay vignette={0.5} grain={0.05} />
-      <LabBack />
+      <JourneyBack />
 
       <div className="lab-wrap">
         <header
@@ -42,7 +42,7 @@ export default function AscentHub() {
           {major.map((j) => (
             <Link
               key={j.id}
-              href={j.live ? "/lab/ascent/climb" : "/lab/ascent"}
+              href={j.live ? "/journeys/climb" : "/journeys"}
               className={`lab-card ${j.live ? "" : "lab-card--soon"}`}
             >
               <Image src={j.cover} alt={j.title} fill sizes="(max-width: 900px) 50vw, 360px" />
@@ -99,15 +99,12 @@ export default function AscentHub() {
           className="lab-italic"
           style={{ textAlign: "center", marginTop: "var(--l-7)", fontSize: "0.875rem" }}
         >
-          — only The Climb is built; the rest are covers over real folders —
+          — The Climb is walkable; the others are real trips waiting to be built —
         </p>
 
         <div className="lab-exits">
-          <Link href="/lab/day" className="lab-exit">
-            ← one day
-          </Link>
-          <Link href="/lab" className="lab-exit">
-            all spines
+          <Link href="/photography" className="lab-exit">
+            all the frames →
           </Link>
         </div>
       </div>

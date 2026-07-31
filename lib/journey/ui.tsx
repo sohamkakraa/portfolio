@@ -179,6 +179,13 @@ export function useActiveByProgress(stopTs: number[]) {
   return active;
 }
 
+/**
+ * The renderer readout, with a switch to force the other mode.
+ *
+ * A development instrument. It was useful while the lite fallback was being built and is noise to a
+ * visitor, who has no reason to care which renderer they got and no reason to be offered the worse
+ * one. The fallback still engages on its own when the framerate drops.
+ */
 export function TierBadge({
   report,
   onToggle,
@@ -186,6 +193,7 @@ export function TierBadge({
   report: TierReport;
   onToggle: () => void;
 }) {
+  if (process.env.NODE_ENV !== "development") return null;
   if (!report.measured) return null;
   return (
     <div className="lab-tier">
@@ -198,10 +206,57 @@ export function TierBadge({
   );
 }
 
-export function LabBack({ label = "← all spines" }: { label?: string }) {
+/**
+ * The way back up one level. Said in the language of the place — you return to the road, not to a
+ * list of prototypes, which is what this used to offer.
+ */
+export function JourneyBack({
+  href = "/",
+  label = "← the road",
+}: {
+  href?: string;
+  label?: string;
+}) {
   return (
-    <Link href="/lab" className="lab-back">
+    <Link href={href} className="lab-back">
       {label}
     </Link>
+  );
+}
+
+// Stacked in a corner on a wide screen, where length costs nothing, but laid in a row on a phone,
+// where four full words overrun 390px and clip the last one. The shorter word is swapped in by CSS
+// rather than by measuring the viewport in JS, so it is right on the first paint.
+const EXITS = [
+  { href: "/work", label: "work" },
+  { href: "/projects", label: "projects" },
+  { href: "/photography", label: "photographs", short: "photos" },
+  { href: "/about", label: "about" },
+];
+
+/**
+ * The exits from the road.
+ *
+ * The road had no navigation at all: a visitor who did not want to walk six chapters to find the
+ * work had no way out except the browser's back button. The document surfaces have a nav bar, but a
+ * bar across the top of a scene would sit on the horizon and announce itself as a website, so these
+ * sit low and quiet in the corner and read as one more instrument.
+ */
+export function JourneyExits() {
+  return (
+    <nav className="lab-exits-fixed" aria-label="Sections">
+      {EXITS.map((e) => (
+        <Link key={e.href} href={e.href} className="lab-exit">
+          {e.short ? (
+            <>
+              <span className="lab-exit-long">{e.label}</span>
+              <span className="lab-exit-short">{e.short}</span>
+            </>
+          ) : (
+            e.label
+          )}
+        </Link>
+      ))}
+    </nav>
   );
 }

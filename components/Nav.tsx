@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import type { NavItem } from "@/lib/portfolio-types";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -11,33 +13,25 @@ type NavProps = {
   nav: NavItem[];
 };
 
-const SECTIONS: { id: string; label: string }[] = [
-  { id: "top", label: "00" },
-  { id: "about", label: "01 about" },
-  { id: "projects", label: "02 work" },
-  { id: "photography", label: "03 photo" },
-  { id: "life", label: "04 life" },
-  { id: "contact", label: "05 contact" },
+/**
+ * Real destinations.
+ *
+ * These were anchors on a single long page, scrolled to by id and tracked with an
+ * IntersectionObserver. Each section is its own URL now, so the nav can be links — which means the
+ * browser's back button, opening one in a new tab, and sending someone straight to the photographs
+ * all work, none of which they did before.
+ */
+const ROUTES: { href: string; label: string }[] = [
+  { href: "/", label: "00 the road" },
+  { href: "/work", label: "01 work" },
+  { href: "/projects", label: "02 projects" },
+  { href: "/photography", label: "03 photographs" },
+  { href: "/about", label: "04 about" },
 ];
 
 export default function Nav({ name }: NavProps) {
-  const [active, setActive] = useState("top");
+  const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  useEffect(() => {
-    const obs = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActive(e.target.id);
-        }),
-      { rootMargin: "-40% 0px -55% 0px" }
-    );
-    SECTIONS.forEach((s) => {
-      const el = document.getElementById(s.id);
-      if (el) obs.observe(el);
-    });
-    return () => obs.disconnect();
-  }, []);
 
   // Lock body scroll when mobile drawer is open
   useEffect(() => {
@@ -55,11 +49,10 @@ export default function Nav({ name }: NavProps) {
     return () => window.removeEventListener("keydown", k);
   }, [mobileOpen]);
 
-  const scrollTo = (id: string) => {
-    setMobileOpen(false);
-    if (id === "top") return window.scrollTo({ top: 0, behavior: "smooth" });
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  // Trailing slashes and nested paths both count, so /journeys/climb keeps "the road" lit rather
+  // than nothing at all.
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
     <>
@@ -85,8 +78,8 @@ export default function Nav({ name }: NavProps) {
             gap: 12,
           }}
         >
-          <button
-            onClick={() => scrollTo("top")}
+          <Link
+            href="/"
             style={{
               display: "flex",
               alignItems: "center",
@@ -97,6 +90,7 @@ export default function Nav({ name }: NavProps) {
               padding: 0,
               color: "inherit",
               minWidth: 0,
+              textDecoration: "none",
             }}
             aria-label="Home"
           >
@@ -114,17 +108,18 @@ export default function Nav({ name }: NavProps) {
             >
               {name}
             </span>
-          </button>
+          </Link>
 
           {/* Desktop nav */}
           <nav
             className="nav-desktop"
             style={{ alignItems: "center", gap: 4 }}
           >
-            {SECTIONS.map((s) => (
-              <button
-                key={s.id}
-                onClick={() => scrollTo(s.id)}
+            {ROUTES.map((r) => (
+              <Link
+                key={r.href}
+                href={r.href}
+                aria-current={isActive(r.href) ? "page" : undefined}
                 style={{
                   padding: "8px 14px",
                   borderRadius: 99,
@@ -132,15 +127,16 @@ export default function Nav({ name }: NavProps) {
                   fontSize: 10,
                   letterSpacing: "0.18em",
                   textTransform: "uppercase",
-                  color: active === s.id ? "var(--ink)" : "var(--ink-3)",
-                  background: active === s.id ? "var(--bg-3)" : "transparent",
+                  color: isActive(r.href) ? "var(--ink)" : "var(--ink-3)",
+                  background: isActive(r.href) ? "var(--bg-3)" : "transparent",
                   transition: "all 0.18s",
                   border: "none",
                   cursor: "pointer",
+                  textDecoration: "none",
                 }}
               >
-                {s.label}
-              </button>
+                {r.label}
+              </Link>
             ))}
             <ThemeToggle />
           </nav>
@@ -201,14 +197,16 @@ export default function Nav({ name }: NavProps) {
             gap: 0,
           }}
         >
-          {SECTIONS.map((s, i) => {
-            const [num, ...rest] = s.label.split(" ");
-            const label = rest.length ? rest.join(" ") : "home";
-            const isActive = active === s.id;
+          {ROUTES.map((r, i) => {
+            const [num, ...rest] = r.label.split(" ");
+            const label = rest.join(" ");
+            const current = isActive(r.href);
             return (
-              <button
-                key={s.id}
-                onClick={() => scrollTo(s.id)}
+              <Link
+                key={r.href}
+                href={r.href}
+                onClick={() => setMobileOpen(false)}
+                aria-current={current ? "page" : undefined}
                 style={{
                   display: "flex",
                   alignItems: "baseline",
@@ -226,7 +224,7 @@ export default function Nav({ name }: NavProps) {
                   borderBottomColor: "var(--line)",
                   cursor: "pointer",
                   textAlign: "left",
-                  color: isActive ? "var(--accent)" : "var(--ink)",
+                  color: current ? "var(--accent)" : "var(--ink)",
                   width: "100%",
                 }}
               >
@@ -253,7 +251,7 @@ export default function Nav({ name }: NavProps) {
                 >
                   {label}
                 </span>
-                {isActive && (
+                {current && (
                   <span
                     aria-hidden
                     style={{
@@ -265,7 +263,7 @@ export default function Nav({ name }: NavProps) {
                     }}
                   />
                 )}
-              </button>
+              </Link>
             );
           })}
         </nav>

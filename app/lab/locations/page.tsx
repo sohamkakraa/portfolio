@@ -3,8 +3,8 @@ import path from "node:path";
 import { notFound } from "next/navigation";
 import geocoded from "@/data/photo-locations.json";
 import manifest from "@/data/photography-manifest.json";
-import { CLIMB_STOPS, HOURS, HUB_JOURNEYS, ROUTE_CHAPTERS } from "@/lib/lab/lab-content";
-import { keyFromUrl, photoUrl, placeKey, type PlacesFile } from "@/lib/lab/places";
+import { CLIMB_STOPS, HOURS, HUB_JOURNEYS, ROUTE_CHAPTERS } from "@/lib/journey/content";
+import { keyFromUrl, photoUrl, placeKey, type PlacesFile } from "@/lib/journey/places";
 import LocationReview, { type Row } from "./LocationReview";
 
 /**

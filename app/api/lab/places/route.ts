@@ -2,7 +2,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { NextResponse } from "next/server";
 import manifest from "@/data/photography-manifest.json";
-import { placeKey, type PlacesFile, type VerifiedPlace } from "@/lib/lab/places";
+import { placeKey, type PlacesFile, type VerifiedPlace } from "@/lib/journey/places";
 
 /**
  * Writes hand-verified photograph locations to data/photo-places.json.

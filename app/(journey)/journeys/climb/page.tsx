@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { useCallback, useRef, useState } from "react";
-import FilmOverlay from "@/lib/lab/FilmOverlay";
-import { measureTier, useDeviceTier, type TierReport } from "@/lib/lab/device-tier";
-import { CLIMB_STOPS } from "@/lib/lab/lab-content";
-import { useJourneyScene } from "@/lib/lab/scene";
-import { Blanks, LabImage, Reveal, TierBadge, useActiveByProgress, useScrollDriver } from "@/lib/lab/ui";
+import FilmOverlay from "@/lib/journey/FilmOverlay";
+import { measureTier, useDeviceTier, type TierReport } from "@/lib/journey/device-tier";
+import { CLIMB_STOPS } from "@/lib/journey/content";
+import { useJourneyScene } from "@/lib/journey/scene";
+import { Blanks, LabImage, Reveal, TierBadge, useActiveByProgress, useScrollDriver } from "@/lib/journey/ui";
 import { buildClimbScene, liteClimbBackground } from "./climb-scene";
 
 /** Same inverse-of-scroll-progress placement the route uses, so words meet their own terrain. */
@@ -63,7 +63,7 @@ export default function ClimbJourney() {
       <div className="lab-text-scrim" aria-hidden />
       <FilmOverlay vignette={0.42} />
 
-      <Link href="/lab/ascent" className="lab-back">
+      <Link href="/journeys" className="lab-back">
         ← all journeys
       </Link>
 
@@ -187,10 +187,10 @@ export default function ClimbJourney() {
                 Every summit is a small, temporary agreement with the weather.
               </p>
               <div className="lab-exits">
-                <Link href="/lab/ascent" className="lab-exit">
+                <Link href="/journeys" className="lab-exit">
                   ← all journeys
                 </Link>
-                <Link href="/lab/route" className="lab-exit">
+                <Link href="/" className="lab-exit">
                   back to the route →
                 </Link>
               </div>

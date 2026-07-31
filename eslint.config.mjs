@@ -12,6 +12,13 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+
+    // Not ours to lint. `npm run lint` was reporting errors from JavaScript bundled inside
+    // PyTorch under .venv-photo and from a vendored demo repo in .tmp, which buried the handful
+    // of findings that are actually about this codebase.
+    ".venv-photo/**",
+    ".tmp/**",
+    "apps/**",
   ]),
 ]);
 

@@ -131,7 +131,7 @@ export const ROUTE_CHAPTERS: RouteChapter[] = [
     firstOf: "first trip planned entirely alone — Wayanad, Munnar, Bangalore, Hampi, Feb 2024",
     mood: "alpine",
     work: [],
-    journey: { href: "/lab/ascent/climb", label: "walk the climb" },
+    journey: { href: "/journeys/climb", label: "walk the climb" },
     frames: [
       { src: photo("astrophotography", "Humpi.webp"), caption: "Granite temple ruins under a hard sun. Shot on the first trip I planned by myself, end to end.", place: "Hampi, Karnataka · Feb 2024" },
       { src: photo("landscape", "Manali.webp"), caption: "Towering pines frame a rushing river beneath dramatic cumulus clouds.", place: "Kullu Valley, Himachal Pradesh" },
@@ -375,12 +375,12 @@ export type ClimbStop = Stop & {
   approxAlt: string;
 };
 
-const L = (file: string, caption: string, place = "[confirm in /lab/locations]"): Frame => ({
+const L = (file: string, caption: string, place = "[where]"): Frame => ({
   src: photo("landscape", file),
   caption,
   place,
 });
-const A = (file: string, caption: string, place = "[confirm in /lab/locations]"): Frame => ({
+const A = (file: string, caption: string, place = "[where]"): Frame => ({
   src: photo("astrophotography", file),
   caption,
   place,

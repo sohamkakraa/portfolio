@@ -1,7 +1,7 @@
 "use client";
 
 import type * as THREE_NS from "three";
-import { disposeObject, rampColor, smoothstep, type SceneApi, type SceneHandle } from "@/lib/lab/scene";
+import { disposeObject, rampColor, smoothstep, type SceneApi, type SceneHandle } from "@/lib/journey/scene";
 
 /**
  * The Route. The camera walks one continuous path and the world morphs under it:
