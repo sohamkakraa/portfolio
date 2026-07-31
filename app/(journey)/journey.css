@@ -58,6 +58,7 @@ html.light:has(.lab) body {
   --l-halo-wide: rgba(0, 0, 0, 0.6);
   --l-scrim: rgba(8, 9, 11, 0.62);
   --l-scrim-mid: rgba(8, 9, 11, 0.34);
+  --l-scrim-strong: rgba(6, 7, 9, 0.88);
   --l-tint: rgba(255, 255, 255, 0.04);
   --l-hub-bg: #17130e;
 
@@ -98,6 +99,7 @@ html.light .lab {
   --l-halo-wide: rgba(255, 255, 255, 0.72);
   --l-scrim: rgba(247, 243, 235, 0.66);
   --l-scrim-mid: rgba(247, 243, 235, 0.36);
+  --l-scrim-strong: rgba(249, 246, 240, 0.9);
   --l-tint: rgba(23, 24, 27, 0.04);
   --l-hub-bg: #f4efe4;
 
@@ -125,6 +127,27 @@ html.light .lab:not(.lab--on-snow) .lab-route-stop {
   --l-halo: rgba(0, 0, 0, 0.75);
   --l-halo-wide: rgba(0, 0, 0, 0.6);
   color: var(--l-ink);
+}
+
+/* Except where the scene itself is pale. The rule above assumes the world stays dark in either
+   theme, which is true of a night ascent and false of the road: in the light theme the road's own
+   palette lifts with the page, and the bed under the bottom HUD measures rgb(129,117,105) against
+   rgb(47,37,27) in the dark. Cream on that reads 3.8:1 at the place name and 2.2:1 at the rail —
+   the labels are there but you have to hunt for them. So a journey that brightens with the theme
+   says so, and its instruments take page ink over a white halo, as they do above the snow line. */
+html.light .lab--pale-in-light:not(.lab--on-snow) .lab-hud,
+html.light .lab--pale-in-light:not(.lab--on-snow) .lab-route-rail,
+html.light .lab--pale-in-light:not(.lab--on-snow) .lab-route-stop {
+  --l-ink: #24262a;
+  --l-ink-2: rgba(36, 38, 42, 0.92);
+  --l-ink-3: rgba(36, 38, 42, 0.72);
+  --l-line: rgba(36, 38, 42, 0.2);
+  --l-halo: rgba(255, 255, 255, 0.9);
+  --l-halo-wide: rgba(255, 255, 255, 0.75);
+  color: var(--l-ink);
+  text-shadow:
+    0 0 2px var(--l-halo),
+    0 1px 10px var(--l-halo-wide);
 }
 
 /* ── Phones ───────────────────────────────────────────────────
@@ -171,6 +194,21 @@ html.light .lab:not(.lab--on-snow) .lab-route-stop {
     var(--l-scrim-mid) 32%,
     transparent 62%
   );
+}
+/* That gradient is shaped for a panel occupying the left third. Once the panels run gutter to
+   gutter the end of every line falls in its clear zone — and at the first stop the clear zone is
+   the sun, where the opening paragraph measured 1.04:1. Below 900px the veil has to cross the
+   whole frame, so it is turned to fall with the panel instead of across it. */
+@media (max-width: 900px) {
+  .lab-text-scrim {
+    background: linear-gradient(
+      172deg,
+      var(--l-scrim) 0%,
+      var(--l-scrim) 42%,
+      var(--l-scrim-mid) 78%,
+      transparent 100%
+    );
+  }
 }
 
 /* ── Film look ────────────────────────────────────────────── */
@@ -396,6 +434,28 @@ html.light .lab:not(.lab--on-snow) .lab-route-stop {
   }
 }
 
+/* Instruments need a bed of their own. Along the bottom of the frame the scene runs from the near
+   black of foreground terrain to the near white of a sunlit dune inside the width of a single
+   label — the place name measured 1.1:1 at one end of itself and 11:1 at the other — so no ink
+   colour passes everywhere and a halo cannot save it either. A band under the bottom row makes the
+   bed a decision instead of a lottery. It takes the theme's own scrim, so the band is dark under
+   cream instruments and paper-pale under dark ones. */
+.lab-instrument-bed {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: clamp(112px, 20vh, 190px);
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    var(--l-scrim-strong) 0%,
+    var(--l-scrim-mid) 62%,
+    transparent 100%
+  );
+}
+
 .lab-hud {
   position: fixed;
   z-index: 18;
@@ -414,6 +474,35 @@ html.light .lab:not(.lab--on-snow) .lab-route-stop {
 /* Sits above the horizontal route rail. A token, so mobile can reclaim the space. */
 .lab-hud--floor {
   bottom: var(--l-hud-floor);
+}
+/* The band covers the scene, but a chapter panel's photographs are drawn above it — at Kenya the
+   lion's eye sits directly behind the distance readout, which measured 1.2:1 there. So each
+   instrument group also carries its own plate. Radial rather than a filled box, and with the
+   padding cancelled by matching negative margins, so nothing moves and no edge appears. */
+.lab-hud--floor::before,
+.lab-hud--secondary::before {
+  content: "";
+  position: absolute;
+  /* Reaching far past the text on purpose. Painted as a background on the element itself, the
+     gradient is clipped at the padding box and reads as a grey rectangle pasted on the scene; from
+     an oversized layer it is the gradient's own transparent tail that meets the frame. */
+  inset: -180% -70%;
+  z-index: -1;
+  background: radial-gradient(
+    ellipse 46% 42% at 50% 50%,
+    var(--l-scrim-strong) 0%,
+    var(--l-scrim) 42%,
+    var(--l-scrim-mid) 64%,
+    transparent 82%
+  );
+}
+/* The smallest type on the page sits over the liveliest part of the frame — foreground terrain that
+   changes every chapter. At the shared 48% ink it measured between 3.4:1 and 4.3:1 against that
+   terrain even in the dark theme, so the instrument eyebrows take the body ink instead of the
+   faintest one. Panel eyebrows keep 48%: they have a scrim behind them. */
+.lab-hud .lab-eyebrow,
+.lab-route-stop .lab-eyebrow {
+  color: var(--l-ink-2);
 }
 .lab-hud--secondary {
   right: var(--l-gutter);
@@ -485,6 +574,8 @@ html.light .lab:not(.lab--on-snow) .lab-route-stop {
   left: var(--l-gutter);
   right: var(--l-gutter);
   bottom: var(--l-3);
+  /* Above the instrument bed it reads on, below the panels it must not cross. */
+  z-index: 4;
   height: 1px;
   background: var(--l-line);
   z-index: 18;
@@ -687,6 +778,38 @@ html.light .lab:not(.lab--on-snow) .lab-route-stop {
 /* The opening mark carries display type, so it gets more room than a chapter panel. */
 .lab-mark--hero {
   width: min(46rem, 66vw);
+}
+/* The narrow global measure is set for panels that sit beside a photograph. The opening panel has
+   nothing beside it and is the most-read text on the site, so it gets a wider line. */
+.lab-mark--hero .lab-body {
+  max-width: 44ch;
+}
+/* The sun sits directly behind the end of these lines at the first stop, and the doors sit over
+   the dune's shadow, so the opening panel carries a halo the chapter panels don't need. The token
+   flips with the theme, which is the point: a dark glow under cream ink, a white one under dark. */
+.lab-mark--hero .lab-body,
+.lab-mark--hero .lab-italic,
+.lab-mark--hero .lab-exit {
+  text-shadow: 0 1px 10px var(--l-halo-wide);
+}
+/* A halo alone was not enough: the road opens facing the sun, and the paragraph measured 2.5:1
+   where the glow crosses it. The opening panel gets its own soft bed, shaped to the text rather
+   than drawn as a box, so the scene still shows through around it. */
+.lab-mark--hero::before {
+  content: "";
+  position: absolute;
+  /* Same reasoning as the instrument plates: the layer is far larger than the text so its edge
+     never shows, and the gradient fades out well inside it. */
+  inset: -55% -45%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 40% 34% at 42% 50%,
+    var(--l-scrim-strong) 0%,
+    var(--l-scrim) 46%,
+    var(--l-scrim-mid) 68%,
+    transparent 88%
+  );
 }
 
 @media (max-width: 900px) {
@@ -895,6 +1018,18 @@ html.light .lab:not(.lab--on-snow) .lab-route-stop {
 }
 .lab-exit:hover {
   border-color: var(--l-accent);
+}
+/* The centred default belongs to the ending; on a left-aligned panel the doors line up with the
+   prose above them instead. */
+.lab-exits--start {
+  justify-content: flex-start;
+  gap: var(--l-3) var(--l-4);
+  margin-top: var(--l-4);
+}
+/* An instruction rather than a destination: same row, no underline to promise a click. */
+.lab-exit--quiet {
+  border-bottom-color: transparent;
+  color: var(--l-ink-2);
 }
 
 @media (prefers-reduced-motion: reduce) {

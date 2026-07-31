@@ -67,13 +67,14 @@ export default function RouteSpine() {
   const chapter = ROUTE_CHAPTERS[active];
 
   return (
-    <div className="lab">
+    <div className="lab lab--pale-in-light">
       {tier === "full" ? (
         <canvas ref={canvasRef} className="lab-canvas" />
       ) : (
         <div ref={liteBgRef} className="lab-lite-bg" style={{ background: liteRouteBackground(0) }} />
       )}
       <div className="lab-text-scrim" aria-hidden />
+      <div className="lab-instrument-bed" aria-hidden />
       <FilmOverlay vignette={0.45} />
       <JourneyExits />
 
@@ -113,27 +114,33 @@ export default function RouteSpine() {
             <div className="lab-eyebrow lab-eyebrow--accent">Soham Kakra</div>
             <h1
               className="lab-display lab-h2"
-              style={{ marginTop: "var(--l-3)", maxWidth: "21ch" }}
+              style={{ marginTop: "var(--l-3)", maxWidth: "19ch" }}
             >
-              Where I lived was decided for me. Where I went, less and less so.
+              Did you get to choose where you grew up?
             </h1>
             <p className="lab-body" style={{ marginTop: "var(--l-4)" }}>
-              Six stops. Three are cities I lived in, and until Eindhoven not one of them was my
-              choice. Three are places I went and came back from, and that is where nearly every
-              photograph here was made. The two facts are related: I bought my first camera for the
-              first trip I took without my parents, in July 2021, and every trip since has had
-              fewer people in it.
+              I didn&apos;t, and for a long time it did not occur to me to mind. Six places sit on
+              this road: three I lived in and chose none of, three I went to and came back from.
+              Nearly every photograph here was made on the second kind — I bought the camera for
+              the first trip I took without my parents, and every trip since has had fewer people
+              in it.
             </p>
-            <p className="lab-italic" style={{ marginTop: "var(--l-4)", fontSize: "0.9375rem" }}>
-              {ROUTE_ORIGIN.line}
+            <p className="lab-body" style={{ marginTop: "var(--l-3)" }}>
+              Walk it if you have a few minutes; it is the long way round and the honest one. If
+              you came to find out whether I can do a job, that door is here too and I will not be
+              offended.
             </p>
+            <div className="lab-exits lab-exits--start">
+              <span className="lab-exit lab-exit--quiet">scroll to keep walking ↓</span>
+              <Link href="/work" className="lab-exit">
+                straight to what I do →
+              </Link>
+            </div>
             {/* The road is walked in the order the map puts it, which is not the order the
                 calendar does — Kenya comes late here but came first with a camera. */}
             <p className="lab-italic" style={{ marginTop: "var(--l-4)", fontSize: "0.9375rem" }}>
-              Walked west to east, not first to last. The years are on every stop.
-            </p>
-            <p className="lab-italic" style={{ marginTop: "var(--l-4)", fontSize: "0.9375rem" }}>
-              scroll to keep walking ↓
+              {ROUTE_ORIGIN.line} Walked west to east, not first to last; the years are on every
+              stop.
             </p>
           </section>
 
