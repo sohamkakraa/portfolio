@@ -340,11 +340,20 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
     fetch("/api/portfolio", { cache: "no-store" })
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        // A filtered payload has hidden photographs removed from it, and saving it back would
+        // delete them for good. Better to edit nothing than to edit a copy with holes in it.
+        if (res.headers.get("X-Content-Filtered")) {
+          throw new Error("filtered");
+        }
         return res.json();
       })
       .then((loaded: PortfolioData) => setData(loaded))
-      .catch(() => {
-        showAssetHint("Could not load portfolio from the server. Using defaults until refresh.");
+      .catch((err: Error) => {
+        showAssetHint(
+          err.message === "filtered"
+            ? "Your session was not recognised, so the server withheld hidden items. Sign in again before editing — saving now would delete them."
+            : "Could not load portfolio from the server. Using defaults until refresh."
+        );
       });
   }, [authenticated, showAssetHint]);
 
@@ -399,8 +408,14 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
     }
   };
 
-  const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
+  const handleLogout = async (everywhere = false) => {
+    if (everywhere) {
+      const ok = window.confirm(
+        "Sign out of every device? Any session still open elsewhere stops working immediately."
+      );
+      if (!ok) return;
+    }
+    await fetch(`/api/auth/logout${everywhere ? "?all=1" : ""}`, { method: "POST" }).catch(() => {});
     setAuthenticated(false);
     setCsrfToken(null);
     setSessionExpiresInDays(null);
@@ -908,6 +923,18 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
               <LogOut size={12} />
               <span className="hidden sm:inline">Sign out</span>
             </button>
+            {/* For a lost laptop or a cookie you think has leaked: signing out here only ends this
+                session, and the point of the registry is that the others can be ended too. */}
+            <button
+              type="button"
+              onClick={() => { void handleLogout(true); }}
+              className="btn-secondary !py-2 !px-4 !text-[10px]"
+              aria-label="Sign out of every device"
+              title="Sign out of every device"
+            >
+              <span className="hidden sm:inline">All devices</span>
+              <span className="sm:hidden">All</span>
+            </button>
             <button
               type="button"
               onClick={handleSave}
@@ -1259,58 +1286,27 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
                     <Plus size={12} /> Add pillar
                   </button>
 
+                  {/* Read-only on purpose. The log is projected from lib/work.ts and the merge
+                      in app/page.tsx ignores any stored copy, so editable inputs here would
+                      accept changes and then silently drop them. Editing the file is the edit. */}
                   <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-2">
-                    CV log
+                    CV log · from lib/work.ts
                   </h4>
+                  <p className="text-[10px] leading-relaxed text-[color:var(--fg-muted)]">
+                    Not editable here. Roles and degrees live in <code>lib/work.ts</code> so the
+                    homepage, the route and the work page can never disagree about them. Add a job
+                    there and it appears in all three.
+                  </p>
                   {(data.about.log ?? []).map((entry, i) => (
-                    <div key={i} className="grid gap-2 sm:grid-cols-[100px_1fr_2fr_auto] items-center">
-                      <Input
-                        value={entry.year}
-                        onChange={(v) => {
-                          const arr = [...(data.about.log ?? [])];
-                          arr[i] = { ...arr[i], year: v };
-                          updateAbout("log", arr);
-                        }}
-                        placeholder="2025–"
-                      />
-                      <Input
-                        value={entry.org}
-                        onChange={(v) => {
-                          const arr = [...(data.about.log ?? [])];
-                          arr[i] = { ...arr[i], org: v };
-                          updateAbout("log", arr);
-                        }}
-                        placeholder="TU/e"
-                      />
-                      <Input
-                        value={entry.role}
-                        onChange={(v) => {
-                          const arr = [...(data.about.log ?? [])];
-                          arr[i] = { ...arr[i], role: v };
-                          updateAbout("log", arr);
-                        }}
-                        placeholder="M.Sc. Data Science & AI"
-                      />
-                      <DangerButton
-                        onClick={() => {
-                          const arr = (data.about.log ?? []).filter((_, j) => j !== i);
-                          updateAbout("log", arr);
-                        }}
-                      >
-                        <X size={12} />
-                      </DangerButton>
+                    <div
+                      key={i}
+                      className="grid gap-2 sm:grid-cols-[100px_1fr_2fr] items-center text-[11px] text-[color:var(--fg-muted)]"
+                    >
+                      <span className="font-mono">{entry.year}</span>
+                      <span>{entry.org}</span>
+                      <span>{entry.role}</span>
                     </div>
                   ))}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const arr = [...(data.about.log ?? []), { year: "", org: "", role: "" }];
-                      updateAbout("log", arr);
-                    }}
-                    className="btn-secondary !py-1.5 !px-3 !text-[10px]"
-                  >
-                    <Plus size={12} /> Add log entry
-                  </button>
 
                   <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--fg-muted)] pt-2">
                     Portrait meta table (sidebar under photo)

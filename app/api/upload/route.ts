@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import { verifyAdminSession } from "@/lib/auth";
-import { isAllowedUpload } from "@/lib/upload-validation";
+import { isAllowedUpload, sniffImageType } from "@/lib/upload-validation";
 
 const BLOB_CONFIGURED = Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
 const ON_VERCEL = process.env.VERCEL === "1";
@@ -78,6 +78,15 @@ export async function POST(request: Request) {
       );
     }
 
+    // Everything checked so far came from the uploader. This is the file itself.
+    const sniffed = await sniffImageType(file);
+    if (!sniffed) {
+      return NextResponse.json(
+        { success: false, message: "That file is not a readable image, whatever it is named." },
+        { status: 400 }
+      );
+    }
+
     const ext = path.extname(file.name).toLowerCase() || ".jpg";
     const timestamp = Date.now();
     let uploadDir: string;
@@ -95,7 +104,7 @@ export async function POST(request: Request) {
         const blob = await put(blobPathname, file, {
           access: "public",
           token: process.env.BLOB_READ_WRITE_TOKEN,
-          contentType: file.type || undefined,
+          contentType: sniffed,
         });
         return NextResponse.json({ success: true, path: blob.url, filename: safeName, storage: "blob" });
       }
@@ -121,7 +130,7 @@ export async function POST(request: Request) {
         const blob = await put(blobPathname, file, {
           access: "public",
           token: process.env.BLOB_READ_WRITE_TOKEN,
-          contentType: file.type || undefined,
+          contentType: sniffed,
         });
         return NextResponse.json({ success: true, path: blob.url, filename: safeName, storage: "blob" });
       }
@@ -160,7 +169,7 @@ export async function POST(request: Request) {
       const blob = await put(blobPathname, file, {
         access: "public",
         token: process.env.BLOB_READ_WRITE_TOKEN,
-        contentType: file.type || undefined,
+        contentType: sniffed,
       });
       return NextResponse.json({ success: true, path: blob.url, filename: safeName, storage: "blob" });
     }

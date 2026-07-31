@@ -10,7 +10,11 @@ import {
   SESSION_DURATION_DAYS,
   SESSION_DURATION_SECONDS,
 } from "@/lib/auth";
-import { checkLoginRateLimit } from "@/lib/auth-rate-limit";
+import {
+  checkLoginRateLimit,
+  recordLoginFailure,
+  clearLoginFailures,
+} from "@/lib/auth-rate-limit";
 
 function getPasswordHash(): string {
   const hash = process.env.ADMIN_PASSWORD_HASH?.trim();
@@ -18,6 +22,14 @@ function getPasswordHash(): string {
   return hash;
 }
 
+/**
+ * The caller's address, as the platform reports it.
+ *
+ * Reading a client-settable header would normally be a poor thing to rate limit on, but Vercel
+ * overwrites x-forwarded-for at the edge and does not forward externally supplied values, exactly
+ * so it cannot be spoofed. Off Vercel that guarantee does not hold, so anything relying on this
+ * key has to sit behind a proxy that sets the header itself.
+ */
 function getClientIp(request: Request): string {
   return (
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
@@ -29,7 +41,7 @@ function getClientIp(request: Request): string {
 /** POST /api/auth — verify password, issue signed session cookie */
 export async function POST(request: Request) {
   const ip = getClientIp(request);
-  const { allowed, retryAfterMs } = checkLoginRateLimit(ip);
+  const { allowed, retryAfterMs } = await checkLoginRateLimit(ip);
 
   if (!allowed) {
     return NextResponse.json(
@@ -61,11 +73,16 @@ export async function POST(request: Request) {
 
   const valid = bcrypt.compareSync(password, hash);
   if (!valid) {
+    await recordLoginFailure(ip);
     return NextResponse.json({ error: "Incorrect password." }, { status: 401 });
   }
 
+  // A correct password wipes the slate, so a run of typos does not leave a lockout waiting.
+  await clearLoginFailures(ip);
+
   const csrfToken = randomBytes(16).toString("hex");
-  const token = await createSessionToken(csrfToken);
+  const sid = randomBytes(16).toString("hex");
+  const token = await createSessionToken(csrfToken, sid);
   const expires = new Date(Date.now() + SESSION_DURATION_SECONDS * 1000);
 
   const cookieStore = await cookies();

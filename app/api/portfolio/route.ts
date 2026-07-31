@@ -9,6 +9,7 @@ import {
   writePortfolioToRedis,
 } from "@/lib/portfolio-redis";
 import { verifyAdminSession } from "@/lib/auth";
+import { stripHiddenContent } from "@/lib/portfolio-visibility";
 
 const DATA_PATH = path.join(process.cwd(), "data", "portfolio.json");
 
@@ -68,7 +69,9 @@ function mergeStoredWithDefaults(stored: PortfolioData, defaults: PortfolioData)
     ...stored,
     site: { ...defaults.site, ...stored.site },
     hero: { ...defaults.hero, ...stored.hero },
-    about: { ...defaults.about, ...stored.about },
+    // Matches app/page.tsx: the CV log is projected from lib/work.ts and cannot be
+    // overridden by a stored payload, so the admin panel reads the same truth the site does.
+    about: { ...defaults.about, ...stored.about, log: defaults.about.log },
     highlights: { ...defaults.highlights, ...stored.highlights },
     projects: mergeProjects(defaults.projects, stored.projects),
     life: { ...defaults.life, ...stored.life },
@@ -108,15 +111,22 @@ async function readStoredData(): Promise<PortfolioData | null> {
   return readStoredDataFromFile();
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   const defaults = getDefaultPortfolioData();
   const stored = await readStoredData();
+  const merged = stored ? mergeStoredWithDefaults(stored, defaults) : defaults;
 
-  if (stored) {
-    return NextResponse.json(mergeStoredWithDefaults(stored, defaults));
-  }
+  // The admin panel reads this endpoint to edit, so it needs to see hidden items in order to
+  // unhide them. Everyone else gets them stripped.
+  const session = await verifyAdminSession(request.headers.get("cookie"));
+  if (session) return NextResponse.json(merged);
 
-  return NextResponse.json(defaults);
+  // Says so out loud, because the editor saves back whatever it loaded. If it ever received a
+  // filtered payload and then saved, hiding a photograph would quietly become deleting it. The
+  // editor refuses to load when it sees this.
+  return NextResponse.json(stripHiddenContent(merged), {
+    headers: { "X-Content-Filtered": "hidden" },
+  });
 }
 
 export async function PUT(request: Request) {

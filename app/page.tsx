@@ -4,6 +4,7 @@ import {
   readPortfolioFromRedis,
 } from "@/lib/portfolio-redis";
 import PortfolioPage from "@/components/PortfolioPage";
+import { stripHiddenContent } from "@/lib/portfolio-visibility";
 import type { PortfolioData } from "@/lib/portfolio-types";
 
 // Project per-item merge: stored items inherit storyline / metrics / stack
@@ -47,7 +48,10 @@ async function getPortfolioData() {
           // Deep-merge each section so older stored payloads inherit editorial defaults.
           site: { ...defaults.site, ...stored.site },
           hero: { ...defaults.hero, ...stored.hero },
-          about: { ...defaults.about, ...stored.about },
+          // `log` is deliberately not overridable: it is projected from lib/work.ts, and a
+          // stored payload saved before a job existed was how the site came to claim a
+          // student with one finished role. Work facts belong to the code now.
+          about: { ...defaults.about, ...stored.about, log: defaults.about.log },
           highlights: { ...defaults.highlights, ...stored.highlights },
           projects: mergeStoredProjects(defaults.projects, stored.projects),
           life: { ...defaults.life, ...stored.life },
@@ -83,5 +87,7 @@ async function getPortfolioData() {
 
 export default async function HomePage() {
   const data = await getPortfolioData();
-  return <PortfolioPage initialData={data} />;
+  // Hidden frames are stripped here rather than in the gallery, so a hidden photograph's title
+  // and src never reach the browser at all — not in the HTML, not in the hydration payload.
+  return <PortfolioPage initialData={stripHiddenContent(data)} />;
 }

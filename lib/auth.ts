@@ -1,4 +1,5 @@
 import { SignJWT, jwtVerify } from "jose";
+import { isSessionActive, registerSession, revocable } from "@/lib/auth-sessions";
 
 export const COOKIE_NAME = "admin_session";
 export const SESSION_DURATION_DAYS = 30;
@@ -7,6 +8,8 @@ export const SESSION_DURATION_SECONDS = SESSION_DURATION_DAYS * 24 * 60 * 60;
 export interface SessionPayload {
   sub: string;
   csrfToken: string;
+  /** Session id, looked up in the revocation registry. Absent on tokens issued before it existed. */
+  sid?: string;
   iat: number;
   exp: number;
 }
@@ -19,8 +22,9 @@ function getSecret(): Uint8Array {
   return new TextEncoder().encode(secret);
 }
 
-export async function createSessionToken(csrfToken: string): Promise<string> {
-  return new SignJWT({ sub: "admin", csrfToken })
+export async function createSessionToken(csrfToken: string, sid: string): Promise<string> {
+  await registerSession(sid, SESSION_DURATION_SECONDS);
+  return new SignJWT({ sub: "admin", csrfToken, sid })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(`${SESSION_DURATION_DAYS}d`)
@@ -31,7 +35,16 @@ export async function verifySessionToken(token: string): Promise<SessionPayload 
   try {
     const { payload } = await jwtVerify(token, getSecret(), { algorithms: ["HS256"] });
     if (payload.sub !== "admin") return null;
-    return payload as unknown as SessionPayload;
+    const session = payload as unknown as SessionPayload;
+
+    if (revocable()) {
+      // A token with no session id predates the registry and so can never be revoked. Rejecting it
+      // costs one sign-in; honouring it would leave a thirty-day session that sign-out cannot end.
+      if (!session.sid) return null;
+      if (!(await isSessionActive(session.sid))) return null;
+    }
+
+    return session;
   } catch {
     return null;
   }
