@@ -24,6 +24,51 @@
 .DS_Store
 *.pem
 
+# scratch scripts, screenshots and other local run output
+/.tmp/
+
+# local CMS state, written by the admin panel and read only when Redis is unreachable. The
+# committed copy had gone stale enough to name three deleted projects with invented metrics,
+# and a failover would have served it verbatim.
+/data/portfolio.json
+
+# photo staging area — `npm run photos:file` moves these into public/photography/,
+# so anything still sitting here is unfiled rather than part of the archive
+/photo-inbox/*/*
+!/photo-inbox/*/.gitkeep
+
+# Photographic originals: 1.9 GB of full-resolution frames and RAW negatives. This repo is
+# public, and git history is permanent, so a single `git add -A` would publish the negatives
+# irrevocably. The site never needs them — it serves the derivatives in public/photography-webp/
+# and the R2 CDN. The originals are the archive and live only on disk and in your own backups.
+/public/photography/**
+!/public/photography/metadata.json
+
+# Belt and braces: a negative must never be committable from anywhere in the tree, whatever
+# directory it is sitting in when someone runs a broad `git add`.
+*.NEF
+*.nef
+*.DNG
+*.dng
+*.CR2
+*.cr2
+*.ARW
+*.arw
+*.RAF
+*.raf
+*.ORF
+*.orf
+*.RW2
+*.rw2
+*.TIF
+*.tif
+*.TIFF
+*.tiff
+
+# TrustMark watermarking toolchain. Python + torch, used only by the offline photo pipeline,
+# never at request time. Recreate with `npm run photos:setup`.
+/.venv-photo/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

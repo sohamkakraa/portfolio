@@ -4,7 +4,7 @@
  * Converts images to WebP at quality 85, max 2000px wide
  *
  * Usage:
- *   node scripts/compress-images.mjs <input-dir> [output-dir]
+ *   node scripts/compress-images.mjs <input-dir> [output-dir] [--skip-existing]
  *
  * Examples:
  *   node scripts/compress-images.mjs ./raw-photos ./compressed
@@ -12,18 +12,23 @@
  *
  * The script preserves directory structure. If no output dir is given,
  * it defaults to <input-dir>-webp/
+ *
+ * --skip-existing only writes WebPs that are missing, which is what you want when a handful
+ * of new originals have landed in an archive of several hundred.
  */
 
 import fs from "node:fs";
 import path from "node:path";
-import sharp from "sharp";
+import { toWebp, MAX_WIDTH, QUALITY } from "./lib/webp.mjs";
 
-const MAX_WIDTH = 2000;
-const QUALITY = 85;
 const SUPPORTED = new Set([".jpg", ".jpeg", ".png", ".tiff", ".tif", ".bmp", ".avif", ".heic", ".heif", ".dng", ".cr2", ".nef", ".arw", ".orf", ".rw2", ".webp"]);
 
-const inputDir = process.argv[2];
-const outputDir = process.argv[3] || `${inputDir}-webp`;
+const args = process.argv.slice(2);
+const SKIP_EXISTING = args.includes("--skip-existing");
+const positional = args.filter((a) => !a.startsWith("--"));
+
+const inputDir = positional[0];
+const outputDir = positional[1] || `${inputDir}-webp`;
 
 if (!inputDir) {
   console.error("Usage: node scripts/compress-images.mjs <input-dir> [output-dir]");
@@ -51,26 +56,16 @@ function collectFiles(dir) {
 async function compressOne(src) {
   const rel = path.relative(inputDir, src);
   const dest = path.join(outputDir, rel.replace(path.extname(rel), ".webp"));
-  const destDir = path.dirname(dest);
 
-  if (!fs.existsSync(destDir)) {
-    fs.mkdirSync(destDir, { recursive: true });
-  }
+  if (SKIP_EXISTING && fs.existsSync(dest)) return null;
 
-  const meta = await sharp(src).metadata();
-  let pipeline = sharp(src).rotate(); // auto-rotate by EXIF
-
-  if (meta.width && meta.width > MAX_WIDTH) {
-    pipeline = pipeline.resize({ width: MAX_WIDTH, withoutEnlargement: true });
-  }
-
-  await pipeline.webp({ quality: QUALITY, effort: 4 }).toFile(dest);
+  const via = await toWebp(src, dest, { maxWidth: MAX_WIDTH, quality: QUALITY });
 
   const srcSize = fs.statSync(src).size;
   const destSize = fs.statSync(dest).size;
   const saved = ((1 - destSize / srcSize) * 100).toFixed(1);
 
-  return { src: rel, dest: path.relative(outputDir, dest), srcSize, destSize, saved };
+  return { src: rel, dest: path.relative(outputDir, dest), srcSize, destSize, saved, via };
 }
 
 async function main() {
@@ -82,16 +77,25 @@ async function main() {
   let totalDest = 0;
   let processed = 0;
   let failed = 0;
+  let skipped = 0;
 
   for (const file of files) {
     try {
       const result = await compressOne(file);
+      if (!result) {
+        skipped++;
+        continue;
+      }
       totalSrc += result.srcSize;
       totalDest += result.destSize;
       processed++;
       const srcMB = (result.srcSize / 1024 / 1024).toFixed(1);
       const destMB = (result.destSize / 1024 / 1024).toFixed(1);
-      console.log(`  ✓ ${result.src}  ${srcMB}MB → ${destMB}MB  (-${result.saved}%)`);
+      console.log(
+        `  ✓ ${result.src}  ${srcMB}MB → ${destMB}MB  (-${result.saved}%)${
+          result.via === "sips" ? "  (via sips)" : ""
+        }`
+      );
     } catch (err) {
       failed++;
       console.error(`  ✗ ${path.relative(inputDir, file)}: ${err.message}`);
@@ -104,6 +108,7 @@ async function main() {
 
   console.log(`\n── Summary ──`);
   console.log(`  Processed: ${processed} images`);
+  if (skipped) console.log(`  Skipped:   ${skipped} (WebP already exists)`);
   if (failed) console.log(`  Failed: ${failed}`);
   console.log(`  Original:   ${totalSrcMB} MB`);
   console.log(`  Compressed: ${totalDestMB} MB`);

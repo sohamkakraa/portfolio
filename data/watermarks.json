@@ -1,0 +1,1396 @@
+{
+  "note": "Maps the invisible TrustMark identifier embedded in each published frame to the photograph it belongs to. This is the lookup side of a C2PA-style soft binding: the pixels carry the id, this file carries the meaning. Committed so git history timestamps the claim.",
+  "photographs": {
+    "SKK2ULSQ": {
+      "file": "Startrails/Lightrail 1.jpeg",
+      "published": "photography-webp/Startrails/Lightrail 1.webp",
+      "category": "Startrails",
+      "width": 1066,
+      "height": 1600,
+      "psnr": 45.25,
+      "sha256": "a71fbc4e11dd621211977b870796614c",
+      "embedded": "2026-07-31"
+    },
+    "SKCVLQVA": {
+      "file": "Startrails/Startrail 1.jpg",
+      "published": "photography-webp/Startrails/Startrail 1.webp",
+      "category": "Startrails",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 45.1,
+      "sha256": "882b92b213d61051ff71550d9aaae9ab",
+      "embedded": "2026-07-31"
+    },
+    "SK73VZFW": {
+      "file": "Startrails/Startrail 10.JPG",
+      "published": "photography-webp/Startrails/Startrail 10.webp",
+      "category": "Startrails",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 46.28,
+      "sha256": "f8263088ae4e43fddfa06999c6e81e74",
+      "embedded": "2026-07-31"
+    },
+    "SK81GDWL": {
+      "file": "Startrails/Startrail 11.JPG",
+      "published": "photography-webp/Startrails/Startrail 11.webp",
+      "category": "Startrails",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 47.75,
+      "sha256": "ab04c5739734c01d1fbe33fdd0a64b3e",
+      "embedded": "2026-07-31"
+    },
+    "SKDCCKX7": {
+      "file": "Startrails/Startrail 2.jpg",
+      "published": "photography-webp/Startrails/Startrail 2.webp",
+      "category": "Startrails",
+      "width": 1600,
+      "height": 907,
+      "psnr": 49.16,
+      "sha256": "3733f4180735339a2b1c6374c0ec6443",
+      "embedded": "2026-07-31"
+    },
+    "SKR6CJNO": {
+      "file": "Startrails/Startrail 3.tif",
+      "published": "photography-webp/Startrails/Startrail 3.webp",
+      "category": "Startrails",
+      "width": 1066,
+      "height": 1600,
+      "psnr": 43.44,
+      "sha256": "6f1687ca7d321a1f44801cda37ad20e7",
+      "embedded": "2026-07-31"
+    },
+    "SKGE3C1Y": {
+      "file": "Startrails/Startrail 4.NEF",
+      "published": "photography-webp/Startrails/Startrail 4.webp",
+      "category": "Startrails",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 46.11,
+      "sha256": "e6747a416de76423a2ed390858309387",
+      "embedded": "2026-07-31"
+    },
+    "SKUSKSCJ": {
+      "file": "Startrails/Startrail 5.jpg",
+      "published": "photography-webp/Startrails/Startrail 5.webp",
+      "category": "Startrails",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 45.43,
+      "sha256": "fbd6e4bb7b098a9ab3bd7d6d8cbfaa01",
+      "embedded": "2026-07-31"
+    },
+    "SKKQ6KWM": {
+      "file": "Startrails/Startrail 6.jpg",
+      "published": "photography-webp/Startrails/Startrail 6.webp",
+      "category": "Startrails",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 46.04,
+      "sha256": "2a4d928762ba95a267c61a0fae5836ad",
+      "embedded": "2026-07-31"
+    },
+    "SK22XBCH": {
+      "file": "Startrails/Startrail 7.jpg",
+      "published": "photography-webp/Startrails/Startrail 7.webp",
+      "category": "Startrails",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 48.17,
+      "sha256": "ae5db33eadf4c5954a8fea148827d9be",
+      "embedded": "2026-07-31"
+    },
+    "SKJ01PHS": {
+      "file": "Startrails/Startrail 8.JPG",
+      "published": "photography-webp/Startrails/Startrail 8.webp",
+      "category": "Startrails",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 48.62,
+      "sha256": "90af9064ee8a6092443320c39a15e28d",
+      "embedded": "2026-07-31"
+    },
+    "SK8LF4IH": {
+      "file": "Startrails/Startrail 9.JPG",
+      "published": "photography-webp/Startrails/Startrail 9.webp",
+      "category": "Startrails",
+      "width": 900,
+      "height": 1600,
+      "psnr": 45.48,
+      "sha256": "3ad1130a4d877fee5980c7b3dd8c80a9",
+      "embedded": "2026-07-31"
+    },
+    "SKXICNGT": {
+      "file": "astrophotography/Cresent Moon.JPG",
+      "published": "photography-webp/astrophotography/Cresent Moon.webp",
+      "category": "astrophotography",
+      "width": 1600,
+      "height": 1200,
+      "psnr": 45.71,
+      "sha256": "ace43a511c8151e20496545fc80c64db",
+      "embedded": "2026-07-31"
+    },
+    "SKN5H1TL": {
+      "file": "astrophotography/First Milky Way.TIF",
+      "published": "photography-webp/astrophotography/First Milky Way.webp",
+      "category": "astrophotography",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 48.44,
+      "sha256": "d8d6543cbef05f70fcd919f3987771ec",
+      "embedded": "2026-07-31"
+    },
+    "SKA8XPAR": {
+      "file": "astrophotography/Grahan Village.DNG",
+      "published": "photography-webp/astrophotography/Grahan Village.webp",
+      "category": "astrophotography",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 46.87,
+      "sha256": "1d4f7099569f534c2835e146ab73bd06",
+      "embedded": "2026-07-31"
+    },
+    "SKTJB7EV": {
+      "file": "astrophotography/Humpi.NEF",
+      "published": "photography-webp/astrophotography/Humpi.webp",
+      "category": "astrophotography",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 46.66,
+      "sha256": "3be541e7a92c827cfd46e12a6d812f5a",
+      "embedded": "2026-07-31"
+    },
+    "SKYR44U6": {
+      "file": "astrophotography/Humpta Pass.JPG",
+      "published": "photography-webp/astrophotography/Humpta Pass.webp",
+      "category": "astrophotography",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 47.96,
+      "sha256": "5813f42b4baad28ffe013704b0c05aa6",
+      "embedded": "2026-07-31"
+    },
+    "SKHKMBB7": {
+      "file": "astrophotography/IMG_7033.JPG",
+      "published": "photography-webp/astrophotography/IMG_7033.webp",
+      "category": "astrophotography",
+      "width": 1066,
+      "height": 1600,
+      "psnr": 45.49,
+      "sha256": "62d1aef86e7584b764010e458dee1257",
+      "embedded": "2026-07-31"
+    },
+    "SKCU2A3G": {
+      "file": "astrophotography/Lunar Night.JPG",
+      "published": "photography-webp/astrophotography/Lunar Night.webp",
+      "category": "astrophotography",
+      "width": 1600,
+      "height": 1200,
+      "psnr": 46.19,
+      "sha256": "d75aab351d8e24b0e1494bfe8f275620",
+      "embedded": "2026-07-31"
+    },
+    "SKADT07A": {
+      "file": "astrophotography/Moon in the Day.JPG",
+      "published": "photography-webp/astrophotography/Moon in the Day.webp",
+      "category": "astrophotography",
+      "width": 1087,
+      "height": 1600,
+      "psnr": 47.71,
+      "sha256": "f67310c1680db82aba3041bacba8cf48",
+      "embedded": "2026-07-31"
+    },
+    "SK9FAUTL": {
+      "file": "astrophotography/Nagaru Night Sky.DNG",
+      "published": "photography-webp/astrophotography/Nagaru Night Sky.webp",
+      "category": "astrophotography",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 49.24,
+      "sha256": "4980d8232b70791b9012058d20c5f7ea",
+      "embedded": "2026-07-31"
+    },
+    "SK3GVXTP": {
+      "file": "astrophotography/Sar Pass 1.NEF",
+      "published": "photography-webp/astrophotography/Sar Pass 1.webp",
+      "category": "astrophotography",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 48.72,
+      "sha256": "87cb7419a6d8169ce74c5a079a2cfd84",
+      "embedded": "2026-07-31"
+    },
+    "SKV00HHD": {
+      "file": "astrophotography/Sar Pass 2.NEF",
+      "published": "photography-webp/astrophotography/Sar Pass 2.webp",
+      "category": "astrophotography",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 49.5,
+      "sha256": "36fc39a66e354c652f144a9cca2074f9",
+      "embedded": "2026-07-31"
+    },
+    "SKRGXUV7": {
+      "file": "astrophotography/Sar Pass 3.NEF",
+      "published": "photography-webp/astrophotography/Sar Pass 3.webp",
+      "category": "astrophotography",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 46.61,
+      "sha256": "d35cac9694cabcbf286a9b2d96a1702f",
+      "embedded": "2026-07-31"
+    },
+    "SKV14ECY": {
+      "file": "astrophotography/Sar Pass 4.NEF",
+      "published": "photography-webp/astrophotography/Sar Pass 4.webp",
+      "category": "astrophotography",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 49.29,
+      "sha256": "8d8ed3ff0d1ea26689ce78d857a7010f",
+      "embedded": "2026-07-31"
+    },
+    "SKOH2Q27": {
+      "file": "astrophotography/Sar Pass 5.NEF",
+      "published": "photography-webp/astrophotography/Sar Pass 5.webp",
+      "category": "astrophotography",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 49.19,
+      "sha256": "bdca8225f03bc4a14b71856e5d973d77",
+      "embedded": "2026-07-31"
+    },
+    "SK0U6C4W": {
+      "file": "astrophotography/Sar Pass 6.NEF",
+      "published": "photography-webp/astrophotography/Sar Pass 6.webp",
+      "category": "astrophotography",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 45.11,
+      "sha256": "ccdba13fb1627a7e2836a710674e0f56",
+      "embedded": "2026-07-31"
+    },
+    "SKU926U6": {
+      "file": "astrophotography/Starry Night.tif",
+      "published": "photography-webp/astrophotography/Starry Night.webp",
+      "category": "astrophotography",
+      "width": 1066,
+      "height": 1600,
+      "psnr": 46.51,
+      "sha256": "b6cb8376052584f9bee479c94cba5c5b",
+      "embedded": "2026-07-31"
+    },
+    "SKUQ4XZ4": {
+      "file": "astrophotography/Sunset.JPG",
+      "published": "photography-webp/astrophotography/Sunset.webp",
+      "category": "astrophotography",
+      "width": 1600,
+      "height": 1200,
+      "psnr": 48.18,
+      "sha256": "925754f05202be851312c22ec2796cbd",
+      "embedded": "2026-07-31"
+    },
+    "SK8OOASW": {
+      "file": "astrophotography/Tosh Village.NEF",
+      "published": "photography-webp/astrophotography/Tosh Village.webp",
+      "category": "astrophotography",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 49.02,
+      "sha256": "66081695c5fa2ef0e1ee593c15b8f6ce",
+      "embedded": "2026-07-31"
+    },
+    "SKVAQRFG": {
+      "file": "automobile/Classic Car.JPG",
+      "published": "photography-webp/automobile/Classic Car.webp",
+      "category": "automobile",
+      "width": 1600,
+      "height": 1066,
+      "psnr": 41.24,
+      "sha256": "460f49e6c934e7e32bc495abb72336d1",
+      "embedded": "2026-07-31"
+    },
+    "SKZST4VG": {
+      "file": "automobile/Masi Airfield.JPEG",
+      "published": "photography-webp/automobile/Masi Airfield.webp",
+      "category": "automobile",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 41.78,
+      "sha256": "fcc2220f4e30b8e1b9f5956f47fb32ad",
+      "embedded": "2026-07-31"
+    },
+    "SKSRBWZ8": {
+      "file": "automobile/Mustang 1.jpeg",
+      "published": "photography-webp/automobile/Mustang 1.webp",
+      "category": "automobile",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 43.32,
+      "sha256": "24d2f79fd297a231d6f216107084461f",
+      "embedded": "2026-07-31"
+    },
+    "SKHOL958": {
+      "file": "automobile/Mustang 2.jpeg",
+      "published": "photography-webp/automobile/Mustang 2.webp",
+      "category": "automobile",
+      "width": 1079,
+      "height": 1600,
+      "psnr": 45.73,
+      "sha256": "49b363492460c90ad0dbb15747c62edc",
+      "embedded": "2026-07-31"
+    },
+    "SKZO62DL": {
+      "file": "automobile/Mustang 3.JPG",
+      "published": "photography-webp/automobile/Mustang 3.webp",
+      "category": "automobile",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 44.84,
+      "sha256": "0a35c1c175be0005243801c326c867d8",
+      "embedded": "2026-07-31"
+    },
+    "SKHT8R5C": {
+      "file": "automobile/Mustang 4.JPG",
+      "published": "photography-webp/automobile/Mustang 4.webp",
+      "category": "automobile",
+      "width": 1600,
+      "height": 1066,
+      "psnr": 41.51,
+      "sha256": "fc12bedbe59718ec946cf50039f113d0",
+      "embedded": "2026-07-31"
+    },
+    "SKUI8HLC": {
+      "file": "automobile/Mustang Interior.JPG",
+      "published": "photography-webp/automobile/Mustang Interior.webp",
+      "category": "automobile",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 42.99,
+      "sha256": "fa27efe4fee8fc0b1039cb5aac96eb8e",
+      "embedded": "2026-07-31"
+    },
+    "SKNS185G": {
+      "file": "automobile/Mustang Logo.JPG",
+      "published": "photography-webp/automobile/Mustang Logo.webp",
+      "category": "automobile",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 46.73,
+      "sha256": "148d21d7452deccd1497cd1d48f0fe55",
+      "embedded": "2026-07-31"
+    },
+    "SKS4HU55": {
+      "file": "cityscapes/Amsterdam 1.PNG",
+      "published": "photography-webp/cityscapes/Amsterdam 1.webp",
+      "category": "cityscapes",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 42.72,
+      "sha256": "09c0429ee61a9c287ad766d8d7727907",
+      "embedded": "2026-07-31"
+    },
+    "SKSS6OT4": {
+      "file": "cityscapes/Amsterdam 2.PNG",
+      "published": "photography-webp/cityscapes/Amsterdam 2.webp",
+      "category": "cityscapes",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 43.24,
+      "sha256": "2d8181c0c09b8f0421eddddbea08e89a",
+      "embedded": "2026-07-31"
+    },
+    "SK3WDAF7": {
+      "file": "cityscapes/Amsterdam 3.PNG",
+      "published": "photography-webp/cityscapes/Amsterdam 3.webp",
+      "category": "cityscapes",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 39.39,
+      "sha256": "ca47a186d17eb7be5f1a2563ce37b29c",
+      "embedded": "2026-07-31"
+    },
+    "SKFPT1DL": {
+      "file": "cityscapes/Amsterdam 4.PNG",
+      "published": "photography-webp/cityscapes/Amsterdam 4.webp",
+      "category": "cityscapes",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 42.34,
+      "sha256": "e4a8b1f2a0c80b913533613e044bf3f8",
+      "embedded": "2026-07-31"
+    },
+    "SK7HWKLS": {
+      "file": "cityscapes/Amsterdam 5.PNG",
+      "published": "photography-webp/cityscapes/Amsterdam 5.webp",
+      "category": "cityscapes",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 44.35,
+      "sha256": "048c8183fefa17cc0a1a8a40317dcfbb",
+      "embedded": "2026-07-31"
+    },
+    "SKDSLPYD": {
+      "file": "cityscapes/Burj Al Arab.DNG",
+      "published": "photography-webp/cityscapes/Burj Al Arab.webp",
+      "category": "cityscapes",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 47.17,
+      "sha256": "c54e4ce8f6f0680589f674b604d02fbe",
+      "embedded": "2026-07-31"
+    },
+    "SK9NK0FX": {
+      "file": "cityscapes/Burj Khalifa 1.JPG",
+      "published": "photography-webp/cityscapes/Burj Khalifa 1.webp",
+      "category": "cityscapes",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 47.93,
+      "sha256": "81d55624a90e179fecda4ce81fd87577",
+      "embedded": "2026-07-31"
+    },
+    "SKDVR585": {
+      "file": "cityscapes/Burj Khalifa 2.JPG",
+      "published": "photography-webp/cityscapes/Burj Khalifa 2.webp",
+      "category": "cityscapes",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 49.58,
+      "sha256": "3bb0527e49bfca19847680d72d97d43c",
+      "embedded": "2026-07-31"
+    },
+    "SKUOYUHP": {
+      "file": "cityscapes/Creek Harbour.JPG",
+      "published": "photography-webp/cityscapes/Creek Harbour.webp",
+      "category": "cityscapes",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 45.86,
+      "sha256": "02a60ea8632824f3dfa8f7feae935ca3",
+      "embedded": "2026-07-31"
+    },
+    "SKF90V56": {
+      "file": "cityscapes/Eindhoven.JPG",
+      "published": "photography-webp/cityscapes/Eindhoven.webp",
+      "category": "cityscapes",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 49.42,
+      "sha256": "b20448a3344b762b7005eed1b513aae9",
+      "embedded": "2026-07-31"
+    },
+    "SK1GYIUX": {
+      "file": "cityscapes/Emirates.JPG",
+      "published": "photography-webp/cityscapes/Emirates.webp",
+      "category": "cityscapes",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 45.29,
+      "sha256": "b26183b5cb7afe6cd9ebff25dc0e6802",
+      "embedded": "2026-07-31"
+    },
+    "SK9XZPIG": {
+      "file": "cityscapes/Expo2020 1.JPG",
+      "published": "photography-webp/cityscapes/Expo2020 1.webp",
+      "category": "cityscapes",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 41.22,
+      "sha256": "4863a5573c86c6934d75257c9256bae8",
+      "embedded": "2026-07-31"
+    },
+    "SKM2PA3E": {
+      "file": "cityscapes/Expo2020 2.JPG",
+      "published": "photography-webp/cityscapes/Expo2020 2.webp",
+      "category": "cityscapes",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 45.38,
+      "sha256": "db94e5fc29bce67d3a0130193dc6cd6b",
+      "embedded": "2026-07-31"
+    },
+    "SKO745LG": {
+      "file": "cityscapes/Florence.JPG",
+      "published": "photography-webp/cityscapes/Florence.webp",
+      "category": "cityscapes",
+      "width": 1200,
+      "height": 1600,
+      "psnr": 42.43,
+      "sha256": "4f8b754f24ed80dce8241d29d17fd328",
+      "embedded": "2026-07-31"
+    },
+    "SKBXMYME": {
+      "file": "cityscapes/Naples.heic",
+      "published": "photography-webp/cityscapes/Naples.webp",
+      "category": "cityscapes",
+      "width": 1600,
+      "height": 900,
+      "psnr": 42.61,
+      "sha256": "6318127a36c50a79500f43aa498b7a35",
+      "embedded": "2026-07-31"
+    },
+    "SKWBV1PZ": {
+      "file": "cityscapes/Rome 2.JPG",
+      "published": "photography-webp/cityscapes/Rome 2.webp",
+      "category": "cityscapes",
+      "width": 1200,
+      "height": 1600,
+      "psnr": 43.03,
+      "sha256": "1eb99b97d50b549a86362f6a534fb11a",
+      "embedded": "2026-07-31"
+    },
+    "SKTAEKE4": {
+      "file": "cityscapes/Rome 3.JPG",
+      "published": "photography-webp/cityscapes/Rome 3.webp",
+      "category": "cityscapes",
+      "width": 1600,
+      "height": 1200,
+      "psnr": 43.73,
+      "sha256": "2b4a12a61a324813325650316b809f41",
+      "embedded": "2026-07-31"
+    },
+    "SK2N5XKV": {
+      "file": "cityscapes/Rome 4.JPG",
+      "published": "photography-webp/cityscapes/Rome 4.webp",
+      "category": "cityscapes",
+      "width": 1600,
+      "height": 1200,
+      "psnr": 44.99,
+      "sha256": "bbb34f75f7c6d9f0472b96dbc248907c",
+      "embedded": "2026-07-31"
+    },
+    "SKWTC3TG": {
+      "file": "cityscapes/Rome.JPG",
+      "published": "photography-webp/cityscapes/Rome.webp",
+      "category": "cityscapes",
+      "width": 1600,
+      "height": 1200,
+      "psnr": 42.2,
+      "sha256": "6a3e197755488052934c81a5c0314bcc",
+      "embedded": "2026-07-31"
+    },
+    "SK0AX5MH": {
+      "file": "cityscapes/SuperMoon.jpeg",
+      "published": "photography-webp/cityscapes/SuperMoon.webp",
+      "category": "cityscapes",
+      "width": 1600,
+      "height": 1066,
+      "psnr": 49.05,
+      "sha256": "56c9e68af4ec01cd43c4e382016ac6e6",
+      "embedded": "2026-07-31"
+    },
+    "SKE98T17": {
+      "file": "events/Amit Trivedi 1.JPG",
+      "published": "photography-webp/events/Amit Trivedi 1.webp",
+      "category": "events",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 42.91,
+      "sha256": "ee1d514a3a0c121aae81b820acea2b3c",
+      "embedded": "2026-07-31"
+    },
+    "SKY31TXJ": {
+      "file": "events/Amit Trivedi 2.JPG",
+      "published": "photography-webp/events/Amit Trivedi 2.webp",
+      "category": "events",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 42.02,
+      "sha256": "474a8667d36ab205e08b084ab6628e1b",
+      "embedded": "2026-07-31"
+    },
+    "SKEMTKSH": {
+      "file": "events/Amit Trivedi 3.JPG",
+      "published": "photography-webp/events/Amit Trivedi 3.webp",
+      "category": "events",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 45.52,
+      "sha256": "c5798ccd3f1b530fd5c6570355c4d74c",
+      "embedded": "2026-07-31"
+    },
+    "SKMNFZ2G": {
+      "file": "events/Amit Trivedi 4.JPG",
+      "published": "photography-webp/events/Amit Trivedi 4.webp",
+      "category": "events",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 44.78,
+      "sha256": "946c7f76a8e4603cb005baa1cf52bc47",
+      "embedded": "2026-07-31"
+    },
+    "SKGUXJFC": {
+      "file": "events/Amit Trivedi 5.JPG",
+      "published": "photography-webp/events/Amit Trivedi 5.webp",
+      "category": "events",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 42.95,
+      "sha256": "88ba92503f43831d4519eec389ff6a60",
+      "embedded": "2026-07-31"
+    },
+    "SKZK9Z9R": {
+      "file": "events/Coldplay 1.JPG",
+      "published": "photography-webp/events/Coldplay 1.webp",
+      "category": "events",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 41.94,
+      "sha256": "5f3a50303e581297c6732bda0c169cba",
+      "embedded": "2026-07-31"
+    },
+    "SK63PTI6": {
+      "file": "events/Coldplay 2.JPG",
+      "published": "photography-webp/events/Coldplay 2.webp",
+      "category": "events",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 40.64,
+      "sha256": "e74f0f6196e901cdf76d30becaf77cb3",
+      "embedded": "2026-07-31"
+    },
+    "SKE21PJQ": {
+      "file": "events/Concert 1.JPEG",
+      "published": "photography-webp/events/Concert 1.webp",
+      "category": "events",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 44.27,
+      "sha256": "345aebab9f0da55d8408e2d0f87b2f67",
+      "embedded": "2026-07-31"
+    },
+    "SKAFIX7Z": {
+      "file": "events/Concert 2.JPG",
+      "published": "photography-webp/events/Concert 2.webp",
+      "category": "events",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 47.58,
+      "sha256": "5d00c930e10f377164e605728618ef32",
+      "embedded": "2026-07-31"
+    },
+    "SKMPO9CW": {
+      "file": "events/Concert 3.JPG",
+      "published": "photography-webp/events/Concert 3.webp",
+      "category": "events",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 45.78,
+      "sha256": "ffa403e5cd7866170b803e29a45d7fb9",
+      "embedded": "2026-07-31"
+    },
+    "SKO0GLCE": {
+      "file": "events/Concert 4.JPG",
+      "published": "photography-webp/events/Concert 4.webp",
+      "category": "events",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 39.1,
+      "sha256": "98277f1c255239491e03bca44f71e079",
+      "embedded": "2026-07-31"
+    },
+    "SK0KNQR1": {
+      "file": "events/SEL 1.JPG",
+      "published": "photography-webp/events/SEL 1.webp",
+      "category": "events",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 46.87,
+      "sha256": "e8bb7e07c441e509d6b0229acdbf50b7",
+      "embedded": "2026-07-31"
+    },
+    "SKTCFWJ0": {
+      "file": "events/SEL 2.JPG",
+      "published": "photography-webp/events/SEL 2.webp",
+      "category": "events",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 45.61,
+      "sha256": "4841aa62e14b898982c11e3f3e05bbaf",
+      "embedded": "2026-07-31"
+    },
+    "SK7OD9I9": {
+      "file": "events/SEL 3.JPG",
+      "published": "photography-webp/events/SEL 3.webp",
+      "category": "events",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 44.15,
+      "sha256": "9e484b178f05e871c15a52803f6aa96d",
+      "embedded": "2026-07-31"
+    },
+    "SK5UF47V": {
+      "file": "events/SEL 4.JPG",
+      "published": "photography-webp/events/SEL 4.webp",
+      "category": "events",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 44.86,
+      "sha256": "8f628de7c9c9d0ecacd9f20e7a6eed7d",
+      "embedded": "2026-07-31"
+    },
+    "SKYEGW89": {
+      "file": "events/SEL 5.JPG",
+      "published": "photography-webp/events/SEL 5.webp",
+      "category": "events",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 43.34,
+      "sha256": "a5c41a011b27a1cafadcf59b1be78147",
+      "embedded": "2026-07-31"
+    },
+    "SK0OW0DO": {
+      "file": "events/SEL 6.JPG",
+      "published": "photography-webp/events/SEL 6.webp",
+      "category": "events",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 43.99,
+      "sha256": "409a0f4170d7d5bed603e0aac1badb81",
+      "embedded": "2026-07-31"
+    },
+    "SKKMEQ3Z": {
+      "file": "events/SEL 7.JPG",
+      "published": "photography-webp/events/SEL 7.webp",
+      "category": "events",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 41.76,
+      "sha256": "f38e4a77c7482044a721d20878174886",
+      "embedded": "2026-07-31"
+    },
+    "SK5IBRJS": {
+      "file": "landscape/Amboseli 1.jpg",
+      "published": "photography-webp/landscape/Amboseli 1.webp",
+      "category": "landscape",
+      "width": 1200,
+      "height": 1600,
+      "psnr": 41.66,
+      "sha256": "90b99ef4d772e60fef6f20a0d83da18f",
+      "embedded": "2026-07-31"
+    },
+    "SKMKJS9T": {
+      "file": "landscape/Amboseli 2.jpeg",
+      "published": "photography-webp/landscape/Amboseli 2.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1268,
+      "psnr": 42.75,
+      "sha256": "6da202559105c8b98959c52a64fbd76a",
+      "embedded": "2026-07-31"
+    },
+    "SKCI4LC7": {
+      "file": "landscape/Amboseli 3.jpeg",
+      "published": "photography-webp/landscape/Amboseli 3.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 43.82,
+      "sha256": "dc9e6c3c6efaf17e03ebf97bb15efc01",
+      "embedded": "2026-07-31"
+    },
+    "SK6QZC08": {
+      "file": "landscape/Austria.JPG",
+      "published": "photography-webp/landscape/Austria.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1200,
+      "psnr": 45.27,
+      "sha256": "2ad5fc52c443b3b3153177ad977f75fc",
+      "embedded": "2026-07-31"
+    },
+    "SKJANMHG": {
+      "file": "landscape/B961C014-E111-42FA-BE7B-7E5788E6812C.JPEG",
+      "published": "photography-webp/landscape/B961C014-E111-42FA-BE7B-7E5788E6812C.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 44.01,
+      "sha256": "6ab164826d9ddbe89ff9e2bb2acee8b7",
+      "embedded": "2026-07-31"
+    },
+    "SKHHQDI4": {
+      "file": "landscape/Capri 1.heic",
+      "published": "photography-webp/landscape/Capri 1.webp",
+      "category": "landscape",
+      "width": 900,
+      "height": 1600,
+      "psnr": 43.56,
+      "sha256": "5cd79202299b7b79425d21aa9e4b49a4",
+      "embedded": "2026-07-31"
+    },
+    "SK5YWLJM": {
+      "file": "landscape/Capri 2.JPG",
+      "published": "photography-webp/landscape/Capri 2.webp",
+      "category": "landscape",
+      "width": 1200,
+      "height": 1600,
+      "psnr": 42.31,
+      "sha256": "eb3bed18304cf274d858c34335310df8",
+      "embedded": "2026-07-31"
+    },
+    "SKMG7RYL": {
+      "file": "landscape/Chandartal Lake.JPG",
+      "published": "photography-webp/landscape/Chandartal Lake.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 44,
+      "sha256": "e6aa17d41384ea9bccc8188ccba02c1d",
+      "embedded": "2026-07-31"
+    },
+    "SKYMV8OH": {
+      "file": "landscape/Cricular Rainbow.jpeg",
+      "published": "photography-webp/landscape/Cricular Rainbow.webp",
+      "category": "landscape",
+      "width": 1200,
+      "height": 1600,
+      "psnr": 44.03,
+      "sha256": "1d97d5c0e3729cb0be4782ae920fffbf",
+      "embedded": "2026-07-31"
+    },
+    "SKWEQPII": {
+      "file": "landscape/DSC_0091 2.JPG",
+      "published": "photography-webp/landscape/DSC_0091 2.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 48.54,
+      "sha256": "b0fec5721bca90163f13793f64c141df",
+      "embedded": "2026-07-31"
+    },
+    "SKXKQRO0": {
+      "file": "landscape/DSC_0289.NEF",
+      "published": "photography-webp/landscape/DSC_0289.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 42.85,
+      "sha256": "17f707458622307f61c56c8801d886d8",
+      "embedded": "2026-07-31"
+    },
+    "SKPY9MF2": {
+      "file": "landscape/Flowers 1.JPG",
+      "published": "photography-webp/landscape/Flowers 1.webp",
+      "category": "landscape",
+      "width": 1066,
+      "height": 1600,
+      "psnr": 40.63,
+      "sha256": "cfd4e341ff259fb78ac13d71a64f8dc0",
+      "embedded": "2026-07-31"
+    },
+    "SKIT6JK8": {
+      "file": "landscape/Flowers 2.NEF",
+      "published": "photography-webp/landscape/Flowers 2.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 43.65,
+      "sha256": "022f47ad51ed40eb9a251f6301bad2bb",
+      "embedded": "2026-07-31"
+    },
+    "SKTIZOAO": {
+      "file": "landscape/Flowers 3.NEF",
+      "published": "photography-webp/landscape/Flowers 3.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 42.03,
+      "sha256": "97b7996b5d2a054a27d183701b646e55",
+      "embedded": "2026-07-31"
+    },
+    "SKIG8LWB": {
+      "file": "landscape/Georgia.JPG",
+      "published": "photography-webp/landscape/Georgia.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 39.74,
+      "sha256": "dae3f3629bf3a8dab4839a91ca69c316",
+      "embedded": "2026-07-31"
+    },
+    "SKK6QSDC": {
+      "file": "landscape/Germany.heic",
+      "published": "photography-webp/landscape/Germany.webp",
+      "category": "landscape",
+      "width": 900,
+      "height": 1600,
+      "psnr": 45.29,
+      "sha256": "a4730b419acd18b63788bc27ac315c47",
+      "embedded": "2026-07-31"
+    },
+    "SK72JQCS": {
+      "file": "landscape/Himalayas 1.JPG",
+      "published": "photography-webp/landscape/Himalayas 1.webp",
+      "category": "landscape",
+      "width": 1023,
+      "height": 1365,
+      "psnr": 44.25,
+      "sha256": "35999ae39f21f49f59179a51388ab7f6",
+      "embedded": "2026-07-31"
+    },
+    "SKEFPXYT": {
+      "file": "landscape/Himalayas 10.TIF",
+      "published": "photography-webp/landscape/Himalayas 10.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 42.2,
+      "sha256": "6fcfeef49eb15678728129abc2d72ee2",
+      "embedded": "2026-07-31"
+    },
+    "SK826HFO": {
+      "file": "landscape/Himalayas 11.TIF",
+      "published": "photography-webp/landscape/Himalayas 11.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 42.95,
+      "sha256": "4afca198b16fc5bcd58b18b168dafe63",
+      "embedded": "2026-07-31"
+    },
+    "SKSENP66": {
+      "file": "landscape/Himalayas 12.TIF",
+      "published": "photography-webp/landscape/Himalayas 12.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 43.58,
+      "sha256": "0aad4c3ee34b0ae259d1fa5a67a82877",
+      "embedded": "2026-07-31"
+    },
+    "SKW9S9QM": {
+      "file": "landscape/Himalayas 13.NEF",
+      "published": "photography-webp/landscape/Himalayas 13.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 43.9,
+      "sha256": "e75cc52c7fa519a3609bb6db6e3d3dab",
+      "embedded": "2026-07-31"
+    },
+    "SK10T3BX": {
+      "file": "landscape/Himalayas 14.JPG",
+      "published": "photography-webp/landscape/Himalayas 14.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 44.26,
+      "sha256": "d969994b09d8c58f6d6bc435424134bd",
+      "embedded": "2026-07-31"
+    },
+    "SK1GTBGT": {
+      "file": "landscape/Himalayas 15.JPG",
+      "published": "photography-webp/landscape/Himalayas 15.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 43.55,
+      "sha256": "71e7d5456c43e58f98ffe0992779b827",
+      "embedded": "2026-07-31"
+    },
+    "SK9QAAJO": {
+      "file": "landscape/Himalayas 16.JPG",
+      "published": "photography-webp/landscape/Himalayas 16.webp",
+      "category": "landscape",
+      "width": 1066,
+      "height": 1600,
+      "psnr": 42.3,
+      "sha256": "fac5068f9c40e7ee0f3eec6b6d4be2ec",
+      "embedded": "2026-07-31"
+    },
+    "SKJO4GHE": {
+      "file": "landscape/Himalayas 17.TIF",
+      "published": "photography-webp/landscape/Himalayas 17.webp",
+      "category": "landscape",
+      "width": 990,
+      "height": 1600,
+      "psnr": 41.31,
+      "sha256": "849c4d2716dd02708080f16b3af87837",
+      "embedded": "2026-07-31"
+    },
+    "SKMUAW05": {
+      "file": "landscape/Himalayas 2.JPG",
+      "published": "photography-webp/landscape/Himalayas 2.webp",
+      "category": "landscape",
+      "width": 1066,
+      "height": 1600,
+      "psnr": 45.94,
+      "sha256": "03fff85b3a8e137213007a2e86bca100",
+      "embedded": "2026-07-31"
+    },
+    "SK6QMUEC": {
+      "file": "landscape/Himalayas 3.JPG",
+      "published": "photography-webp/landscape/Himalayas 3.webp",
+      "category": "landscape",
+      "width": 1066,
+      "height": 1600,
+      "psnr": 46.72,
+      "sha256": "4ffd0bad2c9a390b8b60e18ce01dd427",
+      "embedded": "2026-07-31"
+    },
+    "SKBETPAQ": {
+      "file": "landscape/Himalayas 4.JPG",
+      "published": "photography-webp/landscape/Himalayas 4.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1066,
+      "psnr": 39.41,
+      "sha256": "a857c395c0b893ebfc0b1854594bfbce",
+      "embedded": "2026-07-31"
+    },
+    "SKWCL3G9": {
+      "file": "landscape/Himalayas 5.jpg",
+      "published": "photography-webp/landscape/Himalayas 5.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1280,
+      "psnr": 43.13,
+      "sha256": "9af9e64cd527a7d72186628eb020301a",
+      "embedded": "2026-07-31"
+    },
+    "SK2IA0P6": {
+      "file": "landscape/Himalayas 6.jpg",
+      "published": "photography-webp/landscape/Himalayas 6.webp",
+      "category": "landscape",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 41.28,
+      "sha256": "3f1df35470440be14557902bc22b3e9f",
+      "embedded": "2026-07-31"
+    },
+    "SKVDQUFA": {
+      "file": "landscape/Himalayas 7.JPG",
+      "published": "photography-webp/landscape/Himalayas 7.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 900,
+      "psnr": 46.6,
+      "sha256": "84888bd653d67dceb6f59ae354a59fca",
+      "embedded": "2026-07-31"
+    },
+    "SK4PLE1Z": {
+      "file": "landscape/Himalayas 8.TIF",
+      "published": "photography-webp/landscape/Himalayas 8.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 43.27,
+      "sha256": "5ca126f7a1a8b699bb02e23c0da4a037",
+      "embedded": "2026-07-31"
+    },
+    "SK2FVAE9": {
+      "file": "landscape/Himalayas 9.JPG",
+      "published": "photography-webp/landscape/Himalayas 9.webp",
+      "category": "landscape",
+      "width": 1066,
+      "height": 1600,
+      "psnr": 42.98,
+      "sha256": "1a8bfcbec4a0cd9d7cd760f3715a1dc2",
+      "embedded": "2026-07-31"
+    },
+    "SK8XNK4D": {
+      "file": "landscape/Humpta Pass 1.jpeg",
+      "published": "photography-webp/landscape/Humpta Pass 1.webp",
+      "category": "landscape",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 38.24,
+      "sha256": "2400bd192123e1f724f24c01a002b938",
+      "embedded": "2026-07-31"
+    },
+    "SKMJ8YXM": {
+      "file": "landscape/Humpta Pass 2.JPG",
+      "published": "photography-webp/landscape/Humpta Pass 2.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 43.43,
+      "sha256": "16573dabe6267ed0b2b564ef80f6061a",
+      "embedded": "2026-07-31"
+    },
+    "SKL25AZQ": {
+      "file": "landscape/Manali.JPG",
+      "published": "photography-webp/landscape/Manali.webp",
+      "category": "landscape",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 43.5,
+      "sha256": "1b5d5eb71b641deb9e2bc9f83c640a69",
+      "embedded": "2026-07-31"
+    },
+    "SKD0FBD6": {
+      "file": "landscape/Masi 2.jpeg",
+      "published": "photography-webp/landscape/Masi 2.webp",
+      "category": "landscape",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 43.56,
+      "sha256": "3723ec6d881911ec9484cdacc215c2cf",
+      "embedded": "2026-07-31"
+    },
+    "SKVJ5HTX": {
+      "file": "landscape/Masi Airspace.jpeg",
+      "published": "photography-webp/landscape/Masi Airspace.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 41.81,
+      "sha256": "27740f6e64de61fff609334299551dac",
+      "embedded": "2026-07-31"
+    },
+    "SKY9ZOCV": {
+      "file": "landscape/Masi Fields.jpeg",
+      "published": "photography-webp/landscape/Masi Fields.webp",
+      "category": "landscape",
+      "width": 900,
+      "height": 1600,
+      "psnr": 39.43,
+      "sha256": "94c34a7caa86a39fc34390a629a97870",
+      "embedded": "2026-07-31"
+    },
+    "SKONXY96": {
+      "file": "landscape/Mt. Kilimanjero.TIF",
+      "published": "photography-webp/landscape/Mt. Kilimanjero.webp",
+      "category": "landscape",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 43.96,
+      "sha256": "e5c1e3462aafcf0ec5cb6deb713dc312",
+      "embedded": "2026-07-31"
+    },
+    "SKBRVNES": {
+      "file": "landscape/Snow Desert.jpeg",
+      "published": "photography-webp/landscape/Snow Desert.webp",
+      "category": "landscape",
+      "width": 1200,
+      "height": 1600,
+      "psnr": 43.03,
+      "sha256": "a0568ac09dc447910d054cdd5bc71f96",
+      "embedded": "2026-07-31"
+    },
+    "SKKNM6MV": {
+      "file": "landscape/Tosh 2.JPG",
+      "published": "photography-webp/landscape/Tosh 2.webp",
+      "category": "landscape",
+      "width": 1066,
+      "height": 1600,
+      "psnr": 44.89,
+      "sha256": "234eeb7ec60be69f1e6e038adfe43f22",
+      "embedded": "2026-07-31"
+    },
+    "SKORC8V1": {
+      "file": "landscape/Tosh 3.JPG",
+      "published": "photography-webp/landscape/Tosh 3.webp",
+      "category": "landscape",
+      "width": 1066,
+      "height": 1600,
+      "psnr": 40.87,
+      "sha256": "218c10b37ab697b7e6699afdb3a4fa74",
+      "embedded": "2026-07-31"
+    },
+    "SKI6INRT": {
+      "file": "landscape/Tree Trunk.JPG",
+      "published": "photography-webp/landscape/Tree Trunk.webp",
+      "category": "landscape",
+      "width": 1066,
+      "height": 1600,
+      "psnr": 44.58,
+      "sha256": "5016854d21759c743d2dd67fdffdd516",
+      "embedded": "2026-07-31"
+    },
+    "SK3R9DCQ": {
+      "file": "wildlife/Black Mamba.jpeg",
+      "published": "photography-webp/wildlife/Black Mamba.webp",
+      "category": "wildlife",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 42.18,
+      "sha256": "d08bb79512b4f56815c8d4589ae96aac",
+      "embedded": "2026-07-31"
+    },
+    "SKL7LACO": {
+      "file": "wildlife/Coco.jpeg",
+      "published": "photography-webp/wildlife/Coco.webp",
+      "category": "wildlife",
+      "width": 1200,
+      "height": 1600,
+      "psnr": 43.65,
+      "sha256": "7f80d16803db2ec2bac9222545610421",
+      "embedded": "2026-07-31"
+    },
+    "SKEOHKK0": {
+      "file": "wildlife/DSC_0489.JPG",
+      "published": "photography-webp/wildlife/DSC_0489.webp",
+      "category": "wildlife",
+      "width": 1066,
+      "height": 1600,
+      "psnr": 40.88,
+      "sha256": "1e303913bbf1edb246fe4a06b3842de9",
+      "embedded": "2026-07-31"
+    },
+    "SKO6RZ2H": {
+      "file": "wildlife/Elephant.JPG",
+      "published": "photography-webp/wildlife/Elephant.webp",
+      "category": "wildlife",
+      "width": 1200,
+      "height": 1600,
+      "psnr": 41.51,
+      "sha256": "7a6ac58880cfbb4fc01cc8431711774d",
+      "embedded": "2026-07-31"
+    },
+    "SKTPKFYF": {
+      "file": "wildlife/Elephants quenching their thirst.jpeg",
+      "published": "photography-webp/wildlife/Elephants quenching their thirst.webp",
+      "category": "wildlife",
+      "width": 1200,
+      "height": 1600,
+      "psnr": 43.31,
+      "sha256": "520822dde91e008cf51de79751d75aed",
+      "embedded": "2026-07-31"
+    },
+    "SKCBGL4Y": {
+      "file": "wildlife/Eye of the Lion.jpg",
+      "published": "photography-webp/wildlife/Eye of the Lion.webp",
+      "category": "wildlife",
+      "width": 1600,
+      "height": 1200,
+      "psnr": 42.35,
+      "sha256": "ebfc5ec225e8126dd74a0ce439d011e5",
+      "embedded": "2026-07-31"
+    },
+    "SK125T0U": {
+      "file": "wildlife/Giraffe 1.jpeg",
+      "published": "photography-webp/wildlife/Giraffe 1.webp",
+      "category": "wildlife",
+      "width": 1200,
+      "height": 1600,
+      "psnr": 43.85,
+      "sha256": "ccc340060c0e7bc5b340d89d81882144",
+      "embedded": "2026-07-31"
+    },
+    "SKOEDX39": {
+      "file": "wildlife/Giraffe 2.JPG",
+      "published": "photography-webp/wildlife/Giraffe 2.webp",
+      "category": "wildlife",
+      "width": 1600,
+      "height": 1066,
+      "psnr": 41.7,
+      "sha256": "70e4c3fb3018c2698ddff17f12f46360",
+      "embedded": "2026-07-31"
+    },
+    "SKDT5BH7": {
+      "file": "wildlife/Giraffe 3.JPG",
+      "published": "photography-webp/wildlife/Giraffe 3.webp",
+      "category": "wildlife",
+      "width": 1600,
+      "height": 1066,
+      "psnr": 41.99,
+      "sha256": "4c749013de98312e390a6b38a07dee1b",
+      "embedded": "2026-07-31"
+    },
+    "SKUX8MH5": {
+      "file": "wildlife/Giraffe 4.jpeg",
+      "published": "photography-webp/wildlife/Giraffe 4.webp",
+      "category": "wildlife",
+      "width": 1200,
+      "height": 1600,
+      "psnr": 41.06,
+      "sha256": "5842b367e1316590da42f5e9db63721f",
+      "embedded": "2026-07-31"
+    },
+    "SKOSYJ05": {
+      "file": "wildlife/Great Egret 1.jpg",
+      "published": "photography-webp/wildlife/Great Egret 1.webp",
+      "category": "wildlife",
+      "width": 1200,
+      "height": 1600,
+      "psnr": 42.65,
+      "sha256": "c016c50f6f4a1347ed27a78635d19910",
+      "embedded": "2026-07-31"
+    },
+    "SKSZDA3W": {
+      "file": "wildlife/Great Egret 2.jpeg",
+      "published": "photography-webp/wildlife/Great Egret 2.webp",
+      "category": "wildlife",
+      "width": 1200,
+      "height": 1600,
+      "psnr": 41.32,
+      "sha256": "c64c1f579bbcd397ce80cfac407e9f8e",
+      "embedded": "2026-07-31"
+    },
+    "SKQJMK7V": {
+      "file": "wildlife/Great Egret riding atop Elephant.jpg",
+      "published": "photography-webp/wildlife/Great Egret riding atop Elephant.webp",
+      "category": "wildlife",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 42.88,
+      "sha256": "e608240ad31fa95c78970cca633caf61",
+      "embedded": "2026-07-31"
+    },
+    "SKA9B2AK": {
+      "file": "wildlife/Greater Flamingo 2.JPG",
+      "published": "photography-webp/wildlife/Greater Flamingo 2.webp",
+      "category": "wildlife",
+      "width": 1200,
+      "height": 1600,
+      "psnr": 44.23,
+      "sha256": "503e366fff87bd537a2ce0c0403e8a3f",
+      "embedded": "2026-07-31"
+    },
+    "SKU1TST5": {
+      "file": "wildlife/Greater Flamingo.JPG",
+      "published": "photography-webp/wildlife/Greater Flamingo.webp",
+      "category": "wildlife",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 41.56,
+      "sha256": "2abdf5e48a69bfa457c85449c5acf2cf",
+      "embedded": "2026-07-31"
+    },
+    "SKHG89GI": {
+      "file": "wildlife/Herd of Elephants 1.jpeg",
+      "published": "photography-webp/wildlife/Herd of Elephants 1.webp",
+      "category": "wildlife",
+      "width": 1600,
+      "height": 1268,
+      "psnr": 43.21,
+      "sha256": "be82200ec442435d0c054e620736a972",
+      "embedded": "2026-07-31"
+    },
+    "SKVBYEBI": {
+      "file": "wildlife/Herd of Elephants 2.jpeg",
+      "published": "photography-webp/wildlife/Herd of Elephants 2.webp",
+      "category": "wildlife",
+      "width": 1600,
+      "height": 1143,
+      "psnr": 42,
+      "sha256": "e4961dae5d784b48404312a49ef85836",
+      "embedded": "2026-07-31"
+    },
+    "SKI8BJR9": {
+      "file": "wildlife/Lion.jpeg",
+      "published": "photography-webp/wildlife/Lion.webp",
+      "category": "wildlife",
+      "width": 1600,
+      "height": 1067,
+      "psnr": 40.3,
+      "sha256": "fc25606b111ae35c11c42c58229e782e",
+      "embedded": "2026-07-31"
+    },
+    "SKGEXCE4": {
+      "file": "wildlife/Lionness.jpeg",
+      "published": "photography-webp/wildlife/Lionness.webp",
+      "category": "wildlife",
+      "width": 1067,
+      "height": 1600,
+      "psnr": 40.87,
+      "sha256": "9d36b2fde86fa81ad6af80aa97570017",
+      "embedded": "2026-07-31"
+    }
+  },
+  "algorithm": "TrustMark variant Q, BCH_4 error correction (C2PA approved soft binding)"
+}
