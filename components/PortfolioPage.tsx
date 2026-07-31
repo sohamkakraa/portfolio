@@ -16,6 +16,17 @@ type PortfolioPageProps = {
   initialData: PortfolioData;
 };
 
+/**
+ * The projects heading counts the projects out loud, so it has to follow the data.
+ *
+ * It was hardcoded to "Six artifacts" and the array holds five, which is the kind of
+ * miscount a reader checks by scrolling and then does not trust you about anything else.
+ */
+function countWord(n: number): string {
+  const words = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
+  return words[n] ?? String(n);
+}
+
 export default function PortfolioPage({ initialData }: PortfolioPageProps) {
   const [data, setData] = useState<PortfolioData>(initialData);
   const [loading, setLoading] = useState(true);
@@ -101,7 +112,7 @@ export default function PortfolioPage({ initialData }: PortfolioPageProps) {
                     color: "var(--ink)",
                   }}
                 >
-                  Six artifacts,{" "}
+                  {countWord(data.projects.items.length)} artifacts,{" "}
                   <em style={{ color: "var(--accent)", fontStyle: "italic" }}>
                     each its own world
                   </em>

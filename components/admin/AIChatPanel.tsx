@@ -478,7 +478,7 @@ export default function AIChatPanel({ data, csrfToken, onDataChange }: AIChatPan
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="e.g. Add a new project called Viveka with tags AI and React, year 2025…"
+                placeholder="e.g. Add a new project called Atlas with tags AI and React, year 2026…"
                 rows={1}
                 className="flex-1 resize-none bg-transparent text-sm text-[color:var(--fg)] placeholder:text-[color:var(--fg-muted)] outline-none"
                 style={{ maxHeight: "120px" }}

@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import type { PortfolioData, PhotographyCategory, PhotoItem } from "@/lib/portfolio-types";
+import { workLogEntries } from "@/lib/work";
 
 // Web-displayable formats only (no RAW)
 const WEB_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"]);
@@ -100,7 +101,7 @@ const CATEGORY_SEEDS: Omit<PhotographyCategory, "images">[] = [
 const basePortfolioData: Omit<PortfolioData, "photography"> = {
   site: {
     name: "Soham Kakra",
-    role: "M.Sc. Data Science & AI student · Full-stack and ML engineer",
+    role: "AI Intern at Prosus · M.Sc. Data Science & AI at TU/e",
     location: "Eindhoven, NL",
     email: "sohamkakra@gmail.com",
     nav: [
@@ -157,10 +158,10 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
     body:
       "I am pursuing an M.Sc. in Data Science and AI at Eindhoven University of Technology (TU/e). Across internships and independent products, I have worked on AI/ML-driven systems, full-stack applications, and analytics workflows that improve real decision-making.",
     highlights: [
-      "Eindhoven University of Technology (TU/e) · M.Sc. Data Science & AI",
-      "Etihad Credit Insurance · Data Analyst & IT Support (2023–2024)",
-      "Heriot-Watt University Dubai · B.Sc. Computer Science",
-      "Built AI/ML, dashboard, and full-stack systems across fintech and health",
+      "Prosus, Amsterdam · AI Intern and master's thesis (2026–)",
+      "Eindhoven University of Technology (TU/e) · M.Sc. Data Science & AI (2024–)",
+      "Etihad Credit Insurance, Dubai · Data Analyst & IT Support (2023–2024)",
+      "Heriot-Watt University Dubai · B.Sc. Computer Science, AI (2020–2023)",
     ],
     // Editorial layout
     headline: ["I build systems", "where data, models,", "and {{em}}people{{/em}} meet."],
@@ -169,15 +170,13 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
       { title: "Readable",   body: "Turning complex model behavior into interfaces people can trust." },
       { title: "Real-time",  body: "Building systems that react quickly and stay reliable under live conditions." },
     ],
-    log: [
-      { year: "2025–",   org: "TU/e",                     role: "M.Sc. Data Science & AI" },
-      { year: "2023–24", org: "Etihad Credit Insurance",  role: "Data Analyst & IT Support" },
-      { year: "2020–23", org: "Heriot-Watt Dubai",        role: "B.Sc. Computer Science" },
-    ],
+    // Projected from lib/work.ts rather than restated. The previous hand-written version had
+    // drifted to three rows and no current role, which read as a student with one finished job.
+    log: workLogEntries(),
     meta: [
       { label: "Based in",  value: "Eindhoven, NL" },
       { label: "Studying",  value: "M.Sc. DS&AI · TU/e" },
-      { label: "Available", value: "Summer 2026" },
+      { label: "Currently", value: "AI Intern · Prosus, Amsterdam" },
       { label: "Reach",     value: "sohamkakra@gmail.com" },
     ],
     portraitLabel: "// portrait",
@@ -205,28 +204,36 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
     title: "Selected projects",
     description:
       "A curated mix of AI, analytics, and product engineering work across healthcare, fintech, and autonomous decision systems.",
+    /**
+     * `metrics` here describe capabilities, not measurements.
+     *
+     * An earlier draft carried figures like a 1.84 Sharpe, 0.2% slippage and 94% fit accuracy
+     * that were never measured. Precise numbers invite the one question that costs the most to
+     * answer badly, so a metric only holds a figure when there is a real measurement behind it.
+     */
     items: [
       {
         id: "uma",
         title: "UMA",
         summary:
-          "A privacy-first medical record workspace that converts fragmented documents into structured patient timelines with clear retrieval.",
-        tags: ["Healthcare", "Next.js", "Data UX"],
-        year: "2025",
+          "A privacy-first medical record workspace that converts fragmented documents into structured patient timelines with clear retrieval, and much more!",
+        tags: ["Healthcare"],
+        year: "2026",
         status: "Prototype",
-        link: "https://uma-taupe-rho.vercel.app",
+        link: "https://uma.sohamkakra.com",
         repo: "https://github.com/sohamkakraa/uma",
         storyline: [
-          { label: "trigger", body: "Specialists send PDFs. Hospitals send scans. Patients juggle ten apps. A timeline is impossible." },
-          { label: "move", body: "Local-first ingestion + on-device parsing. No record leaves the patient's device unless they say so." },
-          { label: "result", body: "A single, scrubbable timeline of symptoms, labs, prescriptions, and appointments — searchable in plain language." },
+          { label: "trigger", body: "Medical records are scattered across PDFs, scans, and discharge letters — patients arrive at appointments without context and doctors spend the first minutes reconstructing history instead of deciding." },
+          { label: "move", body: "Built UMA: a privacy-first workspace that ingests fragmented documents, runs structured extraction pipelines, and assembles them into a clean, chronological patient timeline with semantic search and retrieval." },
+          { label: "result", body: "A working prototype that turns unstructured medical uploads into navigable records — reducing the time to locate a specific test result or diagnosis from minutes of manual scanning to a single query." },
         ],
+        // Capabilities, not measurements. See the note on the projects array above.
         metrics: [
-          { label: "local docs", value: "200+" },
-          { label: "search p95", value: "180ms" },
-          { label: "PII leaks", value: "0" },
+          { label: "Input formats", value: "PDF, images, text" },
+          { label: "Output", value: "Structured timeline" },
+          { label: "Privacy model", value: "Local-first" },
         ],
-        stack: ["Next.js", "SQLite", "Local LLM", "WebAssembly"],
+        stack: ["Next.js", "Python", "LLM extraction", "RAG pipeline", "Vercel"],
       },
       {
         id: "tabscape",
@@ -239,36 +246,39 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
         repo: "https://github.com/sohamkakraa/tabscape",
         storyline: [
           { label: "trigger", body: "Most budgeting apps tell you what already happened. None show you what's coming." },
-          { label: "move", body: "Recurring-expense detection + Bayesian forecast bands per category, replanned daily." },
-          { label: "result", body: "A 30-day cashflow horizon that updates as you spend — visible at a glance." },
+          { label: "move", body: "Recurring-expense detection plus Bayesian forecast bands per category, replanned as new spending lands." },
+          { label: "result", body: "A rolling cashflow horizon that updates as you spend, so the question stops being what did I spend and becomes what can I afford." },
         ],
         metrics: [
-          { label: "forecast MAE", value: "4.2%" },
-          { label: "categories", value: "26" },
-          { label: "replan", value: "24h" },
+          { label: "Signal", value: "Recurring-expense detection" },
+          { label: "Method", value: "Bayesian forecast bands" },
+          { label: "Horizon", value: "Rolling 30-day" },
         ],
         stack: ["Next.js", "Time-series", "Bayesian"],
       },
       {
+        // Renamed to Latent.Alpha. The id stays `robotrader` so the repo link, the palette
+        // and any stored CMS edits keyed to it survive the rename.
         id: "robotrader",
-        title: "RoboTrader",
+        title: "Latent.Alpha",
         summary:
           "A signal-driven trading platform with live dashboards, strategy backtesting, and autonomous execution controls.",
         tags: ["AI/ML", "Trading", "Real-time"],
-        year: "2024",
-        status: "Live",
+        year: "2026",
+        status: "Prototype",
+        link: "https://latent.alpha.sohamkakra.com",
         repo: "https://github.com/sohamkakraa/robotrader",
         storyline: [
-          { label: "trigger", body: "Backtests look great. Live trading destroys them. The gap is execution discipline." },
-          { label: "move", body: "Strategy DSL + paper-trading replay + live websocket feed — all using one execution engine." },
-          { label: "result", body: "Backtest behavior matches live within 0.2% slippage. The dashboard shows both at once." },
+          { label: "trigger", body: "Retail and semi-professional traders lack a unified environment to research signals, validate strategies on historical data, and move to live execution — they switch between disconnected tools at every step." },
+          { label: "move", body: "Built Latent.Alpha: a signal-driven trading platform combining live market dashboards, a backtesting engine for strategy validation, and autonomous execution controls — all in one coherent interface." },
+          { label: "result", body: "A prototype platform where a strategy can go from idea to backtest to live execution without leaving the product, with real-time P&L visibility and configurable risk controls at each stage." },
         ],
         metrics: [
-          { label: "sharpe", value: "1.84" },
-          { label: "slippage", value: "0.2%" },
-          { label: "latency", value: "12ms" },
+          { label: "Data", value: "Live market feeds" },
+          { label: "Backtesting", value: "Historical replay engine" },
+          { label: "Execution", value: "Autonomous + manual modes" },
         ],
-        stack: ["Python", "React", "WebSockets"],
+        stack: ["Next.js", "Python", "WebSockets", "Trading APIs", "Vercel"],
       },
       {
         id: "forme",
@@ -281,12 +291,13 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
         link: "",
         storyline: [
           { label: "trigger", body: "Online clothes never fit. Bespoke tailoring doesn't scale. Customers want both." },
-          { label: "move", body: "Body-measurement avatar + generative design studio + retailer/tailor matching pipeline in one product." },
-          { label: "result", body: "Garments designed in minutes are auto-routed to a retailer who stocks them or a tailor who can make them." },
+          { label: "move", body: "A digital avatar built from real body measurements, a design studio driven either visually or by plain language, and a pipeline that matches the result to retailers and local tailors." },
+          { label: "result", body: "A garment designed against your own measurements is routed to a retailer who already stocks something close, or to a tailor who can make it." },
         ],
         metrics: [
-          { label: "fit accuracy", value: "94%" },
-          { label: "design time", value: "< 5 min" },
+          { label: "Input", value: "Body measurements" },
+          { label: "Design", value: "Visual studio or plain language" },
+          { label: "Fulfilment", value: "Retailers and local tailors" },
         ],
         stack: ["Next.js", "Generative AI", "3D"],
       },
@@ -302,11 +313,12 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
         storyline: [
           { label: "trigger", body: "Tax advisory firms compete on trust. Their old site read like a directory listing." },
           { label: "move", body: "Editorial layout, plain-language service breakdowns, client-relevant FAQ, fast hand-off to consultation booking." },
-          { label: "result", body: "Inbound consultation requests up materially within the first quarter; clearer position vs regional competitors." },
+          { label: "result", body: "A live site the firm uses as its front door, where each service is explained in language a prospective client can act on." },
         ],
         metrics: [
-          { label: "load p95", value: "0.9s" },
-          { label: "inbound", value: "+38%" },
+          { label: "Client", value: "Dubai tax advisory" },
+          { label: "Scope", value: "Structure, copy, and build" },
+          { label: "Status", value: "Live, in client use" },
         ],
         stack: ["Next.js", "Tailwind", "Vercel"],
       },
@@ -412,7 +424,7 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
   contact: {
     title: "Get in touch",
     description:
-      "I am open to internships, collaborations, and product engineering opportunities in AI, data systems, and full-stack development — summer 2026 onward.",
+      "I am finishing my master's thesis at Prosus and looking for what comes after it: engineering roles in AI, data systems, and full-stack product work.",
     ctaLabel: "Email me",
     email: "sohamkakra@gmail.com",
     headline: ["Let's {{em}}build{{/em}}", "something {{em}}quietly bold{{/em}}."],

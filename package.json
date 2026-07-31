@@ -7,15 +7,24 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "photos:file": "node scripts/file-photos.mjs",
     "photos:compress": "node scripts/compress-images.mjs public/photography public/photography-webp",
+    "photos:compress-missing": "node scripts/compress-images.mjs public/photography public/photography-webp --skip-existing",
+    "photos:check": "node scripts/refix-thumbnails.mjs --dry-run",
+    "photos:refix": "node scripts/refix-thumbnails.mjs",
     "photos:sync": "node scripts/sync-photos.mjs",
     "photos:sync-force": "node scripts/sync-photos.mjs --force",
     "photos:rank": "node scripts/rank-photos.mjs --incremental",
-    "photos:rank-force": "node scripts/rank-photos.mjs --force"
+    "photos:rank-force": "node scripts/rank-photos.mjs --force",
+    "photos:setup": "python3 -m venv .venv-photo && .venv-photo/bin/pip install --quiet --upgrade pip trustmark",
+    "photos:watermark": "node scripts/watermark-photos.mjs",
+    "photos:watermark-all": "node scripts/watermark-photos.mjs --all",
+    "photos:verify": "node scripts/verify-watermarks.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.91.1",
     "@aws-sdk/client-s3": "^3.1033.0",
+    "@types/three": "^0.185.1",
     "@upstash/redis": "^1.37.0",
     "@use-gesture/react": "^10.3.1",
     "@vercel/analytics": "^2.0.1",
@@ -36,7 +45,7 @@
     "react-dom": "19.2.3",
     "react-easy-crop": "^5.5.7",
     "tailwind-merge": "^3.4.0",
-    "three": "^0.167.1"
+    "three": "^0.185.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

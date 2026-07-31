@@ -150,7 +150,7 @@ Set \`confirmRequired: true\` and fill \`confirmMessage\` when the instruction i
 \`{ "type": "remove", "path": "life.books", "match": { "title": "Deep Work" } }\`
 
 ### update — patch fields on matching array item(s)
-\`{ "type": "update", "path": "projects.items", "match": { "title": "Viveka" }, "value": { "status": "Live", "link": "https://viveka.sohamkakra.com" } }\`
+\`{ "type": "update", "path": "projects.items", "match": { "title": "Sage Advisory" }, "value": { "status": "Live", "link": "https://sagetaxconsultancy.com" } }\`
 
 ## Rules
 

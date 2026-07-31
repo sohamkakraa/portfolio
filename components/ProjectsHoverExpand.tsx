@@ -7,17 +7,24 @@ type Props = {
   items: ProjectItem[];
 };
 
-// Discipline / palette / artifact kind by project id, matching the prototype.
+/**
+ * Look and discipline label per project id.
+ *
+ * Keyed on `id`, not `title`, so renaming a project in the CMS keeps its identity — which is
+ * what saved the Latent.Alpha card when it stopped being called RoboTrader. Anything missing
+ * here falls back to grey and a generic glyph, so every live id needs an entry: this map had
+ * gone stale in both directions, carrying three deleted projects while the two newest were
+ * rendering identically in the default palette.
+ */
 const META: Record<
   string,
   { discipline: string; palette: [string, string, string]; artifact: string }
 > = {
-  uma:        { discipline: "Healthcare · AI",   palette: ["#3a4760", "#1c2740", "#5e7295"], artifact: "timeline" },
-  tabscape:   { discipline: "Fintech · Forecasting", palette: ["#2a4a3a", "#0e2018", "#5a8a6e"], artifact: "forecast" },
-  robotrader: { discipline: "AI/ML · Real-time", palette: ["#3a2a1a", "#150a04", "#a8753a"], artifact: "ticker" },
-  viveka:     { discipline: "Writing · Editorial", palette: ["#3a3a4a", "#15151c", "#7a7aa0"], artifact: "page" },
-  diagnostic: { discipline: "AI · Healthcare",   palette: ["#2a3a3a", "#0e1a1a", "#5a8a8a"], artifact: "tree" },
-  calmops:    { discipline: "Dashboards · SRE",  palette: ["#2a2a3a", "#0e0e18", "#5a5a8a"], artifact: "status" },
+  uma:            { discipline: "Healthcare · AI",       palette: ["#3a4760", "#1c2740", "#5e7295"], artifact: "timeline" },
+  tabscape:       { discipline: "Fintech · Forecasting", palette: ["#2a4a3a", "#0e2018", "#5a8a6e"], artifact: "forecast" },
+  robotrader:     { discipline: "AI/ML · Real-time",     palette: ["#3a2a1a", "#150a04", "#a8753a"], artifact: "ticker" },
+  forme:          { discipline: "Fashion · Generative",  palette: ["#4a2a3a", "#1c0e18", "#a05a7a"], artifact: "tree" },
+  "sage-advisory": { discipline: "Web · Advisory",       palette: ["#2a3a4a", "#0e1a24", "#5a80a0"], artifact: "page" },
 };
 
 export default function ProjectsHoverExpand({ items }: Props) {
@@ -48,6 +55,11 @@ function ArtifactCard({
   };
   const hasSite = !!p.link;
   const hasRepo = !!p.repo;
+  // A metric value is either a short figure or a descriptor like "Autonomous + manual modes",
+  // and 22px display type turns a descriptor into wrapping serif. Sized per card rather than
+  // per metric, so one long value doesn't leave its neighbours towering over it.
+  const metricSize =
+    (p.metrics ?? []).some((m) => m.value.length > 14) ? 15 : 22;
   // Always render as <article> with link buttons inside the reveal so the
   // same UX works on hover (desktop) and on tap (mobile). The card body is a
   // toggle, never a link — touch users get a clear two-step flow.
@@ -156,14 +168,16 @@ function ArtifactCard({
           pointerEvents: isHover ? "auto" : "none",
         }}
       >
+        {/* Stacked, not three columns. These cards sit in a masonry grid barely 300px wide, so
+            splitting the storyline in thirds gave each step a ~55px measure — six characters a
+            line, which is a shape you look at rather than read. */}
         {p.storyline?.length ? (
           <div
             style={{
               borderTop: "1px solid var(--line)",
               paddingTop: 16,
               display: "grid",
-              gridTemplateColumns: "1fr 1fr 1fr",
-              gap: 16,
+              gap: 14,
             }}
           >
             {p.storyline.map((s, i) => (
@@ -181,10 +195,10 @@ function ArtifactCard({
                 </div>
                 <p
                   style={{
-                    marginTop: 6,
-                    fontSize: 12,
+                    marginTop: 5,
+                    fontSize: 12.5,
                     color: "var(--ink-2)",
-                    lineHeight: 1.5,
+                    lineHeight: 1.55,
                   }}
                 >
                   {s.body}
@@ -210,10 +224,11 @@ function ArtifactCard({
                 <div
                   className="serif"
                   style={{
-                    fontSize: 22,
+                    fontSize: metricSize,
                     fontWeight: 400,
                     letterSpacing: "-0.02em",
                     color: "var(--accent)",
+                    lineHeight: 1.25,
                   }}
                 >
                   {m.value}
@@ -230,6 +245,38 @@ function ArtifactCard({
                   {m.label}
                 </div>
               </div>
+            ))}
+          </div>
+        ) : null}
+
+        {/* The stack was in the type, in the data and in the admin editor, and rendered
+            nowhere — so what each thing is actually built with was invisible on a page whose
+            whole audience wants to know. */}
+        {p.stack?.length ? (
+          <div
+            style={{
+              display: "flex",
+              gap: 6,
+              marginTop: 16,
+              flexWrap: "wrap",
+            }}
+          >
+            {p.stack.map((s) => (
+              <span
+                key={s}
+                className="mono"
+                style={{
+                  padding: "4px 9px",
+                  border: "1px solid var(--line-2)",
+                  borderRadius: 3,
+                  fontSize: 9,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "var(--ink-3)",
+                }}
+              >
+                {s}
+              </span>
             ))}
           </div>
         ) : null}

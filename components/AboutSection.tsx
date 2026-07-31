@@ -3,6 +3,7 @@
 import Image from "next/image";
 import type { AboutSection as AboutData, SiteSettings } from "@/lib/portfolio-types";
 import { renderEm } from "@/lib/render-em";
+import { workLogEntries } from "@/lib/work";
 
 type Props = {
   about: AboutData;
@@ -21,11 +22,9 @@ const DEFAULT_PILLARS = [
   { title: "Real-time", body: "Building systems that react quickly and stay reliable under live conditions." },
 ];
 
-const DEFAULT_LOG = [
-  { year: "2025–", org: "TU/e", role: "M.Sc. Data Science & AI" },
-  { year: "2023–24", org: "Etihad Credit Insurance", role: "Data Analyst & IT Support" },
-  { year: "2020–23", org: "Heriot-Watt Dubai", role: "B.Sc. Computer Science" },
-];
+// Derived, not restated. This was a third hand-written copy of the CV, and it was the stalest
+// of the three — the fallback that shows whenever a saved CMS payload has no log of its own.
+const DEFAULT_LOG = workLogEntries();
 
 export default function AboutSection({ about, site }: Props) {
   const headline = about.headline?.length ? about.headline : DEFAULT_HEADLINE;
@@ -37,7 +36,7 @@ export default function AboutSection({ about, site }: Props) {
       : [
           { label: "Based in", value: site.location },
           { label: "Studying", value: "M.Sc. DS&AI · TU/e" },
-          { label: "Available", value: "Summer 2026" },
+          { label: "Currently", value: "AI Intern · Prosus, Amsterdam" },
           { label: "Reach", value: site.email },
         ];
   const portraitLabel = about.portraitLabel ?? "// portrait";

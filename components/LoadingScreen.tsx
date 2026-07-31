@@ -13,7 +13,10 @@ const LINES: Line[] = [
   { p: "soham@portfolio", c: "$", t: "whoami" },
   { p: "", c: "", t: "→ data scientist · full-stack engineer · photographer", muted: true },
   { p: "soham@portfolio", c: "$", t: "ls projects/" },
-  { p: "", c: "", t: "uma  tabscape  robotrader  viveka  diagnostic-reasoning", muted: true },
+  // Keep in step with the ids in lib/portfolio-data.ts. This listing had drifted to advertise
+  // two deleted projects while omitting the two newest, which is a strange first impression
+  // for a terminal pretending to read the real directory.
+  { p: "", c: "", t: "uma  latent.alpha  tabscape  forme  sage-advisory", muted: true },
   { p: "soham@portfolio", c: "$", t: "load --portfolio --year=2026" },
   { p: "", c: "", t: "ready.", muted: true, accent: true },
 ];
