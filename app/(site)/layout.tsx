@@ -3,8 +3,13 @@ import ContactFooter from "@/components/ContactFooter";
 import GrainOverlay from "@/components/ui/GrainOverlay";
 import { getPortfolioData } from "@/lib/portfolio-server";
 
-// The CMS lives in Redis, so these read fresh on every request rather than baking in at build.
-export const dynamic = "force-dynamic";
+/**
+ * Cached, not per-request. The CMS lives in Redis, but forcing dynamic meant every visitor paid for
+ * a Redis round trip and a fresh render of pages that change a few times a month. These are cached
+ * and revalidated on a timer, and the moment the admin saves, /api/portfolio revalidates them
+ * explicitly, so an edit still appears immediately.
+ */
+export const revalidate = 3600;
 
 /**
  * The document surfaces: work, projects, photography, about.

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
+  Activity,
   Bot,
   Camera,
   Aperture,
@@ -914,6 +915,10 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
             >
               <Eye size={12} /> Preview
             </a>
+            <Link href="/admin/insights" className="btn-secondary !py-2 !px-4 !text-[10px]">
+              <Activity size={12} />
+              <span className="hidden sm:inline">Insights</span>
+            </Link>
             <button
               type="button"
               onClick={() => { void handleLogout(); }}

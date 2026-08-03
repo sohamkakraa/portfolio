@@ -67,7 +67,12 @@ export default function RouteSpine() {
   const chapter = ROUTE_CHAPTERS[active];
 
   return (
-    <div className="lab lab--pale-in-light">
+    // The chapter positions are published as data so the collector can tell how far down the road
+    // a visitor got without this component knowing that measurement exists.
+    <div
+      className="lab lab--pale-in-light"
+      data-chapters={ROUTE_CHAPTERS.map((c) => `${c.t}:${c.id}`).join(",")}
+    >
       {tier === "full" ? (
         <canvas ref={canvasRef} className="lab-canvas" />
       ) : (

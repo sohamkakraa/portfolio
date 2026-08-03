@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import ThemeProvider from "@/components/ThemeProvider";
+import Measure from "@/components/analytics/Measure";
+import OfflineCache from "@/components/OfflineCache";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -60,12 +60,11 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${fraunces.variable} ${inter.variable} ${jetbrainsMono.variable} antialiased`}
       >
-        <ThemeProvider>
-          <div className="grain" aria-hidden="true" />
-          {children}
-        </ThemeProvider>
-        <Analytics />
-        <SpeedInsights />
+        {/* No grain here. Reading surfaces render their own through GrainOverlay, and the journey
+            renders film grain inside its scene; a copy at the root stacked on both. */}
+        <ThemeProvider>{children}</ThemeProvider>
+        <Measure />
+        <OfflineCache />
       </body>
     </html>
   );

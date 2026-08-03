@@ -1,7 +1,11 @@
+import { unstable_cache } from "next/cache";
 import { getDefaultPortfolioData } from "@/lib/portfolio-data";
 import { isPortfolioRedisConfigured, readPortfolioFromRedis } from "@/lib/portfolio-redis";
 import { stripHiddenContent } from "@/lib/portfolio-visibility";
 import type { PortfolioData } from "@/lib/portfolio-types";
+
+/** Named so a save can invalidate every surface that read the CMS. */
+export const PORTFOLIO_TAG = "portfolio-data";
 
 /**
  * Reads the CMS payload for a server-rendered page.
@@ -36,7 +40,7 @@ function mergeStoredProjects(
   return { ...defaults, ...stored, items };
 }
 
-export async function getPortfolioData(): Promise<PortfolioData> {
+async function readPortfolioData(): Promise<PortfolioData> {
   const defaults = getDefaultPortfolioData();
 
   if (isPortfolioRedisConfigured()) {
@@ -79,3 +83,20 @@ export async function getPortfolioData(): Promise<PortfolioData> {
 
   return stripHiddenContent(defaults);
 }
+
+/**
+ * The cached read used by every server-rendered surface.
+ *
+ * The Upstash client fetches with `cache: "no-store"`, which by itself makes any route that calls it
+ * dynamic — that is why these pages were rebuilt from Redis for every single visitor. Caching the
+ * *result* rather than the request lets the pages prerender instead.
+ *
+ * One minute, not an hour: a save calls revalidatePath on the reading surfaces, which drops their
+ * rendered output but cannot reach inside this entry, so the window is what bounds how long an edit
+ * can look like it did not take. A minute of staleness is a fair price for taking a Redis round trip
+ * out of every visit.
+ */
+export const getPortfolioData = unstable_cache(readPortfolioData, ["portfolio-data"], {
+  tags: [PORTFOLIO_TAG],
+  revalidate: 60,
+});

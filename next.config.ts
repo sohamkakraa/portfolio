@@ -4,7 +4,9 @@ const isDev = process.env.NODE_ENV !== "production";
 
 const securityHeaders = [
   { key: "X-DNS-Prefetch-Control", value: "on" },
-  { key: "X-Frame-Options", value: "DENY" },
+  // SAMEORIGIN, not DENY, because the admin replay stages a live copy of the site in an iframe.
+  // Clickjacking needs a third-party page to do the framing, which this still refuses.
+  { key: "X-Frame-Options", value: "SAMEORIGIN" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
@@ -21,13 +23,14 @@ const securityHeaders = [
       // unsafe-eval is React Refresh in dev only, so production does not carry it. unsafe-inline
       // stays for now because App Router emits inline hydration scripts; removing it needs a
       // nonce threaded through middleware, which is a change worth making on its own.
-      `script-src 'self' ${isDev ? "'unsafe-eval' " : ""}'unsafe-inline' https://va.vercel-scripts.com`,
+      `script-src 'self' ${isDev ? "'unsafe-eval' " : ""}'unsafe-inline'`,
       "style-src 'self' 'unsafe-inline'",
       // data: for SVG grain overlay; blob: for image previews; book covers proxied via /api/book-cover
       "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://photography.sohamkakra.com",
-      "connect-src 'self' https://va.vercel-scripts.com vitals.vercel-insights.com",
+      // Measurement is first-party now, so it needs nothing beyond the site's own origin.
+      "connect-src 'self'",
       "font-src 'self'",
-      "frame-ancestors 'none'",
+      "frame-ancestors 'self'",
       "form-action 'self'",
       "base-uri 'self'",
       // Falls back to default-src, but stating it means a future default-src loosening cannot
@@ -39,7 +42,18 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   async headers() {
-    return [{ source: "/(.*)", headers: securityHeaders }];
+    return [
+      { source: "/(.*)", headers: securityHeaders },
+      {
+        // The worker decides what every other request does, so it must never be served from a cache
+        // itself: a stale copy would keep an old caching policy alive indefinitely.
+        source: "/sw.js",
+        headers: [
+          { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+          { key: "Service-Worker-Allowed", value: "/" },
+        ],
+      },
+    ];
   },
   images: {
     formats: ["image/avif", "image/webp"],

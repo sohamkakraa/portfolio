@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import fs from "fs";
 import path from "path";
 import type { PortfolioData } from "@/lib/portfolio-types";
@@ -19,6 +20,16 @@ const ensureDataDir = () => {
     fs.mkdirSync(dir, { recursive: true });
   }
 };
+
+/**
+ * The reading surfaces are cached, so a save has to tell them. Without this an edit would sit
+ * invisible until the hourly revalidation happened to come round.
+ */
+function revalidateSiteSurfaces(): void {
+  for (const p of ["/projects", "/photography", "/about", "/work"]) {
+    revalidatePath(p);
+  }
+}
 
 const readStoredDataFromFile = (): PortfolioData | null => {
   try {
@@ -144,6 +155,7 @@ export async function PUT(request: Request) {
 
     if (isPortfolioRedisConfigured()) {
       await writePortfolioToRedis(body);
+      revalidateSiteSurfaces();
       return NextResponse.json({
         success: true,
         message: "Portfolio data saved (Upstash Redis).",
@@ -153,6 +165,7 @@ export async function PUT(request: Request) {
 
     ensureDataDir();
     fs.writeFileSync(DATA_PATH, JSON.stringify(body, null, 2), "utf-8");
+    revalidateSiteSurfaces();
 
     return NextResponse.json({
       success: true,
