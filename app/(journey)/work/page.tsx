@@ -16,6 +16,8 @@ const KIND_LABEL: Record<string, string> = {
   internship: "internship",
 };
 
+const PUBLIC_RESUME_FILENAME = "soham-kakra-resume.pdf";
+
 /**
  * The résumé link renders only when a file is there to serve.
  *
@@ -24,13 +26,8 @@ const KIND_LABEL: Record<string, string> = {
  * number in it exists.
  */
 function resumeFile(): string | null {
-  const dir = path.join(process.cwd(), "public", "resume");
-  try {
-    const pdf = fs.readdirSync(dir).find((f) => f.toLowerCase().endsWith(".pdf"));
-    return pdf ? `/resume/${encodeURIComponent(pdf)}` : null;
-  } catch {
-    return null;
-  }
+  const file = path.join(process.cwd(), "public", "resume", PUBLIC_RESUME_FILENAME);
+  return fs.existsSync(file) ? `/resume/${PUBLIC_RESUME_FILENAME}` : null;
 }
 
 export default function WorkPage() {

@@ -27,6 +27,10 @@
 # scratch scripts, screenshots and other local run output
 /.tmp/
 
+# Application resumes may contain a private phone number. The public, phone-free PDF is
+# generated separately in public/resume/ and is the only resume artifact safe to commit.
+/resume/private/
+
 # local CMS state, written by the admin panel and read only when Redis is unreachable. The
 # committed copy had gone stale enough to name three deleted projects with invented metrics,
 # and a failover would have served it verbatim.

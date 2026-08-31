@@ -1,0 +1,457 @@
+:root {
+  --ink: #101827;
+  --muted: #4b5a6d;
+  --quiet: #6f7c8d;
+  --rule: #cbd6e5;
+  --paper: #ffffff;
+  --accent: #1956d2;
+  --accent-soft: #edf3ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: #d9dee7;
+  color: var(--ink);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9pt;
+  line-height: 1.34;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+p,
+h1,
+h2,
+h3,
+ul {
+  margin: 0;
+}
+
+.resume {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 10.5mm 13mm 9.5mm;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.masthead {
+  margin-bottom: 4mm;
+}
+
+h1 {
+  color: var(--ink);
+  font-size: 27pt;
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+}
+
+.headline {
+  margin-top: 1.45mm;
+  color: var(--muted);
+  font-size: 10.25pt;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+}
+
+.contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75mm 0;
+  margin-top: 2.3mm;
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 6.8pt;
+  line-height: 1.3;
+}
+
+.contact span:not(:last-child)::after {
+  margin: 0 1.5mm;
+  color: var(--rule);
+  content: "/";
+}
+
+.signal {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3mm;
+  margin-top: 3.1mm;
+}
+
+.signal span {
+  border-top: 1.7pt solid var(--accent);
+  padding: 1.15mm 0.5mm 0.9mm;
+  background: linear-gradient(180deg, var(--accent-soft) 0%, #ffffff 88%);
+  color: var(--accent);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 6.9pt;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+section {
+  margin-top: 3.3mm;
+}
+
+h2 {
+  display: flex;
+  align-items: center;
+  gap: 2mm;
+  margin-bottom: 1.6mm;
+  color: var(--accent);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 7.35pt;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+h2::after {
+  height: 0.7pt;
+  flex: 1;
+  background: var(--rule);
+  content: "";
+}
+
+.summary {
+  max-width: 172mm;
+  color: var(--ink);
+  font-size: 8.65pt;
+  line-height: 1.42;
+}
+
+.entry {
+  margin-top: 2.05mm;
+}
+
+.entry:first-of-type {
+  margin-top: 0;
+}
+
+.entry-heading {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr) max-content;
+  align-items: baseline;
+  column-gap: 1.25mm;
+}
+
+.entry h3,
+.compact-entry h3,
+.project h3,
+.education-entry h3 {
+  font-size: 8.7pt;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.entry-role,
+.education-degree {
+  color: var(--muted);
+  font-size: 8.15pt;
+  font-weight: 700;
+}
+
+.entry-role::before,
+.education-degree::before {
+  margin-right: 1.25mm;
+  color: var(--rule);
+  content: "—";
+}
+
+.entry-meta {
+  color: var(--quiet);
+  font-size: 7.15pt;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+ul {
+  margin-top: 0.8mm;
+  padding-left: 4mm;
+}
+
+li {
+  margin-top: 0.55mm;
+  padding-left: 0.6mm;
+}
+
+li::marker {
+  color: var(--accent);
+  font-size: 0.72em;
+}
+
+.additional-experience {
+  margin-top: 2mm;
+  padding-top: 1.6mm;
+  border-top: 0.7pt solid var(--rule);
+}
+
+.subsection-title {
+  margin-bottom: 1.25mm;
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 6.75pt;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.compact-entry {
+  margin-top: 1.15mm;
+}
+
+.compact-entry h3 {
+  display: inline;
+  font-size: 7.7pt;
+}
+
+.compact-entry h3::after {
+  color: var(--rule);
+  content: " — ";
+}
+
+.compact-entry p {
+  font-size: 7.35pt;
+  line-height: 1.28;
+}
+
+.compact-meta {
+  display: inline;
+  color: var(--quiet);
+  font-weight: 600;
+}
+
+.compact-entry > p:last-child {
+  margin-top: 0.35mm;
+}
+
+.project {
+  display: block;
+}
+
+.project-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 2mm;
+}
+
+.project-heading p {
+  color: var(--quiet);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 6.65pt;
+  line-height: 1.3;
+}
+
+.project > p {
+  margin-top: 0.65mm;
+  font-size: 7.65pt;
+  line-height: 1.36;
+}
+
+.education-grid {
+  display: block;
+}
+
+.education-entry {
+  min-width: 0;
+}
+
+.education-entry + .education-entry {
+  margin-top: 1.35mm;
+}
+
+.education-entry h3 {
+  display: inline;
+  font-size: 8.15pt;
+}
+
+.education-degree {
+  display: inline;
+  margin-left: 1.25mm;
+  font-size: 7.55pt;
+}
+
+.education-degree::before {
+  margin-right: 1.25mm;
+  color: var(--rule);
+  content: "—";
+}
+
+.education-entry .entry-meta {
+  display: inline;
+  margin-left: 1.25mm;
+  white-space: normal;
+}
+
+.education-entry > p:last-child {
+  margin-top: 0.45mm;
+  color: var(--muted);
+  font-size: 7.15pt;
+  line-height: 1.3;
+}
+
+.skills {
+  display: grid;
+  gap: 0.85mm;
+}
+
+.skill-row {
+  display: grid;
+  grid-template-columns: 31mm minmax(0, 1fr);
+  column-gap: 2mm;
+}
+
+.skill-row h3 {
+  color: var(--muted);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 6.65pt;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  line-height: 1.32;
+  text-transform: uppercase;
+}
+
+.skill-row p {
+  font-size: 7.35pt;
+  line-height: 1.32;
+}
+
+.resume--tailored {
+  padding: 12mm 14mm 11mm;
+  font-size: 9.8pt;
+}
+
+.resume--tailored .masthead {
+  margin-bottom: 5mm;
+}
+
+.resume--tailored .contact {
+  font-size: 7.1pt;
+}
+
+.resume--tailored .signal {
+  margin-top: 3.6mm;
+}
+
+.resume--tailored section {
+  margin-top: 4.2mm;
+}
+
+.resume--tailored h2 {
+  margin-bottom: 2mm;
+  font-size: 7.6pt;
+}
+
+.resume--tailored .summary {
+  font-size: 9.4pt;
+  line-height: 1.45;
+}
+
+.resume--tailored .entry {
+  margin-top: 2.65mm;
+}
+
+.resume--tailored .entry h3,
+.resume--tailored .project h3 {
+  font-size: 9.2pt;
+}
+
+.resume--tailored .entry-role {
+  font-size: 8.7pt;
+}
+
+.resume--tailored .entry-meta {
+  font-size: 7.55pt;
+}
+
+.resume--tailored ul {
+  margin-top: 1mm;
+}
+
+.resume--tailored li {
+  margin-top: 0.75mm;
+}
+
+.resume--tailored .project > p {
+  margin-top: 0.8mm;
+  font-size: 8.45pt;
+}
+
+.resume--tailored .education-entry + .education-entry {
+  margin-top: 1.7mm;
+}
+
+.resume--tailored .education-entry h3 {
+  font-size: 8.65pt;
+}
+
+.resume--tailored .education-degree {
+  font-size: 8.05pt;
+}
+
+.resume--tailored .education-entry .entry-meta {
+  font-size: 7.35pt;
+}
+
+.resume--tailored .education-entry > p:last-child {
+  margin-top: 0.65mm;
+  font-size: 7.65pt;
+}
+
+.resume--tailored .skills {
+  gap: 1.05mm;
+}
+
+.resume--tailored .skill-row h3 {
+  font-size: 6.95pt;
+}
+
+.resume--tailored .skill-row p {
+  font-size: 7.9pt;
+}
+
+@media screen {
+  body {
+    padding: 18px 0;
+  }
+
+  .resume {
+    box-shadow: 0 18px 55px rgb(32 48 76 / 18%);
+  }
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body {
+    width: 210mm;
+    height: 297mm;
+    background: #ffffff;
+  }
+
+  .resume {
+    margin: 0;
+    box-shadow: none;
+  }
+}
