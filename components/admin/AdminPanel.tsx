@@ -1386,7 +1386,7 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
                         className="h-28 w-24 shrink-0 rounded-xl border border-[color:var(--border)] object-cover"
                       />
                     ) : (
-                      <span className="text-xs text-[color:var(--fg-muted)]">Using default /Me.jpg on site.</span>
+                      <span className="text-xs text-[color:var(--fg-muted)]">Using default /Me.png on site.</span>
                     )}
                     <div
                       className={`flex min-h-[120px] flex-1 flex-col justify-center rounded-xl border-2 border-dashed px-4 py-4 transition ${

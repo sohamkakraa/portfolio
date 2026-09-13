@@ -232,6 +232,7 @@ const EXITS = [
   { href: "/projects", label: "projects" },
   { href: "/photography", label: "photographs", short: "photos" },
   { href: "/about", label: "about" },
+  { href: "/blog/day-1", label: "blog" },
 ];
 
 /**

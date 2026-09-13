@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { LIMITS, parseBatch } from "@/lib/analytics/schema";
-import { dayKey, overBatchLimit, recordBatch, visitorHash } from "@/lib/analytics/store";
+import { dayKey, hasAnalyticsSalt, overBatchLimit, recordBatch, visitorHash } from "@/lib/analytics/store";
 import { isRedisConfigured } from "@/lib/redis";
 
 /**
@@ -27,7 +27,7 @@ function clientIp(request: Request): string {
 
 export async function POST(request: Request) {
   // Do not spend a Redis round trip when there is nowhere to write.
-  if (!isRedisConfigured()) return NO_CONTENT;
+  if (!isRedisConfigured() || !hasAnalyticsSalt()) return NO_CONTENT;
 
   const declared = Number(request.headers.get("content-length") ?? 0);
   if (declared > LIMITS.bodyBytes) {
@@ -49,7 +49,8 @@ export async function POST(request: Request) {
   const batch = parseBatch(body);
   if (!batch) return NextResponse.json({ error: "Malformed batch." }, { status: 400 });
 
-  const visitor = visitorHash(clientIp(request), request.headers.get("user-agent") ?? "");
+  const day = dayKey();
+  const visitor = visitorHash(clientIp(request), request.headers.get("user-agent") ?? "", day);
   if (await overBatchLimit(visitor)) {
     return NextResponse.json({ error: "Too many batches." }, { status: 429 });
   }
@@ -59,7 +60,7 @@ export async function POST(request: Request) {
       visitor,
       // Supplied by the platform, so it costs nothing and is coarser than an IP.
       country: request.headers.get("x-vercel-ip-country") ?? undefined,
-      day: dayKey(),
+      day,
     });
   } catch (e) {
     // A measurement failure is not a visitor's problem. Log it and answer normally.

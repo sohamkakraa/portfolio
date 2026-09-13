@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { setConsent, type ConsentState } from "@/lib/analytics/consent";
 
 /**
@@ -27,19 +28,22 @@ export default function ConsentNote({ state }: { state: ConsentState }) {
   return (
     <aside className="consent" role="region" aria-label="About being counted">
       <p className="consent-body">
-        I keep a quiet record of how people move through here — which chapters hold you, where you
-        turn back — because guessing is how portfolios stay broken. It stays with me: nothing sold,
-        nothing following you off this site.
+        May I use first-party analytics to see how you found this site and move through it? This
+        records page views, scroll progress, clicks, basic device details and campaign labels so I
+        can improve the writing, SEO and experience. No ads, marketing profiles or cross-site tracking.
       </p>
       <div className="consent-actions">
         <button type="button" className="consent-yes" onClick={() => setConsent("granted")}>
-          fine by me
+          accept analytics
         </button>
         <button type="button" className="consent-no" onClick={() => setConsent("denied")}>
-          rather not
+          necessary only
         </button>
       </div>
-      <p className="consent-fine">Either way the site behaves the same. You can change this in the footer.</p>
+      <p className="consent-fine">
+        Nothing is measured until you choose. The site works the same either way. Change your choice
+        any time in the footer. <Link href="/privacy">Privacy details</Link>.
+      </p>
     </aside>
   );
 }

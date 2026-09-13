@@ -1,9 +1,11 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import { Github, Linkedin, Mail, Instagram, Globe, ArrowUpRight } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { ContactSection, FooterContent, SocialLink } from "@/lib/portfolio-types";
 import { renderEm } from "@/lib/render-em";
+import { getConsent, serverConsent, setConsent, subscribeConsent } from "@/lib/analytics/consent";
 
 function iconFor(label: string, href: string): LucideIcon {
   const k = `${label} ${href}`.toLowerCase();
@@ -26,7 +28,9 @@ const DEFAULT_HEADLINE: string[] = [
 ];
 
 export default function ContactFooter({ contact, footer, socials }: Props) {
-  const allLinks = [...socials, ...(footer.links ?? [])];
+  const analyticsConsent = useSyncExternalStore(subscribeConsent, getConsent, serverConsent);
+  const analyticsOn = analyticsConsent === "granted";
+  const allLinks = [...socials, ...(footer.links ?? []).filter((link) => link.href !== "/admin")];
   const headline = contact.headline?.length ? contact.headline : DEFAULT_HEADLINE;
   return (
     <>
@@ -153,6 +157,26 @@ export default function ContactFooter({ contact, footer, socials }: Props) {
           }}
         >
           <span>{footer.note || "Designed & built · soham kakra · 2026"}</span>
+          <button
+            type="button"
+            onClick={() => setConsent(analyticsOn ? "denied" : "granted")}
+            aria-pressed={analyticsOn}
+            style={{
+              border: 0,
+              padding: 0,
+              background: "transparent",
+              color: "inherit",
+              font: "inherit",
+              letterSpacing: "inherit",
+              textTransform: "inherit",
+              cursor: "pointer",
+              textDecoration: "underline",
+              textUnderlineOffset: 4,
+            }}
+          >
+            anonymous analytics: {analyticsConsent === "unknown" ? "choose" : analyticsOn ? "on" : "off"}
+          </button>
+          <a href="/privacy" style={{ textDecoration: "underline", textUnderlineOffset: 4 }}>privacy</a>
           {footer.versionNote && <span>{footer.versionNote}</span>}
         </div>
       </footer>

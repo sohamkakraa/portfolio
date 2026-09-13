@@ -27,11 +27,11 @@ export default function Measure() {
   // would destroy the thing most worth measuring.
   useEffect(() => {
     if (!live) {
-      stop();
+      stop(false);
       return;
     }
     start();
-    return () => stop();
+    return () => stop(getConsent() === "granted");
   }, [live]);
 
   // Runs after the effect above on mount, so the first view lands on a live collector.

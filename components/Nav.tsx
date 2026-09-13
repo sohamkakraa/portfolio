@@ -27,6 +27,7 @@ const ROUTES: { href: string; label: string }[] = [
   { href: "/projects", label: "02 projects" },
   { href: "/photography", label: "03 photographs" },
   { href: "/about", label: "04 about" },
+  { href: "/blog/day-1", label: "05 blog" },
 ];
 
 export default function Nav({ name }: NavProps) {

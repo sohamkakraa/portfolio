@@ -74,6 +74,8 @@ export default async function InsightsPage({
     exits,
     friction,
     refs,
+    sources,
+    campaigns,
     devices,
     geo,
     engine,
@@ -88,6 +90,8 @@ export default async function InsightsPage({
     getRanked(days, "exit", 10),
     getRanked(days, "friction", 10),
     getRanked(days, "ref", 8),
+    getRanked(days, "source", 8),
+    getRanked(days, "campaign", 8),
     getRanked(days, "dev", 4),
     getRanked(days, "geo", 8),
     getRanked(days, "engine", 6),
@@ -242,6 +246,18 @@ export default async function InsightsPage({
 
         <section>
           <div className="ins-section-head">
+            <h2 className="ins-h2">Campaign attribution</h2>
+            <span className="ins-eyebrow">UTM source · campaign</span>
+          </div>
+          <p className="ins-note">
+            Tagged links separate Instagram, LinkedIn and individual posts. Untagged visits fall
+            back to the referrer host.
+          </p>
+          <Bars rows={[...sources, ...campaigns.map((row) => ({ ...row, label: `campaign · ${row.label}` }))]} />
+        </section>
+
+        <section>
+          <div className="ins-section-head">
             <h2 className="ins-h2">On what</h2>
             <span className="ins-eyebrow">device · country</span>
           </div>
@@ -321,7 +337,7 @@ export default async function InsightsPage({
                     {s.renderer}
                     {s.onDevice ? " · cached" : ""}
                   </td>
-                  <td>{s.ref ?? "direct"}</td>
+                  <td>{s.source ?? s.ref ?? "direct"}{s.campaign ? ` · ${s.campaign}` : ""}</td>
                   <td>{s.country ?? "—"}</td>
                   <td>
                     <Link className="ins-play" href={`/admin/insights/${s.sid}`}>

@@ -96,7 +96,7 @@ export type AboutSection = {
   pillars?: AboutPillar[];
   /** Tabular CV log shown beneath pillars. */
   log?: AboutLogEntry[];
-  /** Meta table beside the portrait (Based in / Studying / Available / Reach). */
+  /** Meta table beside the portrait (Based in / Degree / Next / Reach). */
   meta?: AboutMetaEntry[];
   /** Watermark text in upper-left corner of portrait card. */
   portraitLabel?: string;

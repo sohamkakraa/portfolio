@@ -10,9 +10,9 @@
  * timeline, which replays through the real renderer at about 1KB a visit and shows what the
  * visitor actually saw.
  *
- * Nothing here identifies a person. The visitor key is a salted hash of IP and user agent computed
- * on the server and never stored in raw form, and it exists so unique-visitor counts work; it is
- * not written into the session record.
+ * The events avoid directly identifying data, but the random session ID and daily visitor key are
+ * pseudonymous data. The visitor key is derived on the server from a masked IP, user agent, secret
+ * salt and current day; it is never written into the session record.
  */
 
 export const ANALYTICS_VERSION = 1;
@@ -25,6 +25,7 @@ export const LIMITS = {
   batchesPerMinutePerVisitor: 30,
   scrollHz: 4,
   sessionTtlDays: 45,
+  rollupTtlDays: 730,
 } as const;
 
 export type DeviceType = "phone" | "tablet" | "desktop";
@@ -65,6 +66,10 @@ export type SessionHello = {
   tz?: string;
   /** Referrer host only. A full referring URL can carry search terms and private paths. */
   ref?: string;
+  /** Allow-listed first-touch campaign labels. Full query strings never leave the browser. */
+  source?: string;
+  medium?: string;
+  campaign?: string;
   device: DeviceType;
   renderer: Renderer;
   viewport: [number, number];
@@ -150,6 +155,9 @@ function parseHello(input: unknown, sid: string): SessionHello | undefined {
     startedAt,
     tz: str(h.tz, 64) ?? undefined,
     ref: str(h.ref, 128) ?? undefined,
+    source: str(h.source, 64) ?? undefined,
+    medium: str(h.medium, 64) ?? undefined,
+    campaign: str(h.campaign, 96) ?? undefined,
     device,
     renderer: h.renderer === "lite" ? "lite" : "full",
     viewport: [Math.round(vw), Math.round(vh)],

@@ -14,7 +14,6 @@ import {
  * Redis layout. Every write is O(1) so ingest cost does not grow with history, and every dashboard
  * read is a handful of range queries rather than a scan over sessions.
  *
- *   an:days                  ZSET  day -> last write, so the dashboard knows which days exist
  *   an:d:<day>:pv            counter, pageviews
  *   an:d:<day>:uv            HyperLogLog of visitor hashes, unique visitors in ~12KB flat
  *   an:d:<day>:path|ref|dev  ZSET  value -> count
@@ -30,23 +29,36 @@ import {
  *   an:s:<sid>:m             HASH  session meta
  *   an:s:<sid>:e             LIST  events as JSON, appended, trimmed
  *
- * Sessions expire; rollups are kept, because they are tiny and are the long record.
+ * Sessions expire after 45 days; daily rollups expire after 24 months.
  */
 
 const TTL = LIMITS.sessionTtlDays * 24 * 60 * 60;
+const ROLLUP_TTL = LIMITS.rollupTtlDays * 24 * 60 * 60;
 const MAX_EVENTS_PER_SESSION = 4000;
 
 export const dayKey = (at: number | Date = Date.now()): string =>
   new Date(at).toISOString().slice(0, 10);
 
+export const hasAnalyticsSalt = (): boolean => Boolean(process.env.ANALYTICS_SALT?.trim());
+
 /**
- * A stable per-visitor value that is not an identity. IP and user agent are salted and hashed on
- * the server, truncated, and used only to add to a HyperLogLog; the raw values are never written
- * anywhere. Without a salt the hash would be reversible by brute force over the IPv4 space.
+ * A pseudonymous value that rotates daily. A masked IP and user agent are salted and hashed on the
+ * server, truncated, and used only for rate limiting and a daily HyperLogLog; the inputs are never
+ * written to the analytics database. Without a salt the hash would be reversible by brute force.
  */
-export function visitorHash(ip: string, ua: string): string {
-  const salt = process.env.ANALYTICS_SALT || process.env.JWT_SECRET || "";
-  return createHash("sha256").update(`${salt}:${ip}:${ua}`).digest("hex").slice(0, 24);
+function maskedIp(ip: string): string {
+  if (ip.includes(".")) {
+    const parts = ip.split(".");
+    return parts.length === 4 ? `${parts[0]}.${parts[1]}.${parts[2]}.0` : "unknown";
+  }
+  if (ip.includes(":")) return `${ip.split(":").slice(0, 4).join(":")}::`;
+  return "unknown";
+}
+
+export function visitorHash(ip: string, ua: string, day = dayKey()): string {
+  const salt = process.env.ANALYTICS_SALT?.trim();
+  if (!salt) throw new Error("ANALYTICS_SALT is required for analytics.");
+  return createHash("sha256").update(`${salt}:${day}:${maskedIp(ip)}:${ua}`).digest("hex").slice(0, 24);
 }
 
 export type IngestContext = {
@@ -72,8 +84,12 @@ export async function recordBatch(batch: Batch, ctx: IngestContext): Promise<voi
   const day = ctx.day;
   const meta = `an:s:${batch.sid}:m`;
   const events = `an:s:${batch.sid}:e`;
-
-  p.zadd("an:days", { score: Date.now(), member: day });
+  const rollups = new Set<string>();
+  const rollup = (suffix: string) => {
+    const key = `an:d:${day}:${suffix}`;
+    rollups.add(key);
+    return key;
+  };
 
   if (batch.hello) {
     const h = batch.hello;
@@ -88,17 +104,22 @@ export async function recordBatch(batch: Batch, ctx: IngestContext): Promise<voi
       theme: h.theme,
       ...(h.tz ? { tz: h.tz } : {}),
       ...(h.ref ? { ref: h.ref } : {}),
+      ...(h.source ? { source: h.source } : {}),
+      ...(h.medium ? { medium: h.medium } : {}),
+      ...(h.campaign ? { campaign: h.campaign } : {}),
       ...(ctx.country ? { country: ctx.country } : {}),
     });
     p.zadd(`an:idx:${day}`, { score: h.startedAt, member: h.sid });
-    p.pfadd(`an:d:${day}:uv`, ctx.visitor);
-    p.zincrby(`an:d:${day}:dev`, 1, h.device);
+    p.pfadd(rollup("uv"), ctx.visitor);
+    p.zincrby(rollup("dev"), 1, h.device);
     // Which machine did the work. Crossed with device because the useful question is not the overall
     // split but which devices keep falling back to the lite scene.
-    p.zincrby(`an:d:${day}:engine`, 1, `${h.device} · ${h.renderer} scene`);
-    p.zincrby(`an:d:${day}:served`, 1, h.onDevice ? "arrived with it installed" : "first arrival");
-    p.zincrby(`an:d:${day}:ref`, 1, h.ref || "direct");
-    if (ctx.country) p.zincrby(`an:d:${day}:geo`, 1, ctx.country);
+    p.zincrby(rollup("engine"), 1, `${h.device} · ${h.renderer} scene`);
+    p.zincrby(rollup("served"), 1, h.onDevice ? "arrived with it installed" : "first arrival");
+    p.zincrby(rollup("ref"), 1, h.ref || "direct");
+    p.zincrby(rollup("source"), 1, h.source || h.ref || "direct / unknown");
+    if (h.campaign) p.zincrby(rollup("campaign"), 1, h.campaign);
+    if (ctx.country) p.zincrby(rollup("geo"), 1, ctx.country);
     p.expire(`an:idx:${day}`, TTL);
   }
 
@@ -111,40 +132,41 @@ export async function recordBatch(batch: Batch, ctx: IngestContext): Promise<voi
   p.expire(meta, TTL);
   p.expire(events, TTL);
 
-  for (const e of batch.events) rollUp(p, day, e);
+  for (const e of batch.events) rollUp(p, rollup, e);
+  for (const key of rollups) p.expire(key, ROLLUP_TTL);
 
   await p.exec();
 }
 
 type Pipeline = ReturnType<ReturnType<typeof getRedis>["pipeline"]>;
 
-function rollUp(p: Pipeline, day: string, e: AnalyticsEvent): void {
+function rollUp(p: Pipeline, key: (suffix: string) => string, e: AnalyticsEvent): void {
   switch (e.k) {
     case "view":
-      p.incr(`an:d:${day}:pv`);
-      p.zincrby(`an:d:${day}:path`, 1, e.path);
+      p.incr(key("pv"));
+      p.zincrby(key("path"), 1, e.path);
       break;
     case "chapter":
       // The collector emits a chapter only when the furthest reached advances, so this counts
       // each chapter once per session and the ZSET reads as a funnel without deduplication here.
-      p.zincrby(`an:d:${day}:chapter`, 1, `${e.i}:${e.id}`);
+      p.zincrby(key("chapter"), 1, `${e.i}:${e.id}`);
       break;
     case "click":
-      p.zincrby(`an:d:${day}:exit`, 1, e.to ? `${e.label} -> ${e.to}` : e.label);
+      p.zincrby(key("exit"), 1, e.to ? `${e.label} -> ${e.to}` : e.label);
       break;
     case "photo":
-      p.zincrby(`an:d:${day}:photo`, 1, e.src);
+      p.zincrby(key("photo"), 1, e.src);
       break;
     case "friction":
-      p.zincrby(`an:d:${day}:friction`, 1, `${e.kind} · ${e.path} · ${e.label}`);
+      p.zincrby(key("friction"), 1, `${e.kind} · ${e.path} · ${e.label}`);
       break;
     case "vital":
-      p.zincrby(`an:d:${day}:v:${e.name}`, 1, vitalBucket(e.name, e.value));
-      p.hincrbyfloat(`an:d:${day}:vsum`, `${e.name}:sum`, e.value);
-      p.hincrbyfloat(`an:d:${day}:vsum`, `${e.name}:n`, 1);
+      p.zincrby(key(`v:${e.name}`), 1, vitalBucket(e.name, e.value));
+      p.hincrbyfloat(key("vsum"), `${e.name}:sum`, e.value);
+      p.hincrbyfloat(key("vsum"), `${e.name}:n`, 1);
       break;
     case "leave":
-      p.hincrbyfloat(`an:d:${day}:dwell`, e.path, Math.round(e.ms / 1000));
+      p.hincrbyfloat(key("dwell"), e.path, Math.round(e.ms / 1000));
       break;
     case "scroll":
       // Deliberately not rolled up. Scroll is the replay track and is read per session.
@@ -287,6 +309,9 @@ export type SessionSummary = {
   renderer: string;
   country?: string;
   ref?: string;
+  source?: string;
+  medium?: string;
+  campaign?: string;
   theme: string;
   viewport: string;
   reducedMotion: boolean;
@@ -327,6 +352,9 @@ export async function listSessions(days: string[], limit = 60): Promise<SessionS
         renderer: m.renderer ?? "full",
         country: m.country,
         ref: m.ref,
+        source: m.source,
+        medium: m.medium,
+        campaign: m.campaign,
         theme: m.theme ?? "dark",
         viewport: m.viewport ?? "",
         reducedMotion: m.reducedMotion === "1",
@@ -399,6 +427,9 @@ export async function getSession(sid: string): Promise<StoredSession | null> {
     startedAt: Number(m.startedAt),
     tz: m.tz,
     ref: m.ref,
+    source: m.source,
+    medium: m.medium,
+    campaign: m.campaign,
     device: (m.device ?? "desktop") as DeviceType,
     renderer: m.renderer === "lite" ? "lite" : "full",
     viewport: [vw || 0, vh || 0],

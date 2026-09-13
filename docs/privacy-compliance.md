@@ -1,0 +1,32 @@
+# Privacy compliance checklist
+
+This is an operational checklist, not legal advice. Review it whenever analytics, hosting, forms or service providers change.
+
+## Current processing
+
+| Purpose | Data | Legal basis | Retention | Recipient |
+| --- | --- | --- | --- | --- |
+| Deliver and secure the site | IP address, IP-derived location, user agent, request and system data | Legitimate interests | Customer-visible runtime logs: 1 hour to 30 days depending on plan; Vercel's separate service-generated retention follows its published criteria | Vercel |
+| First-party audience and UX measurement | Random session ID, route and interaction events, coarse device details, referrer host, consented UTM labels, masked daily visitor hash | Consent | Detailed sessions: 45 days; daily aggregate counts: 24 months | Vercel, Upstash |
+| Remember the visitor's analytics choice | Consent state and timestamp in local storage | Necessary to respect the choice | 6 months | Browser only |
+| Admin authentication | Admin session cookie | Strictly necessary; legitimate interests | 30 days maximum | Browser, site server |
+
+## Before production
+
+- Confirm which Vercel plan is used and that its current DPA applies to the account.
+- Retain the current Upstash DPA, choose an EU database region, enable TLS and assess whether its at-rest encryption add-on is needed; document each setting.
+- Verify HTTPS, production secrets, dashboard access controls and `ANALYTICS_SALT` configuration.
+- Record the actual retention of Vercel request and security logs in the public privacy notice.
+- Keep proof of the consent wording and version deployed on each material change.
+- Test that reject, accept and later withdrawal all work without reducing site functionality.
+- Reassess whether long-lived aggregate dimensions can single out a person; delete or coarsen sparse values.
+- Review this record and the public notice at least annually.
+- If analytics data predates the automated 24-month expiry, remove those legacy Redis keys manually.
+
+## Request handling
+
+- Acknowledge privacy requests promptly and normally complete them within one month.
+- Verify the requester only to the extent necessary.
+- Search consented analytics by session ID and approximate visit time where possible.
+- Record access, correction, deletion, restriction, objection and withdrawal requests without retaining unnecessary identity documents.
+- Document security incidents and assess whether the Dutch supervisory authority and affected people must be notified.

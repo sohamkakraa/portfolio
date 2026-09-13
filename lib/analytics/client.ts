@@ -89,6 +89,40 @@ function referrerHost(): string | undefined {
   }
 }
 
+type Attribution = { source?: string; medium?: string; campaign?: string };
+
+function cleanCampaignValue(value: string | null, max: number): string | undefined {
+  if (!value) return undefined;
+  const clean = value.trim().replace(/[^a-zA-Z0-9._~ -]/g, "").slice(0, max);
+  return clean || undefined;
+}
+
+function attribution(): Attribution {
+  const key = "sk-attribution";
+  try {
+    const params = new URLSearchParams(location.search);
+    const current: Attribution = {
+      source: cleanCampaignValue(params.get("utm_source"), 64),
+      medium: cleanCampaignValue(params.get("utm_medium"), 64),
+      campaign: cleanCampaignValue(params.get("utm_campaign"), 96),
+    };
+    if (current.source || current.medium || current.campaign) {
+      sessionStorage.setItem(key, JSON.stringify(current));
+      return current;
+    }
+    const saved = sessionStorage.getItem(key);
+    if (!saved) return {};
+    const parsed = JSON.parse(saved) as Attribution;
+    return {
+      source: cleanCampaignValue(parsed.source ?? null, 64),
+      medium: cleanCampaignValue(parsed.medium ?? null, 64),
+      campaign: cleanCampaignValue(parsed.campaign ?? null, 96),
+    };
+  } catch {
+    return {};
+  }
+}
+
 function push(event: AnalyticsEvent): void {
   if (!started) return;
   queue.push(event);
@@ -324,11 +358,13 @@ export function start(): void {
   sid = newSessionId();
   t0 = performance.now();
 
+  const campaignAttribution = attribution();
   hello = {
     sid,
     startedAt: Date.now(),
     tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
     ref: referrerHost(),
+    ...campaignAttribution,
     device: deviceType(),
     renderer: document.querySelector("canvas.lab-canvas") ? "full" : "lite",
     viewport: [window.innerWidth, window.innerHeight],
@@ -387,10 +423,10 @@ export function photo(src: string): void {
   push({ t: now(), k: "photo", src: src.slice(0, 200) });
 }
 
-export function stop(): void {
+export function stop(sendPending = true): void {
   if (!started) return;
   leaveCurrent();
-  flush(true);
+  if (sendPending) flush(true);
   started = false;
   if (flushTimer) clearInterval(flushTimer);
   flushTimer = null;

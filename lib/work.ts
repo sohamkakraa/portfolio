@@ -27,6 +27,7 @@ export type Role = {
   /** Condensed span for the CV strip, e.g. "2023–24". */
   years: string;
   kind: "degree" | "role" | "internship";
+  status?: "current" | "upcoming";
   /** The route chapter this happened inside. */
   chapter: string;
   /** Exactly what the route panel prints. */
@@ -108,14 +109,14 @@ export const WORK: Role[] = [
     orgShort: "TU/e",
     role: "M.Sc. Data Science & Artificial Intelligence",
     city: "Eindhoven",
-    span: "Sep 2024 – now",
-    years: "2024–",
+    span: "Sep 2024 – Sep 2026",
+    years: "2024–26",
     kind: "degree",
     chapter: "eindhoven",
-    line: "M.Sc. Data Science & AI · TU/e · Sep 2024 – now",
+    line: "M.Sc. Data Science & AI · TU/e · Sep 2024 – Sep 2026",
     note: "Machine learning and deep learning, GenAI, visual analytics, ethics in AI.",
     detail:
-      "The first move I argued for rather than went along with. The thesis is the Prosus role, which means the degree and the job stopped being separate things somewhere in early 2026.",
+      "The first move I argued for rather than went along with. The thesis became the Prosus role, which means the degree and the job stopped being separate things somewhere in early 2026.",
   },
   {
     id: "idcaba",
@@ -152,23 +153,37 @@ export const WORK: Role[] = [
     org: "Prosus",
     role: "AI Intern, master's thesis",
     city: "Amsterdam",
-    span: "Apr 2026 – now",
-    years: "2026–",
+    span: "Apr – 28 Aug 2026",
+    years: "2026",
     kind: "internship",
     chapter: "eindhoven",
-    line: "Prosus · Amsterdam · Apr 2026 – now",
+    line: "Prosus · Amsterdam · AI Intern · Apr – 28 Aug 2026",
     note: "Retrieval that builds its own structure, on demand.",
     detail:
-      "An adaptive retrieval system that generates structure on demand for complex enterprise queries, rather than relying on an index built in advance for questions nobody had asked yet. It is both the thesis and the internship. Alongside it: a 3D designer-and-printer agent that lives in Slack, and a standing habit of evaluating models and agentic tooling in my own time.",
+      "An adaptive retrieval system that generates structure on demand for complex enterprise queries, rather than relying on an index built in advance for questions nobody had asked yet. It began as both the thesis and the internship. Alongside it: a 3D designer-and-printer agent that lives in Slack, and a standing habit of evaluating models and agentic tooling in my own time.",
+  },
+  {
+    id: "prosus-traineeship",
+    org: "Prosus",
+    role: "Traineeship",
+    city: "Amsterdam",
+    span: "From 01 Oct 2026",
+    years: "Oct 2026–",
+    kind: "role",
+    status: "upcoming",
+    chapter: "eindhoven",
+    line: "Prosus · Amsterdam · Traineeship · from 01 Oct 2026",
+    note: "The next chapter at Prosus, starting 1 October.",
+    detail: "Scheduled to begin on 1 October 2026. Details will follow once the work has started.",
   },
 ];
 
 /** The turn the list makes, stated once so neither surface has to imply it. */
 export const WORK_ARC = {
-  eyebrow: "2021 – NOW · SIX ROLES, TWO HALVES",
+  eyebrow: "2021 – NOW · SEVEN ROLES, TWO HALVES",
   title: "From making other people's work legible to building things that decide",
   body:
-    "The first half of this list is infrastructure for humans: an employee management system, a learning platform, dashboards for finance and risk, an intranet for a company running on email. Useful, and all of it fundamentally a way of showing people what was already true about their own organisation. The second half stopped being about presenting information and started being about acting on it — Copilot agents taking over a helpdesk, a summer spent judging what seventy AI companies were actually capable of, and now a retrieval system that builds its own structure instead of waiting for someone to index the world in advance. The Gulf years taught me what a business needs before it can be automated. That is the part most people building agents skip.",
+    "The first half of this list is infrastructure for humans: an employee management system, a learning platform, dashboards for finance and risk, an intranet for a company running on email. Useful, and all of it fundamentally a way of showing people what was already true about their own organisation. The second half stopped being about presenting information and started being about acting on it — Copilot agents taking over a helpdesk, a summer spent judging what seventy AI companies were actually capable of, a retrieval system that builds its own structure, and next a traineeship at Prosus. The Gulf years taught me what a business needs before it can be automated. That is the part most people building agents skip.",
 };
 
 export function rolesIn(chapter: string): Role[] {
@@ -177,7 +192,7 @@ export function rolesIn(chapter: string): Role[] {
 
 /** The current role, for anything that needs to say what I am doing right now. */
 export function currentRole(): Role | undefined {
-  return [...WORK].reverse().find((r) => r.span.endsWith("now") && r.kind !== "degree");
+  return [...WORK].reverse().find((r) => (r.status === "current" || r.span.endsWith("now")) && r.kind !== "degree");
 }
 
 /**

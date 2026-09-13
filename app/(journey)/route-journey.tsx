@@ -140,6 +140,9 @@ export default function RouteSpine() {
               <Link href="/work" className="lab-exit">
                 straight to what I do →
               </Link>
+              <Link href="/blog/day-1" className="lab-exit">
+                read There Has to Be a DAY 1 →
+              </Link>
             </div>
             {/* The road is walked in the order the map puts it, which is not the order the
                 calendar does — Kenya comes late here but came first with a camera. */}
@@ -276,6 +279,9 @@ export default function RouteSpine() {
               </Link>
               <Link href="/work" className="lab-exit">
                 what I do →
+              </Link>
+              <Link href="/blog/day-1" className="lab-exit">
+                my first blog →
               </Link>
             </div>
           </section>

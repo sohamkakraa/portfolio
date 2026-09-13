@@ -101,7 +101,7 @@ const CATEGORY_SEEDS: Omit<PhotographyCategory, "images">[] = [
 const basePortfolioData: Omit<PortfolioData, "photography"> = {
   site: {
     name: "Soham Kakra",
-    role: "AI Intern at Prosus · M.Sc. Data Science & AI at TU/e",
+    role: "Incoming trainee at Prosus · starts 1 October",
     location: "Eindhoven, NL",
     email: "sohamkakra@gmail.com",
     nav: [
@@ -109,6 +109,7 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
       { label: "Projects", href: "#projects" },
       { label: "Photography", href: "#photography" },
       { label: "Life", href: "#life" },
+      { label: "Blog", href: "/blog/day-1" },
       { label: "Contact", href: "#contact" },
     ],
     socials: [
@@ -123,7 +124,7 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
     titleLine1: "I build data and AI",
     titleLine2: "products that feel human.",
     subtitle:
-      "M.Sc. Data Science & AI at TU/e. I design and engineer end-to-end systems from model logic to production UX, with a strong focus on clarity and speed.",
+      "M.Sc. Data Science & AI graduate from TU/e. I design and engineer end-to-end systems from model logic to production UX, with a strong focus on clarity and speed.",
     ctaPrimary: {
       label: "View projects",
       href: "#projects",
@@ -143,7 +144,7 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
     dateLabel: "May 2026 / now reading",
     headline: ["Building data", "and AI products", "that {{em}}feel human{{/em}}."],
     masthead:
-      "Soham Kakra. M.Sc. Data Science & AI at TU/e. Engineer of end-to-end systems — model logic to production UX.",
+      "Soham Kakra. M.Sc. Data Science & AI graduate from TU/e. Engineer of end-to-end systems — model logic to production UX.",
     tableOfContents: [
       { num: "01", label: "About",         page: "p.02", href: "#about" },
       { num: "02", label: "Selected work", page: "p.04", href: "#projects" },
@@ -154,12 +155,12 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
   about: {
     title: "About me",
     subtitle: "Data Science and AI builder with a product-first systems mindset.",
-    portraitSrc: "/Me.jpg",
+    portraitSrc: "/Me.png",
     body:
-      "I am pursuing an M.Sc. in Data Science and AI at Eindhoven University of Technology (TU/e). Across internships and independent products, I have worked on AI/ML-driven systems, full-stack applications, and analytics workflows that improve real decision-making.",
+      "I completed an M.Sc. in Data Science and AI at Eindhoven University of Technology (TU/e) in 2026. Across internships and independent products, I have worked on AI/ML-driven systems, full-stack applications, and analytics workflows that improve real decision-making.",
     highlights: [
-      "Prosus, Amsterdam · AI Intern and master's thesis (2026–)",
-      "Eindhoven University of Technology (TU/e) · M.Sc. Data Science & AI (2024–)",
+      "Prosus, Amsterdam · AI internship and master's thesis (Apr–28 Aug 2026) · traineeship from Oct 2026",
+      "Eindhoven University of Technology (TU/e) · M.Sc. Data Science & AI (2024–2026)",
       "Etihad Credit Insurance, Dubai · Data Analyst & IT Support (2023–2024)",
       "Heriot-Watt University Dubai · B.Sc. Computer Science, AI (2020–2023)",
     ],
@@ -175,8 +176,8 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
     log: workLogEntries(),
     meta: [
       { label: "Based in",  value: "Eindhoven, NL" },
-      { label: "Studying",  value: "M.Sc. DS&AI · TU/e" },
-      { label: "Currently", value: "AI Intern · Prosus, Amsterdam" },
+      { label: "Degree",    value: "M.Sc. DS&AI · TU/e" },
+      { label: "Next",      value: "Prosus traineeship · 01 Oct" },
       { label: "Reach",     value: "sohamkakra@gmail.com" },
     ],
     portraitLabel: "// portrait",
@@ -385,7 +386,7 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
       {
         place: "Eindhoven, Netherlands",
         context: "Current base",
-        note: "Graduate work at TU/e and a strong student-builder ecosystem.",
+        note: "M.Sc. at TU/e and a strong builder ecosystem.",
       },
       {
         place: "Dubai, U.A.E.",
@@ -424,7 +425,7 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
   contact: {
     title: "Get in touch",
     description:
-      "I am finishing my master's thesis at Prosus and looking for what comes after it: engineering roles in AI, data systems, and full-stack product work.",
+      "I recently completed my M.Sc. in Data Science and AI at TU/e and start a traineeship with Prosus on 1 October 2026. I am always open to conversations about AI, data systems, and full-stack product work.",
     ctaLabel: "Email me",
     email: "sohamkakra@gmail.com",
     headline: ["Let's {{em}}build{{/em}}", "something {{em}}quietly bold{{/em}}."],
@@ -432,7 +433,7 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
   footer: {
     note: "Designed & built · soham kakra · 2026",
     versionNote: "v3.0 · last edit: today",
-    links: [{ label: "Admin", href: "/admin" }],
+    links: [],
   },
   equipment: {
     cameras: [

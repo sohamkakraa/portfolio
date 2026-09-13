@@ -35,8 +35,8 @@ export default function AboutSection({ about, site }: Props) {
       ? about.meta
       : [
           { label: "Based in", value: site.location },
-          { label: "Studying", value: "M.Sc. DS&AI · TU/e" },
-          { label: "Currently", value: "AI Intern · Prosus, Amsterdam" },
+          { label: "Degree", value: "M.Sc. DS&AI · TU/e" },
+          { label: "Next", value: "Prosus traineeship · 01 Oct" },
           { label: "Reach", value: site.email },
         ];
   const portraitLabel = about.portraitLabel ?? "// portrait";

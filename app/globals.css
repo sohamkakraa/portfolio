@@ -268,26 +268,21 @@
 
 .consent-yes {
   padding: 0.5rem 0.9rem;
-  background: var(--ink);
-  color: var(--bg);
-  border: 1px solid var(--ink);
-}
-.consent-yes:hover {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--bg);
+  background: transparent;
+  color: var(--ink-2);
+  border: 1px solid var(--line-2);
 }
 
 .consent-no {
-  padding: 0.5rem 0.4rem;
-  background: none;
-  border: none;
-  border-bottom: 1px solid var(--line-2);
-  color: var(--ink-3);
-}
-.consent-no:hover {
+  padding: 0.5rem 0.9rem;
+  background: transparent;
+  border: 1px solid var(--line-2);
   color: var(--ink-2);
-  border-bottom-color: var(--ink-3);
+}
+.consent-yes:hover,
+.consent-no:hover {
+  color: var(--ink);
+  border-color: var(--ink-2);
 }
 
 .consent-fine {
@@ -298,6 +293,7 @@
   line-height: 1.5;
   color: var(--ink-3);
 }
+.consent-fine a { text-decoration: underline; text-underline-offset: 3px; }
 
 @media (prefers-reduced-motion: reduce) {
   .consent {
