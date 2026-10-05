@@ -89,3 +89,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# raw blog photos/videos staged for processing (not committed)
+/blog-uploads/
+/trip-uploads/
