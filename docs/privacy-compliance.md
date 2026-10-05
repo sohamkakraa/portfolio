@@ -9,6 +9,9 @@ This is an operational checklist, not legal advice. Review it whenever analytics
 | Deliver and secure the site | IP address, IP-derived location, user agent, request and system data | Legitimate interests | Customer-visible runtime logs: 1 hour to 30 days depending on plan; Vercel's separate service-generated retention follows its published criteria | Vercel |
 | First-party audience and UX measurement | Random session ID, route and interaction events, coarse device details, referrer host, consented UTM labels, masked daily visitor hash | Consent | Detailed sessions: 45 days; daily aggregate counts: 24 months | Vercel, Upstash |
 | Remember the visitor's analytics choice | Consent state and timestamp in local storage | Necessary to respect the choice | 6 months | Browser only |
+| Guesses on open questions | Guess text, optional name, question id, time | Consent (sending the form) | Pending: 90 days. Approved: until removed | Site server, Upstash |
+| Trip signups | Email, wishlist place id, time | Consent (checkbox) | 24 months after the latest signup for that place, or on request | Site server, Upstash; never public |
+| Form abuse limits | One-way hash of IP + user agent with server secret, submission count | Legitimate interests | 1 hour | Upstash |
 | Admin authentication | Admin session cookie | Strictly necessary; legitimate interests | 30 days maximum | Browser, site server |
 
 ## Before production

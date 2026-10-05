@@ -463,7 +463,7 @@ function ArtifactGlyph({
           x="55"
           y="30"
           textAnchor="middle"
-          fontFamily="var(--font-fraunces), serif"
+          fontFamily="var(--font-bricolage), serif"
           fontSize="28"
           fill="white"
           opacity="0.9"

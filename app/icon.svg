@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <style>
+    .ink { stroke: #0f1a2b; }
+    .bg { fill: #eef0ec; }
+    @media (prefers-color-scheme: dark) { .ink { stroke: #eef0ec; } .bg { fill: #0f1a2b; } }
+  </style>
+  <rect class="bg" width="120" height="120" rx="24"/>
+  <g class="ink" fill="none" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M37.3 48.7A24 24 0 0 1 82.7 30.3"/>
+    <path d="M10 102 L42 66 L58 82 L80 56 L110 102"/>
+  </g>
+  <circle cx="60" cy="40" r="9" fill="#f2c14e"/>
+</svg>

@@ -55,6 +55,14 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // The road homepage and its walkthroughs were retired for the logbook.
+  async redirects() {
+    return [
+      { source: "/journeys", destination: "/logbook", permanent: true },
+      { source: "/journeys/:path*", destination: "/logbook", permanent: true },
+      { source: "/about", destination: "/work", permanent: false },
+    ];
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     // Admin uploads can return Vercel Blob URLs; next/image rejects unknown hosts with 400.
