@@ -358,3 +358,13 @@
   .bc-trail::after { transition: none; }
   .bc-stop-marker { transition: none; }
 }
+
+/* ── Projects ─────────────────────────────────────────────────────── */
+.bc-projects { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr)); gap: 14px; }
+.bc-project { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius-large); padding: clamp(20px, 2.6vw, 28px); display: grid; gap: 16px; align-content: start; min-width: 0; }
+.bc-project-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px; }
+.bc-project-title { font-size: clamp(1.4rem, 2.6vw, 1.8rem); font-weight: 700; letter-spacing: -0.012em; margin: 0; }
+.bc-project-rows { margin: 0; display: grid; gap: 12px; }
+.bc-project-rows > div { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 12px; }
+.bc-project-rows dt { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); padding-top: 3px; }
+.bc-project-rows dd { margin: 0; font-family: var(--font-read), Georgia, serif; color: var(--ink-2); line-height: 1.6; }

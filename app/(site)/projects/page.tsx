@@ -1,61 +1,85 @@
 import type { Metadata } from "next";
-import ProjectsHoverExpand from "@/components/ProjectsHoverExpand";
+import Link from "next/link";
 import { getPortfolioData } from "@/lib/portfolio-server";
+import { PROJECTS_COPY, PROJECT_COPY } from "@/lib/basecamp/copy";
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: "Things I built, and what each one was actually for.",
+  description: PROJECTS_COPY.intro,
+  alternates: { canonical: "/projects" },
 };
 
 /**
- * The heading counts the projects out loud, so it has to follow the data. It was once hardcoded to
- * "Six artifacts" over an array of five, which is the kind of miscount a reader checks by scrolling
- * and then stops trusting you about anything else.
+ * Plain cards, everything visible. Titles, links, status and stack come from the CMS; the Why /
+ * What / Now text is owned by lib/basecamp/copy.ts and falls back to the CMS summary.
  */
-function countWord(n: number): string {
-  const words = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
-  return words[n] ?? String(n);
-}
-
 export default async function ProjectsPage() {
-  const data = await getPortfolioData();
+  const { projects } = await getPortfolioData();
 
   return (
-    <section style={{ padding: "clamp(96px, 14vh, 160px) 0 120px" }}>
-      <div className="container">
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-end",
-            marginBottom: 56,
-            flexWrap: "wrap",
-            gap: 24,
-          }}
-        >
-          <div>
-            <div className="label">{"// projects"}</div>
-            <h1
-              className="serif"
-              style={{
-                marginTop: 12,
-                fontSize: "clamp(40px, 5.5vw, 72px)",
-                fontWeight: 300,
-                lineHeight: 1,
-                letterSpacing: "-0.03em",
-                color: "var(--ink)",
-              }}
-            >
-              {countWord(data.projects.items.length)} artifacts,{" "}
-              <em style={{ color: "var(--accent)", fontStyle: "italic" }}>each its own world</em>.
-            </h1>
-          </div>
-          <div className="mono" style={{ fontSize: 11, color: "var(--ink-3)", letterSpacing: "0.15em" }}>
-            hover to expand
-          </div>
-        </div>
-        <ProjectsHoverExpand items={data.projects.items} />
-      </div>
-    </section>
+    <div className="bc-wrap">
+      <header className="bc-page-head">
+        <Link href="/work" className="bc-back">
+          ← Work
+        </Link>
+        <h1 className="bc-h1">{PROJECTS_COPY.title}</h1>
+        <p className="bc-read bc-lede">{PROJECTS_COPY.intro}</p>
+      </header>
+
+      <ul className="bc-projects">
+        {projects.items.map((p) => {
+          const copy = PROJECT_COPY[p.id];
+          const rows = copy
+            ? ([
+                ["Why", copy.why],
+                ["What", copy.what],
+                ["Now", copy.now],
+              ] as const)
+            : ([["What", p.summary]] as const);
+          return (
+            <li key={p.id} id={p.id} className="bc-project">
+              <div className="bc-project-head">
+                <h2 className="bc-project-title">{p.title}</h2>
+                <span className="bc-muted">
+                  <span className="bc-dot">{p.year}</span>
+                  {p.status ? ` · ${p.status}` : ""}
+                </span>
+              </div>
+              <dl className="bc-project-rows">
+                {rows.map(([label, body]) => (
+                  <div key={label}>
+                    <dt>{label}</dt>
+                    <dd>{body}</dd>
+                  </div>
+                ))}
+              </dl>
+              {p.stack?.length ? (
+                <div className="bc-tags">
+                  {p.stack.map((s) => (
+                    <span key={s} className="bc-tag">
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+              {p.link || p.repo ? (
+                <div className="bc-hero-actions" style={{ marginTop: 0 }}>
+                  {p.link ? (
+                    <a href={p.link} className="bc-arrow" target="_blank" rel="noreferrer">
+                      Open it
+                    </a>
+                  ) : null}
+                  {p.repo ? (
+                    <a href={p.repo} className="bc-arrow" target="_blank" rel="noreferrer">
+                      Code
+                    </a>
+                  ) : null}
+                </div>
+              ) : null}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }
