@@ -174,7 +174,7 @@ export default function ContactFooter({ contact, footer, socials }: Props) {
               textUnderlineOffset: 4,
             }}
           >
-            anonymous analytics: {analyticsConsent === "unknown" ? "choose" : analyticsOn ? "on" : "off"}
+            analytics: {analyticsConsent === "unknown" ? "choose" : analyticsOn ? "on" : "off"}
           </button>
           <a href="/privacy" style={{ textDecoration: "underline", textUnderlineOffset: 4 }}>privacy</a>
           {footer.versionNote && <span>{footer.versionNote}</span>}

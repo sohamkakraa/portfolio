@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { setConsent, type ConsentState } from "@/lib/analytics/consent";
+import { gaConfigured } from "@/lib/analytics/ga";
 
 /**
  * The one banner on the site, so it is written like the rest of it rather than like a legal notice.
@@ -28,9 +29,9 @@ export default function ConsentNote({ state }: { state: ConsentState }) {
   return (
     <aside className="consent" role="region" aria-label="About being counted">
       <p className="consent-body">
-        May I use first-party analytics to see how you found this site and move through it? This
-        records page views, scroll progress, clicks, basic device details and campaign labels so I
-        can improve the writing, SEO and experience. No ads, marketing profiles or cross-site tracking.
+        {gaConfigured()
+          ? "May I use analytics to see how you found this site and move through it? This records page views, scroll progress, clicks, basic device details and campaign labels, and shares anonymous usage data with Google Analytics so I can improve the writing, SEO and experience. Google's advertising features are switched off. No ads, marketing profiles or cross-site tracking."
+          : "May I use first-party analytics to see how you found this site and move through it? This records page views, scroll progress, clicks, basic device details and campaign labels so I can improve the writing, SEO and experience. No ads, marketing profiles or cross-site tracking."}
       </p>
       <div className="consent-actions">
         <button type="button" className="consent-yes" onClick={() => setConsent("granted")}>
