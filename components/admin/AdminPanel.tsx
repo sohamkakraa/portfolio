@@ -919,6 +919,10 @@ export default function AdminPanel({ defaultData, initialAuthenticated = false }
               <Activity size={12} />
               <span className="hidden sm:inline">Insights</span>
             </Link>
+            <Link href="/admin/community" className="btn-secondary !py-2 !px-4 !text-[10px]">
+              <Activity size={12} />
+              <span className="hidden sm:inline">Community</span>
+            </Link>
             <button
               type="button"
               onClick={() => { void handleLogout(); }}

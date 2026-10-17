@@ -1,20 +1,16 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { Github, Linkedin, Mail, Instagram, Globe, ArrowUpRight } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import Link from "next/link";
 import type { ContactSection, FooterContent, SocialLink } from "@/lib/portfolio-types";
-import { renderEm } from "@/lib/render-em";
 import { getConsent, serverConsent, setConsent, subscribeConsent } from "@/lib/analytics/consent";
+import { QUOTES } from "@/lib/basecamp/lists";
+import StarTrailsMark from "@/components/StarTrailsMark";
 
-function iconFor(label: string, href: string): LucideIcon {
-  const k = `${label} ${href}`.toLowerCase();
-  if (k.includes("github")) return Github;
-  if (k.includes("linkedin")) return Linkedin;
-  if (k.includes("instagram")) return Instagram;
-  if (k.includes("mail") || k.includes("@") || k.startsWith("mailto")) return Mail;
-  return Globe;
-}
+/** Picked once per page load, so it stays put while you browse and changes on the next visit. */
+const VISIT_QUOTE = typeof window === "undefined" ? 0 : Math.floor(Math.random() * QUOTES.length);
+const visitQuote = () => VISIT_QUOTE;
+const noSubscribe = () => () => {};
 
 type Props = {
   contact: ContactSection;
@@ -22,164 +18,63 @@ type Props = {
   socials: SocialLink[];
 };
 
-const DEFAULT_HEADLINE: string[] = [
-  "Let's {{em}}build{{/em}}",
-  "something {{em}}quietly bold{{/em}}.",
-];
+/**
+ * The campfire at the bottom of every page: one quote per visit, how to reach me, and the
+ * analytics choice. The quote is picked after hydration so the server and client agree on the
+ * first render.
+ */
+export default function ContactFooter({ contact, socials }: Props) {
+  const consent = useSyncExternalStore(subscribeConsent, getConsent, serverConsent);
+  const analyticsOn = consent === "granted";
+  const qi = useSyncExternalStore(noSubscribe, visitQuote, () => 0);
 
-export default function ContactFooter({ contact, footer, socials }: Props) {
-  const analyticsConsent = useSyncExternalStore(subscribeConsent, getConsent, serverConsent);
-  const analyticsOn = analyticsConsent === "granted";
-  const allLinks = [...socials, ...(footer.links ?? []).filter((link) => link.href !== "/admin")];
-  const headline = contact.headline?.length ? contact.headline : DEFAULT_HEADLINE;
+  const quote = QUOTES[qi];
+  const links = socials.filter((l) => !l.href.startsWith("mailto:"));
+
   return (
-    <>
-      <section
-        id="contact"
-        style={{
-          padding: "120px 0",
-          borderTop: "1px solid var(--line)",
-          background: "var(--bg-2)",
-        }}
-      >
-        <div className="container">
-          <div className="label">{"// 05 · contact"}</div>
-          <h2
-            className="serif"
-            style={{
-              marginTop: 16,
-              fontSize: "clamp(48px, 9vw, 140px)",
-              fontWeight: 300,
-              lineHeight: 0.95,
-              letterSpacing: "-0.04em",
-              textWrap: "balance",
-              color: "var(--ink)",
-            }}
-          >
-            {headline.map((line, i) => (
-              <span key={i} style={{ display: "block" }}>
-                {renderEm(line)}
-              </span>
-            ))}
-          </h2>
-          <div
-            style={{
-              marginTop: 48,
-              display: "grid",
-              gridTemplateColumns: "1.4fr 1fr",
-              gap: 56,
-              alignItems: "end",
-            }}
-            className="contact-2col"
-          >
-            <p
-              style={{
-                fontSize: 17,
-                lineHeight: 1.55,
-                color: "var(--ink-2)",
-                maxWidth: 540,
-              }}
-            >
-              {contact.description}
-            </p>
-            <div>
-              <a
-                href={`mailto:${contact.email}`}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 12,
-                  padding: "16px 24px",
-                  borderRadius: 99,
-                  background: "var(--accent)",
-                  color: "var(--bg)",
-                  fontFamily: "var(--font-jetbrains), monospace",
-                  fontSize: 12,
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  textDecoration: "none",
-                }}
-              >
-                {contact.email} →
-              </a>
-              <div style={{ marginTop: 24, display: "flex", gap: 12, flexWrap: "wrap" }}>
-                {allLinks.map((l) => {
-                  const Icon = iconFor(l.label, l.href);
-                  return (
-                    <a
-                      key={`${l.label}-${l.href}`}
-                      href={l.href}
-                      target={l.href.startsWith("http") ? "_blank" : undefined}
-                      rel="noreferrer"
-                      className="mono contact-social"
-                      aria-label={l.label}
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 8,
-                        padding: "10px 14px",
-                        border: "1px solid var(--line-2)",
-                        borderRadius: 99,
-                        color: "var(--ink-2)",
-                        fontSize: 11,
-                        letterSpacing: "0.18em",
-                        textTransform: "uppercase",
-                        textDecoration: "none",
-                        transition: "color 0.18s, border-color 0.18s",
-                      }}
-                    >
-                      <Icon size={14} aria-hidden />
-                      <span>{l.label}</span>
-                      <ArrowUpRight size={12} aria-hidden style={{ opacity: 0.6 }} />
-                    </a>
-                  );
-                })}
-              </div>
-            </div>
+    <footer className="bc-footer">
+      <div className="bc-footer-inner">
+        <figure className="bc-quote">
+          <blockquote>{quote.text}</blockquote>
+          {quote.gloss ? <p className="bc-quote-gloss">{quote.gloss}</p> : null}
+          <figcaption>{quote.by}</figcaption>
+        </figure>
+
+        <div className="bc-footer-grid">
+          <div className="bc-footer-col">
+            <h2>Say hi</h2>
+            <p>Planning a trip, curious about something, or just want to talk? Write to me.</p>
+            <a className="bc-footer-email" href={`mailto:${contact.email}`}>
+              {contact.email}
+            </a>
+          </div>
+          <div className="bc-footer-col">
+            <h2>Elsewhere</h2>
+            <ul>
+              {links.map((l) => (
+                <li key={l.href}>
+                  <a href={l.href} target="_blank" rel="noreferrer">
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
-      </section>
-      <footer
-        style={{ padding: "40px 0", borderTop: "1px solid var(--line)" }}
-      >
-        <div
-          className="container mono"
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            fontSize: 10,
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            color: "var(--ink-3)",
-            flexWrap: "wrap",
-            gap: 16,
-          }}
-        >
-          <span>{footer.note || "Designed & built · soham kakra · 2026"}</span>
-          <button
-            type="button"
-            onClick={() => setConsent(analyticsOn ? "denied" : "granted")}
-            aria-pressed={analyticsOn}
-            style={{
-              border: 0,
-              padding: 0,
-              background: "transparent",
-              color: "inherit",
-              font: "inherit",
-              letterSpacing: "inherit",
-              textTransform: "inherit",
-              cursor: "pointer",
-              textDecoration: "underline",
-              textUnderlineOffset: 4,
-            }}
-          >
-            analytics: {analyticsConsent === "unknown" ? "choose" : analyticsOn ? "on" : "off"}
-          </button>
-          <a href="/privacy" style={{ textDecoration: "underline", textUnderlineOffset: 4 }}>privacy</a>
-          {footer.versionNote && <span>{footer.versionNote}</span>}
+
+        <div className="bc-footer-base">
+          <Link href="/" className="bc-footer-mark" aria-label="Basecamp">
+            <StarTrailsMark size={22} detail="small" />
+            <span>Soham Kakra · {new Date().getFullYear()}</span>
+          </Link>
+          <div className="bc-footer-fine">
+            <button type="button" onClick={() => setConsent(analyticsOn ? "denied" : "granted")} aria-pressed={analyticsOn}>
+              Analytics: {consent === "unknown" ? "not chosen" : analyticsOn ? "on" : "off"}
+            </button>
+            <Link href="/privacy">Privacy</Link>
+          </div>
         </div>
-      </footer>
-    </>
+      </div>
+    </footer>
   );
 }

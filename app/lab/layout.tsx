@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "../(journey)/journey.css";
+import "./journey.css";
 
 /**
  * What is left of the prototype sandbox: the geocoding review tool at /lab/locations, which exists
