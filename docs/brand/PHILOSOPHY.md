@@ -48,7 +48,7 @@ Things that are always true, on every page. ✍️ *Soham to edit, add or remove
 
 - Clutter (the Amazon problem), bold-for-the-sake-of-bold, or loud-luxury styling.
 - Autoplay anything without a clear choice. Track anyone without consent.
-- Publish AI-written content without Soham reading and approving it.
+- Publish machine-written content without Soham reading and approving it.
 - Draw borders around people. Countries are names of places, not walls.
 
 ---
@@ -71,9 +71,13 @@ It runs at two levels:
 - **The whole site** uses the master angle above. Changed rarely, on purpose.
 - **Each chapter** (a trip, a project, a season) gets its own card: see [`CHAPTER_TEMPLATE.md`](./CHAPTER_TEMPLATE.md).
 
-### On AI
+### On automated proposals
 
-AI pulls everything toward the average. Here it may **gather and propose** (steps 1, 2 and 5), never **choose the angle or refine** (steps 3 and 6). Every proposal is reviewed live by Soham before it is published.
+Generated text pulls everything toward the average. Automation may **gather and propose** (steps 1, 2 and 5), never **choose the angle or refine** (steps 3 and 6). Every proposal is reviewed live by Soham before it is published.
+
+### Words we avoid
+
+- **"AI"** in site copy. It is a fashion word and says nothing about the actual work. Describe what was built, for whom, and what it changed.
 
 ---
 
@@ -98,7 +102,7 @@ The site follows one star from birth to the cosmic web. The star is Soham's jour
 | Stage | What it is | On the site |
 |---|---|---|
 | Nursery | Pillars of gas and dust, like the Pillars of Creation | The opening: tagline and intro |
-| Ignition | Gravity wins, fusion starts at ~10 million K | Where it began |
+| Ignition | A push (a nearby supernova's shockwave, or two clouds colliding) squeezes one pocket past its tipping point (the Jeans mass). It collapses, heats up, and fusion starts at ~10 million K | Where it began, and what pushed it |
 | Main sequence | A hot blue-white star with planets, moons and meteors | Memories: places are planets, photos are moons, small moments are meteors |
 | Red supergiant | The star swells and cools; inner orbits are swallowed | Now: current work and what is growing |
 | Supernova | Each journey ends in light and scatters what it made | Finished chapters |
