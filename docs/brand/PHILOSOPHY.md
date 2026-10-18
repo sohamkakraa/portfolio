@@ -91,6 +91,21 @@ The minimum the site needs. If everything else failed, this would still tell the
 | Join / Write | Contact and upcoming trips | An open door |
 | Record player | Music on every page | Always in orbit |
 
+## The story: a star's life
+
+The site follows one star from birth to the cosmic web. The star is Soham's journey.
+
+| Stage | What it is | On the site |
+|---|---|---|
+| Nursery | Pillars of gas and dust, like the Pillars of Creation | The opening: tagline and intro |
+| Ignition | Gravity wins, fusion starts at ~10 million K | Where it began |
+| Main sequence | A hot blue-white star with planets, moons and meteors | Memories: places are planets, photos are moons, small moments are meteors |
+| Red supergiant | The star swells and cools; inner orbits are swallowed | Now: current work and what is growing |
+| Supernova | Each journey ends in light and scatters what it made | Finished chapters |
+| Cosmic web | Endings become knots in the web | The archive, oneness with everything, and the open door |
+
+Comets cross the screen between stages, each carrying a learning back as a refresher.
+
 ## The cosmic map
 
 | Content | Object | Why |
