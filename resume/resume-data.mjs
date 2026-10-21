@@ -16,11 +16,22 @@ const chuck =
   "Own Chuck, a three-person Slack-based 3D design-and-printing project; shipped the first end-to-end demo in 3–4 weeks and generated 15+ successfully printed items from text, images, and uploaded models using 3D AI Studio and agentic CAD.";
 
 const roles = {
+  talentLab: {
+    organization: "Prosus",
+    title: "Talent Lab Resident",
+    location: "Amsterdam, Netherlands",
+    dates: "Oct 2026 – Present",
+    bullets: [
+      "Research the landscape of multi-agent systems ahead of placement in the ventures team, mapping current setups and where they can be improved.",
+      "Focus on agentic architectures, agent harnesses, and self-evolving agents: how to keep agents safe without spoiling the user experience, and how they can learn from their own mistakes.",
+      "Turn findings into prototypes that show each idea working on real data, in a team that mixes applied AI and R&D.",
+    ],
+  },
   prosus: {
     organization: "Prosus",
-    title: "AI Intern — Master's Thesis",
+    title: "AI Intern, Master's Thesis",
     location: "Amsterdam, Netherlands",
-    dates: "Apr 2026 – Present",
+    dates: "Apr 2026 – Sep 2026",
     bullets: [...prosusResearch, chuck],
   },
   idc: {
@@ -60,7 +71,7 @@ const roles = {
   apptmyz: {
     organization: "Apptmyz LLC",
     title: "Software Developer Intern",
-    location: "Hyderabad, India — Remote",
+    location: "Hyderabad, India (Remote)",
     dates: "Jun 2021 – Sep 2021",
     bullets: [
       "Developed and maintained AngularJS features for an employee-management system.",
@@ -73,9 +84,9 @@ const education = [
     organization: "Eindhoven University of Technology (TU/e)",
     title: "M.Sc. Data Science & Artificial Intelligence",
     location: "Eindhoven, Netherlands",
-    dates: "Sep 2024 – Sep 2026 (expected)",
+    dates: "Sep 2024 – Sep 2026",
     detail:
-      "Master's thesis at Prosus: adaptive retrieval and on-demand structure for complex enterprise queries.",
+      "Thesis at Prosus: adaptive retrieval and on-demand structure for complex enterprise queries.",
   },
   {
     organization: "Heriot-Watt University",
@@ -116,50 +127,12 @@ export const variants = {
     slug: "master",
     publicFilename: "soham-kakra-resume.pdf",
     privateFilename: "soham-kakra-resume-private.pdf",
-    headline: "AI Product Builder · RAG, Agents & Full-Stack Prototyping",
+    headline: "Researcher · Agentic Systems, Harnesses & Self-Improving Agents",
     summary:
-      "AI product builder completing an M.Sc. in Data Science & AI at TU/e. Turns ambiguous ideas into working systems across retrieval, agents, and full-stack products; uses AI coding tools to prototype quickly and evaluates outputs with targeted evals, experiments, and model comparisons.",
-    signal: ["BUILD", "EVALUATE", "SHIP"],
-    experience: [roles.prosus, roles.amana, roles.idc, roles.eci],
+      "I study how multi-agent systems are designed: what holds them together, and what pulls them apart. Today agents tend to be either safe or useful, rarely both; I explore how to get both, and how agents could learn from their own mistakes. M.Sc. in Data Science & AI from TU/e; I test ideas by building prototypes on real data.",
+    signal: ["RESEARCH", "PROTOTYPE", "EVALUATE"],
+    experience: [roles.talentLab, roles.prosus, roles.amana, roles.idc, roles.eci],
     additionalExperience: [roles.firstGroup, roles.apptmyz],
-    projects: [sage],
-    education,
-    skills,
-  },
-  "prosus-ai-engineer": {
-    slug: "prosus-ai-engineer",
-    privateFilename: "soham-kakra-prosus-ai-engineer.pdf",
-    headline: "AI Engineer · Zero-to-One Product Builder",
-    summary:
-      "Early-career AI builder who moves from an ambiguous concept to a working demo, then tests what deserves another iteration. Combines Python and LLM systems with Next.js product delivery, using Cursor, Claude Code, and Codex as part of a fast, evaluation-led build loop.",
-    signal: ["PROTOTYPE", "TEST", "ITERATE"],
-    experience: [
-      {
-        ...roles.prosus,
-        bullets: [chuck, ...prosusResearch],
-      },
-      roles.idc,
-      roles.eci,
-    ],
-    projects: [sage],
-    education,
-    skills,
-  },
-  "prosus-talent-lab-builder": {
-    slug: "prosus-talent-lab-builder",
-    privateFilename: "soham-kakra-prosus-talent-lab-builder.pdf",
-    headline: "AI Product Builder · Research, Prototyping & Product Judgment",
-    summary:
-      "Builder first: takes AI products from a loose brief to a demonstrable system, while bringing research discipline and commercial judgment to what gets built next. Finishing an M.Sc. thesis at Prosus and available full-time from October 2026.",
-    signal: ["BUILDER", "RESEARCH DEPTH", "PRODUCT JUDGMENT"],
-    experience: [
-      {
-        ...roles.prosus,
-        bullets: [chuck, ...prosusResearch],
-      },
-      roles.amana,
-      roles.idc,
-    ],
     projects: [sage],
     education,
     skills,
