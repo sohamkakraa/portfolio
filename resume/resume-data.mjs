@@ -13,7 +13,7 @@ const prosusResearch = [
 ];
 
 const chuck =
-  "Own Chuck, a three-person Slack-based 3D design-and-printing project; shipped the first end-to-end demo in 3–4 weeks and generated 15+ successfully printed items from text, images, and uploaded models using 3D AI Studio and agentic CAD.";
+  "Own Chuck, a three-person Slack-based 3D design-and-printing project. Shipped the first end-to-end demo in 3–4 weeks and generated 15+ successfully printed items from text, images, and uploaded models using 3D AI Studio and agentic CAD.";
 
 const roles = {
   talentLab: {
@@ -22,8 +22,8 @@ const roles = {
     location: "Amsterdam, Netherlands",
     dates: "Oct 2026 – Present",
     bullets: [
-      "Research the landscape of multi-agent systems ahead of placement in the ventures team, mapping current setups and where they can be improved.",
-      "Focus on agentic architectures, agent harnesses, and self-evolving agents: how to keep agents safe without spoiling the user experience, and how they can learn from their own mistakes.",
+      "Research the landscape of multi-agent systems, mapping current setups and where they can be improved.",
+      "Focus on agentic architectures, agent harnesses, and self-evolving agents, including how to keep agents safe without spoiling the user experience, and how they can learn from their own mistakes.",
       "Turn findings into prototypes that show each idea working on real data, in a team that mixes applied AI and R&D.",
     ],
   },
@@ -37,14 +37,16 @@ const roles = {
   idc: {
     organization: "IDC ABA Employment Services",
     title: "Data & AI Intern",
+    location: "Dubai, United Arab Emirates",
     dates: "Jul 2025 – Aug 2025",
     bullets: [
-      "Built Microsoft Copilot agents for internal IT helpdesk and insurance risk-analysis workflows; also contributed to the company website redesign.",
+      "Built Microsoft Copilot agents for internal IT helpdesk and insurance risk-analysis workflows, and contributed to the company website redesign.",
     ],
   },
   amana: {
     organization: "Amana Global Partners",
-    title: "Research Intern",
+    title: "Researcher",
+    location: "Dubai, United Arab Emirates",
     dates: "Aug 2025",
     bullets: [
       "Scouted and assessed early-stage AI companies across defence, automotive, aerospace, and adjacent sectors using investment-analysis frameworks.",
@@ -56,7 +58,7 @@ const roles = {
     location: "Dubai, United Arab Emirates",
     dates: "Aug 2023 – Aug 2024",
     bullets: [
-      "Designed Power BI dashboards for finance, risk, and HR reporting; automated multi-step data pipelines and built a SharePoint intranet for cross-team communication.",
+      "Designed Power BI dashboards for finance, risk, and HR reporting. Automated multi-step data pipelines and built a SharePoint intranet for cross-team communication.",
     ],
   },
   firstGroup: {
@@ -86,7 +88,7 @@ const education = [
     location: "Eindhoven, Netherlands",
     dates: "Sep 2024 – Sep 2026",
     detail:
-      "Thesis at Prosus: adaptive retrieval and on-demand structure for complex enterprise queries.",
+      "Thesis at Prosus on adaptive retrieval and on-demand structure for complex enterprise queries.",
   },
   {
     organization: "Heriot-Watt University",
@@ -129,7 +131,7 @@ export const variants = {
     privateFilename: "soham-kakra-resume-private.pdf",
     headline: "Researcher · Agentic Systems, Harnesses & Self-Improving Agents",
     summary:
-      "I study how multi-agent systems are designed: what holds them together, and what pulls them apart. Today agents tend to be either safe or useful, rarely both; I explore how to get both, and how agents could learn from their own mistakes. M.Sc. in Data Science & AI from TU/e; I test ideas by building prototypes on real data.",
+      "I study how multi-agent systems are designed, what holds them together and what pulls them apart. Today agents tend to be either safe or useful, rarely both. I explore how to get both, and how agents could learn from their own mistakes. M.Sc. in Data Science & AI from TU/e. I test ideas by building prototypes on real data.",
     signal: ["RESEARCH", "PROTOTYPE", "EVALUATE"],
     experience: [roles.talentLab, roles.prosus, roles.amana, roles.idc, roles.eci],
     additionalExperience: [roles.firstGroup, roles.apptmyz],

@@ -171,7 +171,7 @@ h2::after {
 .education-degree::before {
   margin-right: 1.25mm;
   color: var(--rule);
-  content: "—";
+  content: "·";
 }
 
 .entry-meta {
@@ -224,7 +224,7 @@ li::marker {
 
 .compact-entry h3::after {
   color: var(--rule);
-  content: " — ";
+  content: " · ";
 }
 
 .compact-entry p {
@@ -291,7 +291,7 @@ li::marker {
 .education-degree::before {
   margin-right: 1.25mm;
   color: var(--rule);
-  content: "—";
+  content: "·";
 }
 
 .education-entry .entry-meta {

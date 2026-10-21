@@ -92,7 +92,7 @@ export function renderResume({ variant, stylesheet, phone = "" }) {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>${escapeHtml(profile.name)} — Resume</title>
+    <title>${escapeHtml(profile.name)} · Resume</title>
     <style>${stylesheet}</style>
   </head>
   <body>
