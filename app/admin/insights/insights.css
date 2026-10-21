@@ -9,7 +9,7 @@
   background: var(--bg);
   color: var(--ink);
   padding: clamp(28px, 5vh, 64px) clamp(20px, 4vw, 56px) 120px;
-  font-family: var(--font-inter), system-ui, sans-serif;
+  font-family: var(--font-bricolage), system-ui, sans-serif;
 }
 
 .ins-head {
@@ -23,7 +23,7 @@
 }
 
 .ins-title {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-bricolage), Georgia, serif;
   font-weight: 300;
   font-size: clamp(1.75rem, 3.4vw, 2.75rem);
   line-height: 1.1;
@@ -85,7 +85,7 @@
   padding: 1.25rem 1.25rem 1.125rem;
 }
 .ins-figure-value {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-bricolage), Georgia, serif;
   font-size: clamp(1.75rem, 3vw, 2.5rem);
   font-weight: 300;
   line-height: 1;
@@ -118,7 +118,7 @@
   margin-bottom: 1.25rem;
 }
 .ins-h2 {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-bricolage), Georgia, serif;
   font-weight: 400;
   font-size: 1.25rem;
   margin: 0;
@@ -196,7 +196,7 @@
   stroke-width: 1;
 }
 .ins-road-name {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-bricolage), Georgia, serif;
   font-size: 12px;
   fill: var(--ink);
 }
@@ -273,7 +273,7 @@
   color: var(--ink-3);
 }
 .ins-vital-value {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-bricolage), Georgia, serif;
   font-size: 1.5rem;
   font-weight: 300;
   margin-top: 0.25rem;

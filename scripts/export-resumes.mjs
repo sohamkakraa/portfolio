@@ -16,7 +16,10 @@ await Promise.all([
   fs.mkdir(privateDirectory, { recursive: true }),
 ]);
 
-const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({
+  headless: true,
+  executablePath: process.env.CHROMIUM_PATH || undefined,
+});
 
 async function exportPdf(variant, outputPath, contactPhone = "") {
   const page = await browser.newPage({
