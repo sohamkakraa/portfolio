@@ -5,6 +5,18 @@
 The first page of the brand book. Everything on sohamkakra.com is checked against this page before it goes live. If something does not fit, it does not ship, however much we like it.
 
 Status: **draft**. Sections marked ✍️ are waiting for Soham's own words.
+Last reviewed: **21 Oct 2026**. Next review: **Oct 2027** (see [Keeping the book alive](#keeping-the-book-alive)).
+
+The rest of the book: [`VOICE.md`](./VOICE.md) (how we write), [`VISUAL.md`](./VISUAL.md) (how it looks), [`CHAPTER_TEMPLATE.md`](./CHAPTER_TEMPLATE.md) (one card per chapter).
+
+## How strict is each rule
+
+Brand books fail by being too rigid or too vague. So every rule carries one of two labels.
+
+- **Fixed:** true everywhere, every time. Changing it means changing this page first, on purpose.
+- **Flexible:** the default. A chapter may bend it when the chapter's angle asks for it, and says so on its card.
+
+Roughly 80% of any screen should follow the shared system, and about 20% can belong to the chapter. That 20% is where the "one loud thing" lives.
 
 ---
 
@@ -38,13 +50,49 @@ Every page, chapter and interaction should show at least one of these tensions. 
 
 Things that are always true, on every page. ✍️ *Soham to edit, add or remove.*
 
-1. **Vast and small on every screen.** Something cosmic and something tiny and human.
-2. **Every page teaches one thing.**
-3. **One loud thing per screen.** Everything else is quiet night and soft light.
-4. **Made, not borrowed.** Our own photographs and our own physics-based illustrations. No stock imagery.
-5. **Every story ends with an open door.** Write to Soham, or join the next trip.
+| # | Absolute | Label |
+|---|---|---|
+| 1 | **Vast and small on every screen.** Something cosmic and something tiny and human. | Flexible |
+| 2 | **Every page teaches one thing.** | Fixed |
+| 3 | **One loud thing per screen.** Everything else is quiet night and soft light. | Fixed |
+| 4 | **Made, not borrowed.** Our own photographs and our own physics-based illustrations. No stock imagery. | Fixed |
+| 5 | **Every story ends with an open door.** Write to Soham, or join the next trip. | Fixed |
+| 6 | **Plain words to find things, cosmic words to feel things.** See [Finding your way](#finding-your-way). | Fixed |
+| 7 | **Open to everyone.** See [Open to everyone](#open-to-everyone). | Fixed |
+
+## Finding your way
+
+Familiar beats clever. The cosmos lives in the visuals and the story, never in the signposts.
+
+- Menus, buttons, links and page titles use the plain word a visitor would search for: "Journeys", "Research", "Write to me". Never "Clusters", "Nebulae" or "Transmit".
+- A cosmic name may appear *beside* a plain one, as a subtitle or a visual, but never replaces it.
+- If a visitor needs to have read this book to understand a label, the label is wrong.
+
+## Open to everyone
+
+The site is heavy on night colours and motion, so these are fixed, not nice-to-have. Exact values are in [`VISUAL.md`](./VISUAL.md#contrast).
+
+- **Contrast:** body text meets at least 4.5:1 against its background. Large text, icons and focus rings meet at least 3:1. Both themes are checked, not only the dark one.
+- **Reduced motion:** when a visitor's system asks for less motion, every animation has a still version. The sky stops moving, comets appear without travelling, and scroll scenes become plain sections. Nothing is lost, only the movement.
+- **Alt text:** every photo describes what is in it, in a plain sentence. Decorative graphics are hidden from screen readers.
+- **Sound:** nothing makes a sound until the visitor presses play. The record player waits.
+- **Keyboard:** everything that can be clicked can be reached with the keyboard, with a visible focus ring.
+- **Consent:** no tracking until the visitor says yes, and "no" is as easy to press as "yes".
+
+## What holds the site together
+
+Each chapter takes its palette from its own photos, so the colours will keep changing. That is on purpose. What stays the same, and must stay the same, is:
+
+1. **The voice.** One person talking, warm and curious ([`VOICE.md`](./VOICE.md)).
+2. **The type.** The same four fonts in the same roles ([`VISUAL.md`](./VISUAL.md#type)).
+3. **The layout.** The same margins, spacing and reading width.
+4. **The mark.** Star trails over a ridge, with the yellow pole star.
+
+Do not try to make every chapter look alike. Make every chapter *sound* alike.
 
 ## Things we never do
+
+All fixed.
 
 - Clutter (the Amazon problem), bold-for-the-sake-of-bold, or loud-luxury styling.
 - Autoplay anything without a clear choice. Track anyone without consent.
@@ -79,21 +127,25 @@ Generated text pulls everything toward the average. Automation may **gather and 
 
 - **"AI"** in site copy. It is a fashion word and says nothing about the actual work. Describe what was built, for whom, and what it changed.
 
+The full word list lives in [`VOICE.md`](./VOICE.md#words).
+
 ---
 
 ## The skeleton
 
 The minimum the site needs. If everything else failed, this would still tell the story.
 
-| Page | Its job | Cosmic form |
-|---|---|---|
-| Home | Tagline, the sky, what is happening now | The night sky |
-| Chapters | Trips and phases of life | Stars and clusters |
-| Library | Learnings that return as refreshers | Comets |
-| Work | Projects | Nebulae that become stars |
-| About | Who Soham is, oneness with everything | Cosmic web |
-| Join / Write | Contact and upcoming trips | An open door |
-| Record player | Music on every page | Always in orbit |
+The menu label is what visitors see. The cosmic form is how the page looks and feels, never what it is called.
+
+| Page | Menu label | Its job | Cosmic form |
+|---|---|---|---|
+| Home | (the mark) | Tagline, the sky, what is happening now | The night sky |
+| Chapters | Journeys | Trips and phases of life | Stars and clusters |
+| Library | Library | Learnings that return as refreshers | Comets |
+| Work | Research | Projects and what is being studied | Nebulae that become stars |
+| About | About | Who Soham is, oneness with everything | Cosmic web |
+| Join / Write | Come along | Contact and upcoming trips | An open door |
+| Record player | (a play button) | Music on every page | Always in orbit |
 
 ## The story: a star's life
 
@@ -104,7 +156,7 @@ The site follows one star from birth to the cosmic web. The star is Soham's jour
 | Nursery | Pillars of gas and dust, like the Pillars of Creation | The opening: tagline and intro |
 | Ignition | A push (a nearby supernova's shockwave, or two clouds colliding) squeezes one pocket past its tipping point (the Jeans mass). It collapses, heats up, and fusion starts at ~10 million K | Where it began, and what pushed it |
 | Main sequence | A hot blue-white star with planets, moons and meteors | Memories: places are planets, photos are moons, small moments are meteors |
-| Red supergiant | The star swells and cools; inner orbits are swallowed | Now: current work and what is growing |
+| Red supergiant | The star swells and cools, and inner orbits are swallowed | Now: current work and what is growing |
 | Supernova | Each journey ends in light and scatters what it made | Finished chapters |
 | Cosmic web | Endings become knots in the web | The archive, oneness with everything, and the open door |
 
@@ -114,7 +166,7 @@ Comets cross the screen between stages, each carrying a learning back as a refre
 
 | Content | Object | Why |
 |---|---|---|
-| A trip | Star | Colour from the trip's own photos; colour also tells a star's temperature. |
+| A trip | Star | Colour from the trip's own photos. Colour also tells a star's temperature. |
 | Trips together | Star cluster | Stars in an open cluster are born from one cloud. |
 | A project in progress | Nebula | Where stars form. Shipping it collapses the gas into a star. |
 | An ending or a big change | Supernova | A dying star seeds new ones. Endings feed beginnings. |
@@ -133,7 +185,9 @@ Comets cross the screen between stages, each carrying a learning back as a refre
 
 ## Voice
 
-Warm, curious, a little funny, never preachy. English throughout. Hindi only for quotes, words and phrases that are Hindi, always with an English translation beside them. Places are named plainly ("Hampi, India"); coordinates live in the X-ray layer.
+Warm, curious, a little funny, never preachy. English throughout. Hindi only for quotes, words and phrases that are Hindi, always with an English translation beside them. Places are named plainly ("Hampi, India"). Coordinates live in the X-ray layer.
+
+Humour is welcome, but clarity comes first. How the voice adjusts from page to page is in [`VOICE.md`](./VOICE.md).
 
 ## Touchstones
 
@@ -146,3 +200,21 @@ Warm, curious, a little funny, never preachy. English throughout. Hindi only for
 **Places:** Himalayan summer sunrise · Monsoon in Dubai · Hampi sunsets · Alps in spring · Amsterdam autumn trees
 
 **Music:** Twenty One Pilots · Prateek Kuhad · JUSTH · Arijit Singh · Mohit Chauhan · Shankar-Ehsaan-Loy · Hans Zimmer · Ramin Djawadi
+
+---
+
+## Keeping the book alive
+
+A brand book that nobody updates stops being followed. So:
+
+- **Review once a year**, in October. Re-read every page against the live site and the last year's chapters. Update the "Last reviewed" date at the top even if nothing changes.
+- **Change a fixed rule only on purpose.** Write down why in the change log.
+- **Log every change** below, newest first, in one line.
+
+### Change log
+
+| Date | Change |
+|---|---|
+| 21 Oct 2026 | Added fixed and flexible labels, plain-words navigation, accessibility rules, "what holds the site together", menu labels in the skeleton, and this review routine. Added `VOICE.md` and `VISUAL.md`. |
+| Oct 2026 | Ignition explained. "On AI" replaced by "On automated proposals" and "Words we avoid". |
+| Oct 2026 | First draft: philosophy, method, star story, cosmic map, voice and touchstones. |
