@@ -153,14 +153,24 @@ Star trails circling the pole star, above a mountain ridge. Wandering and stilln
 
 Most of the photos are taken at night. Of the 139 on the site, 67 are dark. That is where the midnight palette comes from, and the reason it suits the work.
 
-### The look ✍️
+### The look
 
-A look must be specific enough that someone else could repeat it. "Moody" is not specific. To fill in:
+Chosen on 31 Oct 2026 by comparing the same photos graded different ways.
 
-- **Editing preset:** name and where it is saved. ✍️
+**No preset. Each photo is edited on its own** (flexible). The scenes are too different (Milky Way, savannah, canal at night) for one preset to suit them all. What keeps them together is the three rules below, not a filter.
+
+| Question | Choice | What it means in practice | Label |
+|---|---|---|---|
+| White balance at night | **Cool sky, warm lights** | Night skies lean cool, around 3,400K. Real light keeps its warmth: headlamps, fires, windows, street lamps. Nudge orange and red saturation up a little (about +20) if cooling has dulled them. | Flexible |
+| Shadows | **Deep, with detail** | Very dark, but rock, snow and trees are still there if you look. Pull blacks down a touch (about −10) and lift shadows (about +15). No pure black areas that melt into the page background. | Flexible |
+| Honesty | **Never add fake stars** | No added or painted stars, no sky replacement, nothing in the frame that was not there. Stacking and noise reduction of real exposures are fine. | Fixed |
+
+The numbers are a starting point in Lightroom terms, not a recipe. Trust the photo.
+
+**Still to fill in:**
+
+- **Preset:** none yet. If one appears later, write its name and where it is saved here. ✍️
 - **Three reference photos** that show the look at its best. ✍️
-- **White balance:** cool night skies, warm only where there is real light (fires, windows, headlamps)? ✍️
-- **Shadows:** how dark is too dark? ✍️
 
 ### Rules (flexible unless marked)
 
@@ -185,3 +195,5 @@ A look must be specific enough that someone else could repeat it. "Moody" is not
 | The sky stands still when reduced motion is on | Animations that ignore the setting |
 | Dark text on the yellow button | White text on the yellow button |
 | Our own photo of the Alps | A stock photo of "mountains" |
+| A night sky as it was, stars and all | Extra stars painted in, or a swapped sky |
+| Dark shadows you can still see into | Black holes where the mountain used to be |

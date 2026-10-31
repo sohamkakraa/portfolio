@@ -55,7 +55,7 @@ Things that are always true, on every page. ✍️ *Soham to edit, add or remove
 | 1 | **Vast and small on every screen.** Something cosmic and something tiny and human. | Flexible |
 | 2 | **Every page teaches one thing.** | Fixed |
 | 3 | **One loud thing per screen.** Everything else is quiet night and soft light. | Fixed |
-| 4 | **Made, not borrowed.** Our own photographs and our own physics-based illustrations. No stock imagery. | Fixed |
+| 4 | **Made, not borrowed.** Our own photographs and our own physics-based illustrations. No stock imagery, and no fake stars. | Fixed |
 | 5 | **Every story ends with an open door.** Write to Soham, or join the next trip. | Fixed |
 | 6 | **Plain words to find things, cosmic words to feel things.** See [Finding your way](#finding-your-way). | Fixed |
 | 7 | **Open to everyone.** See [Open to everyone](#open-to-everyone). | Fixed |
@@ -215,6 +215,7 @@ A brand book that nobody updates stops being followed. So:
 
 | Date | Change |
 |---|---|
+| 31 Oct 2026 | Photography look chosen: no preset, cool sky with warm lights, deep shadows with detail, and "never add fake stars" as a fixed rule. |
 | 31 Oct 2026 | Added `COMPONENTS.md` (layout, menu, buttons, focus, forms, tags, cards, photos, figures, empty states, consent, footer). Darkened three snow-mode colours so every text colour passes 4.5:1 on every surface. `VISUAL.md` now matches the live type, reading width and margins. |
 | 21 Oct 2026 | Added fixed and flexible labels, plain-words navigation, accessibility rules, "what holds the site together", menu labels in the skeleton, and this review routine. Added `VOICE.md` and `VISUAL.md`. |
 | Oct 2026 | Ignition explained. "On AI" replaced by "On automated proposals" and "Words we avoid". |
