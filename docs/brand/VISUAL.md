@@ -2,7 +2,7 @@
 
 How sohamkakra.com looks. The values here are the ones the site already uses in [`app/globals.css`](../../app/globals.css). If the two ever disagree, fix one of them the same day.
 
-Status: **draft**. Last reviewed: **21 Oct 2026**. Sections marked ✍️ are waiting for Soham's own choices.
+Status: **draft**. Last reviewed: **31 Oct 2026**. Sections marked ✍️ are waiting for Soham's own choices.
 
 The idea in one line: **a summit at night.** Midnight sky, snow, and one warm headlamp.
 
@@ -21,11 +21,12 @@ The site follows the visitor's system setting. Dark is "night", light is "snow".
 | Higher surface | `--bg-3` | `#1c2e48` | `#d8dcd5` | Popovers, hover |
 | Main text | `--ink` | `#eef0ec` | `#121314` | Headings, body |
 | Second text | `--ink-2` | `#c3c8cf` | `#3c4148` | Reading text, notes |
-| Quiet text | `--ink-3` | `#8f99a8` | `#5c636d` | Labels, captions |
-| The headlamp | `--accent` | `#f2c14e` | `#8a6100` | The one loud thing: links, the pole star, "now" |
+| Quiet text | `--ink-3` | `#8f99a8` | `#565d66` | Labels, captions |
+| The headlamp | `--accent` | `#f2c14e` | `#7f5900` | The one loud thing: links, the pole star, "now" |
 | Headlamp fill | `--accent-fill` | `#f2c14e` | `#f2c14e` | Filled buttons and dots |
-| Water | `--glacier` | `#4cc3bb` | `#1a7f7a` | Tags for water, lakes, sea |
+| Water | `--glacier` | `#4cc3bb` | `#13665f` | Tags for water, lakes, sea |
 | Trails | `--pine` | `#3f9a72` | `#0b4a33` | Tags for hikes and forests |
+| Error | (none) | `#e8765a` | `#a33a1f` | Error messages only |
 
 **Why yellow turns amber in snow mode:** yellow text vanishes on a pale background, so text accents darken to amber. Filled shapes stay yellow.
 
@@ -36,20 +37,25 @@ The site follows the visitor's system setting. Dark is "night", light is "snow".
 
 ### Contrast
 
-Measured against `--bg` unless noted. The target is 4.5:1 for normal text and 3:1 for large text and icons ([Open to everyone](./PHILOSOPHY.md#open-to-everyone)).
+Measured on every surface a colour can sit on: the page (`--bg`), cards (`--bg-2`) and popovers (`--bg-3`). The target is 4.5:1 for normal text and 3:1 for large text and icons ([Open to everyone](./PHILOSOPHY.md#open-to-everyone)).
 
-| Pair | Night | Snow |
+| Text | Night: page / card / popover | Snow: page / card / popover |
 |---|---|---|
-| Main text | 15.2 ✅ | 16.2 ✅ |
-| Second text | 10.4 ✅ | 9.0 ✅ |
-| Quiet text | 6.1 ✅ | 5.3 ✅ |
-| Quiet text on `--bg-3` | 4.8 ✅ | **4.4** ⚠️ |
-| Accent | 10.4 ✅ | 4.8 ✅ |
-| Glacier | 8.2 ✅ | **4.2** ⚠️ |
-| Pine | 5.1 ✅ | 9.0 ✅ |
+| Main text | 15.2 / 13.6 / 12.0 ✅ | 16.2 / 14.8 / 13.4 ✅ |
+| Second text | 10.4 / 9.3 / 8.2 ✅ | 9.0 / 8.2 / 7.4 ✅ |
+| Quiet text | 6.1 / 5.4 / 4.8 ✅ | 5.8 / 5.3 / 4.8 ✅ |
+| Accent | 10.4 / 9.3 / 8.2 ✅ | 5.5 / 5.0 / 4.5 ✅ |
+| Glacier | 8.2 / 7.3 / 6.4 ✅ | 5.9 / 5.4 / 4.9 ✅ |
+| Pine | 5.1 / 4.5 / **4.0** ⚠️ | 9.0 / 8.2 / 7.4 ✅ |
+| Error | 6.0 / 5.3 / 4.7 ✅ | 5.8 / 5.2 / 4.8 ✅ |
 | Dark text on yellow fill | 11.1 ✅ | 11.1 ✅ |
+| White on amber (`--on-accent`) | n/a | 6.3 ✅ |
 
-**Two known gaps in snow mode:** glacier text and quiet text on the highest surface fall just under 4.5:1. They pass for large text and icons. Use them only at 18px and up (or 14px bold) until the colours are darkened slightly.
+**One known gap:** pine text on the popover surface at night (4.0). Pine tags live on the page and on cards, where they pass. Don't put pine text on `--bg-3`.
+
+**Fixed on 31 Oct 2026:** snow-mode quiet text, amber and glacier were darkened slightly (`#5c636d` to `#565d66`, `#8a6100` to `#7f5900`, `#1a7f7a` to `#13665f`). Before, glacier tags, amber labels inside cards, and quiet text on popovers fell under 4.5:1.
+
+**How to check a new colour:** run it against all three surfaces in both themes. A colour that passes only on the page is not done.
 
 ### Chapter palettes (flexible)
 
@@ -69,22 +75,25 @@ Four fonts, each with one job (fixed). Changing a role changes the whole site's 
 |---|---|---|
 | **Bricolage Grotesque** | Display and interface | Headings, menu, buttons. Weight 300 for large display lines. |
 | **Source Serif 4** | Reading | Essays, notes, learnings, anything longer than two lines |
-| **JetBrains Mono** | Labels and facts | Small uppercase labels (11px, 0.2em tracking), dates, camera settings, the X-ray layer |
-| **Doto** | Dot-matrix numbers | Counters and small numeric accents only. Never sentences. |
+| **JetBrains Mono** | Technical facts | Camera settings, coordinates, code, the X-ray layer |
+| **Doto** | Dot-matrix figures | Dates, altitudes, depths and counts. Never sentences. |
+
+Small uppercase labels above headings ("eyebrows") are set in Bricolage, 12.8px, weight 600, 0.08em tracking, in quiet text. Older pages still use JetBrains Mono for these. Move them over when the page is next touched (see [`COMPONENTS.md`](./COMPONENTS.md#older-pieces-still-on-the-site)).
 
 ### Sizes
 
 | Style | Size | Line height |
 |---|---|---|
-| Display XL | 56 to 112px (scales with screen) | 0.95 |
-| Display L | 40 to 72px | 1.0 |
-| Display M | 28 to 40px | 1.1 |
+| Page title (`bc-h1`) | 40 to 76px, weight 750 | 1.02 |
+| Section title (`bc-h2`) | 26 to 37px, weight 700 | 1.08 |
+| Card title (`bc-h3`) | 19px, weight 650 | 1.2 |
+| Reading (`bc-read`, serif) | 17.6px | 1.7 |
 | Body large | 18px | 1.6 |
 | Body | 16px | 1.55 |
 | Small | 14px | 1.5 |
-| Label | 11px mono, uppercase | 1.5 |
+| Eyebrow label | 12.8px, uppercase | 1.5 |
 
-- Reading text stays between 60 and 64 characters per line.
+- Reading text is at most 66 characters per line (`--bc-read`).
 - Nothing a visitor needs to read is smaller than 11px. Fine print may go to 10px only for legal notes.
 
 ---
@@ -95,10 +104,10 @@ Four fonts, each with one job (fixed). Changing a role changes the whole site's 
 |---|---|---|
 | `--radius-chip` | 4px | Tags |
 | `--radius-input` | 6px | Inputs and buttons |
-| `--radius-card` | 8px | Cards and photos |
-| `--radius-large` | 14px | Large panels, dialogs |
+| `--radius-card` | 8px | Photos and photo frames |
+| `--radius-large` | 14px | Cards, panels, dialogs |
 
-Page side margins scale from 20px on phones to 40px on large screens. Corners stay soft but small. Nothing is fully round except dots and avatars.
+Page side margins scale from 16px on phones to 40px on large screens. The page is at most 1120px wide. Full layout rules are in [`COMPONENTS.md`](./COMPONENTS.md#layout). Corners stay soft but small. Nothing is fully round except dots and avatars.
 
 ---
 

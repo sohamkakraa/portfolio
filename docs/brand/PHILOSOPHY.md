@@ -5,9 +5,9 @@
 The first page of the brand book. Everything on sohamkakra.com is checked against this page before it goes live. If something does not fit, it does not ship, however much we like it.
 
 Status: **draft**. Sections marked ✍️ are waiting for Soham's own words.
-Last reviewed: **21 Oct 2026**. Next review: **Oct 2027** (see [Keeping the book alive](#keeping-the-book-alive)).
+Last reviewed: **31 Oct 2026**. Next review: **Oct 2027** (see [Keeping the book alive](#keeping-the-book-alive)).
 
-The rest of the book: [`VOICE.md`](./VOICE.md) (how we write), [`VISUAL.md`](./VISUAL.md) (how it looks), [`CHAPTER_TEMPLATE.md`](./CHAPTER_TEMPLATE.md) (one card per chapter).
+The rest of the book: [`VOICE.md`](./VOICE.md) (how we write), [`VISUAL.md`](./VISUAL.md) (how it looks), [`COMPONENTS.md`](./COMPONENTS.md) (the building blocks), [`CHAPTER_TEMPLATE.md`](./CHAPTER_TEMPLATE.md) (one card per chapter).
 
 ## How strict is each rule
 
@@ -85,7 +85,7 @@ Each chapter takes its palette from its own photos, so the colours will keep cha
 
 1. **The voice.** One person talking, warm and curious ([`VOICE.md`](./VOICE.md)).
 2. **The type.** The same four fonts in the same roles ([`VISUAL.md`](./VISUAL.md#type)).
-3. **The layout.** The same margins, spacing and reading width.
+3. **The layout.** The same margins, spacing, reading width and building blocks ([`COMPONENTS.md`](./COMPONENTS.md)).
 4. **The mark.** Star trails over a ridge, with the yellow pole star.
 
 Do not try to make every chapter look alike. Make every chapter *sound* alike.
@@ -215,6 +215,7 @@ A brand book that nobody updates stops being followed. So:
 
 | Date | Change |
 |---|---|
+| 31 Oct 2026 | Added `COMPONENTS.md` (layout, menu, buttons, focus, forms, tags, cards, photos, figures, empty states, consent, footer). Darkened three snow-mode colours so every text colour passes 4.5:1 on every surface. `VISUAL.md` now matches the live type, reading width and margins. |
 | 21 Oct 2026 | Added fixed and flexible labels, plain-words navigation, accessibility rules, "what holds the site together", menu labels in the skeleton, and this review routine. Added `VOICE.md` and `VISUAL.md`. |
 | Oct 2026 | Ignition explained. "On AI" replaced by "On automated proposals" and "Words we avoid". |
 | Oct 2026 | First draft: philosophy, method, star story, cosmic map, voice and touchstones. |

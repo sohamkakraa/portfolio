@@ -102,19 +102,20 @@
 
   --ink: #121314;
   --ink-2: #3c4148;
-  --ink-3: #5c636d;
+  --ink-3: #565d66;
 
   --line: rgba(18, 19, 20, 0.10);
   --line-2: rgba(18, 19, 20, 0.22);
 
-  /* Yellow text would vanish on snow, so text accents darken to amber; filled marks stay yellow. */
-  --accent: #8a6100;
+  /* Yellow text would vanish on snow, so text accents darken to amber; filled marks stay yellow.
+     Snow text colours are set to pass 4.5:1 on every surface (--bg, --bg-2, --bg-3). See docs/brand/VISUAL.md. */
+  --accent: #7f5900;
   --accent-fill: #f2c14e;
   --on-accent: #ffffff;
-  --accent-2: #1a7f7a;
-  --glacier: #1a7f7a;
+  --accent-2: #13665f;
+  --glacier: #13665f;
   --pine: #0b4a33;
-  --accent-glow: rgba(138, 97, 0, 0.16);
+  --accent-glow: rgba(127, 89, 0, 0.16);
 
   --bg-surface: var(--bg-2);
   --bg-elevated: var(--bg-3);
@@ -122,7 +123,7 @@
   --fg: var(--ink);
   --fg-muted: var(--ink-2);
   --fg-subtle: var(--ink-3);
-  --accent-hover: #6f4e00;
+  --accent-hover: #664700;
   --gradient-start: var(--accent);
   --gradient-mid: var(--accent-2);
   --gradient-end: var(--accent);
