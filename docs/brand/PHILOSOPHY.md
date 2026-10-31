@@ -38,9 +38,9 @@ Every page, chapter and interaction should show at least one of these tensions. 
 
 | Contrast | Draft sentence | Soham's words ✍️ |
 |---|---|---|
-| **The vast and the small** | The universe is enormous, and it reveals itself in small, slow moments. | |
-| **Still and wandering** | You learn the world by moving through it, and understand it by sitting still. | |
-| **Science and soul** | Everything can be explained, and still be full of wonder. | |
+| **The vast and the small** | The universe is enormous, and it reveals itself in small, slow moments. | The universe is probably endless, and it reveals itself slowly, the more you keep our shutter open, the more moments you see. |
+| **Still and wandering** | You learn the world by moving through it, and understand it by sitting still. | You learn the world by moving through it, and understand it by sitting still. |
+| **Science and soul** | Everything can be explained, and still be full of wonder. | Everything can be explained, and still be full of wonder. |
 
 **What a visitor should feel:** curious, and genuinely interested in what the site is about. ✍️
 
@@ -53,9 +53,9 @@ Things that are always true, on every page. ✍️ *Soham to edit, add or remove
 | # | Absolute | Label |
 |---|---|---|
 | 1 | **Vast and small on every screen.** Something cosmic and something tiny and human. | Flexible |
-| 2 | **Every page teaches one thing.** | Fixed |
-| 3 | **One loud thing per screen.** Everything else is quiet night and soft light. | Fixed |
-| 4 | **Made, not borrowed.** Our own photographs and our own physics-based illustrations. No stock imagery, and no fake stars. | Fixed |
+| 2 | **Every page teaches one thing.** | Flexible |
+| 3 | **One loud thing per screen.** Everything else is quiet night and soft light. | Flexible |
+| 4 | **Made, not borrowed.** Our own photographs and our own physics-based illustrations, citations to our inspirations. | Fixed |
 | 5 | **Every story ends with an open door.** Write to Soham, or join the next trip. | Fixed |
 | 6 | **Plain words to find things, cosmic words to feel things.** See [Finding your way](#finding-your-way). | Fixed |
 | 7 | **Open to everyone.** See [Open to everyone](#open-to-everyone). | Fixed |
