@@ -9,6 +9,7 @@ How sohamkakra.com thinks, sounds and looks. Start with the philosophy. Everythi
 | [Visual](./VISUAL.md) | Colour, contrast, type, shape, motion, the mark and photography |
 | [Building blocks](./COMPONENTS.md) | Layout, menu, buttons, forms, tags, cards and the other pieces pages are made from |
 | [Chapter card](./CHAPTER_TEMPLATE.md) | The form to fill in before building a new trip, project or season |
+| [Handoff](./HANDOFF.md) | Where the homepage redesign stands, for the next working session |
 
 **Fixed** rules hold everywhere. **Flexible** rules are defaults a chapter may bend, and says so on its card.
 
