@@ -259,43 +259,47 @@ export default function DayOnePage() {
         <Photo src="/blog/day-1/sea-rock.webp" alt="A solitary rock in a calm blue sea" caption="Nothing about the storm had changed. I had." note="Costa Brava · 08 Sep" settings={settings.sea} portrait />
 
         <section className="day-section">
-          <div className="day-section-head"><span className="day-index">09 / THE WHY</span><h2>Of course I get scared.</h2></div>
+          <div className="day-section-head"><span className="day-index">09 / THE WHY</span><h2>Of course I&apos;m scared.</h2></div>
           <div className="day-copy">
-            <p>I am scared of heights. Deep water. Failure. Embarrassment. Looking weak. Talking to strangers. Meeting old friends and wondering if they would think I&apos;m uncool, weird or simply boring. Not living up to what people expect from me.</p>
-            <p>I am scared of so much shit.</p>
-            <p>For a while I watched people around me succeed and asked why they had figured out their lives before I had. I compared myself to them, then felt bad because of what I had chosen to look at. Very productive, right?</p>
-            <p>Eventually I stopped treating their lives as evidence that I was failing. Their lives could inspire mine without mine having to look like theirs.</p>
-            <p>I had spent too much time trying to become the version of me that made sense to everyone else. Somewhere in that process, I lost the child in me who did stupid things, stayed curious and did not care so much about looking cool.</p>
-            <p className="day-big">I wanted that person back. There you go. That was my why.</p>
+            <p>I&apos;m scared of heights. I&apos;m scared of deep water. I&apos;m scared of failing at the thing I actually want to do, of embarrassment, not just in front of people but in front of myself. I&apos;m scared of looking weak, of losing to someone, and also the opposite, of someone else winning by beating me. I&apos;m scared of talking to strangers, meeting new people, meeting old friends (whattt!? that should be easy, right? umm nope, what if they think I&apos;m still “uncool” after all these years).</p>
+            <p>I&apos;m scared of so many more things, things I probably haven&apos;t even learnt I&apos;m scared of yet. Does that make any sense? Probably not.</p>
+            <p>“Wait, wasn&apos;t this supposed to be about overcoming fear?” Yeah. I did all of the stuff above, and I&apos;m still scared. The fear just gets quieter the more you do it, the more consistent you are. Not sure it ever truly leaves.</p>
+            <p>So how do you do it? Nike figured it out ages ago. Just do it. That&apos;s all it takes, mate. And if you need to hype yourself up first, try saying “JUST FUCKING DO IT” to yourself. No one else has to hear it, it&apos;s you who needs to.</p>
+            <p>Simple, not easy. My dad always tells me our brains are wired to do as little work as possible. One part of you just wants to chill and give everything a rain check. The other part is curious, greedy, never satisfied. I kept letting the lazy part win, not cuz it&apos;s wrong to be that way, but cuz I never stretched its comfort zone enough to make room for the other one. (Ofc this is my theory, not science. I don&apos;t fully understand it either.)</p>
+            <p>For a long time I was also jealous. Of peers, of people I CHOSE to follow on Instagram, who all seemed to have figured out their why before me. I wasted so much time envying them. Then one day it was just, “that&apos;s it, no more.” I started feeling proud of them instead, thinking about how much work they must have put in. It turned into a kind of attraction, the kind that doesn&apos;t make you want to be like them, it makes you want to find what you mean to yourself.</p>
+            <p>Somewhere along the way, trying to please everyone, trying to make other people happy even if it destroyed mine, I lost the child in me. The one who was happy just existing, who did “crazy” stuff and didn&apos;t give a fuck what other people thought. My childhood friends probably know exactly what I&apos;m talking about. I missed that about me.</p>
+            <p className="day-big">I wanted that back. There you go, that was my why.</p>
+            <p>A why has to be yours though. Bespoke, tailored by your own thoughts. Mine came from trial and error, and from stuff I&apos;d seen long back and forgotten about, like this talk, which my brain decided to resurface right when I needed it.</p>
             <Reference href="https://www.ted.com/talks/simon_sinek_how_great_leaders_inspire_action" label="A thought that stayed with me" title="Simon Sinek · How Great Leaders Inspire Action" />
           </div>
         </section>
 
         <section className="day-section">
-          <div className="day-section-head"><span className="day-index">10 / CONTROL</span><h2>I don&apos;t want to pretend the route here was clean.</h2></div>
+          <div className="day-section-head"><span className="day-index">10 / CONTROL</span><h2>Not proud of this one.</h2></div>
           <div className="day-copy">
-            <p>After my mom passed, there were moments when I confused rebellion with control.</p>
-            <p>I smoked my first cigarette even though my mom and brother had spent my whole childhood telling me that smoking was the one thing I should never do.</p>
-            <p>At the time it felt like I was taking control of my life. Looking back, it sounds fucking ridiculous. But it was real.</p>
-            <p>I don&apos;t claim I am a changed man. I am just trying to change what I use my freedom for.</p>
-            <p>I&apos;m a nobody to judge anyone. Good and bad, right and wrong, are shaped by our surroundings, society and culture. I&apos;m trying to observe more and jump to conclusions less. Easier said than done, yes. But at least I try.</p>
+            <p>It&apos;s not easy admitting flaws, but since I&apos;m here doing it.</p>
+            <p>I was living alone, feeling lonely, and I let it consume me. I picked up habits I told myself I&apos;d never ever do, and I hit rock bottom when I smoked my first cigarette. (Not saying people who smoke are bad. It&apos;s just that since childhood my mom and brother told me the one thing I should never do is smoke.)</p>
+            <p>I felt guilty, and then I was like ahhh who the fuck cares, my mom&apos;s gone, she can&apos;t tell me what to do anymore. It felt like a way to control my life the way I wanted to. And yes 😅 I genuinely looked at it as an accomplishment. Wow, my first cigarette, I now know how to smoke.</p>
+            <p>There are more “bad” habits. The kind where you get the thrill and wake up the next morning feeling guilty as hell (yes, Maroon 5). Not telling you what they are yet, cuz I haven&apos;t beaten them. But this is a note for you: hold me accountable. Once I do get rid of them, I&apos;ll tell you how, in case you&apos;re stuck with the same ones.</p>
+            <p>I don&apos;t claim I&apos;m a changed man. But I do feel a lot happier now, a lot more confident in myself and in the people around me. I started seeing the good in people I used to judge for not aligning with my values. Friends, family, ffs even loved ones. I&apos;m a nobody to judge anyone anyway.</p>
           </div>
         </section>
 
         <section className="day-section">
           <div className="day-section-head"><span className="day-index">11 / I DON&apos;T KNOW</span><h2>Still figuring it out.</h2></div>
           <div className="day-copy">
-            <p>I don&apos;t know exactly what career I want. I don&apos;t know whether fear ever properly leaves. I don&apos;t know how many ideas in my head will ever see daylight.</p>
-            <p>I don&apos;t know what tomorrow looks like. Maybe growing up is not finally figuring everything out. Maybe it is becoming okay enough with uncertainty to move anyway.</p>
-            <p>I want to stay curious. Maybe someone teaches me something. Maybe I teach them something. Maybe we just have a nice evening and never see each other again.</p>
-            <p>That is enough too.</p>
+            <p>“So Soham, have you figured it all out now?” Haha, no. I don&apos;t know if fear ever properly leaves, and I don&apos;t know how many of the ideas in my head will ever see the light of day.</p>
+            <p>But something did change on this trip. I came back excited. Excited to learn more and see what I can actually produce in my field. Excited to take on new projects. I genuinely can&apos;t wait to get started.</p>
+            <p>I want to learn a bit of everything, enough to have a proper conversation with someone who knows more than me, or someone who wants to learn too. Seems like way too much for one lifetime. Probably worth it.</p>
+            <p>I don&apos;t want to imagine what tomorrow looks like and set expectations for it. I want life to keep surprising me, inspiring me. (Yes, that&apos;s from ZNMD, and I truly only understood it now.)</p>
+            <p className="day-big">I want to live like a dog. Just happy in every moment. Even when I&apos;m sad, I want to be happy about being sad.</p>
             <Reference href="https://www.imdb.com/title/tt1562872/" label="A film I finally understood" title="Zindagi Na Milegi Dobara" />
           </div>
         </section>
       </main>
 
       <footer className="day-ending">
-        <p>I wrote the original rant after returning to the campsite, while everything was still racing through my head.</p>
+        <p>I wrote the original rant sitting at the campsite bar after running back up that trail, a 1.5 litre bottle of water on the counter to quench my thirst, chatting with the bartender and his girlfriend. What a beautiful evening that was.</p>
         <p>Sometimes one “hi” is enough to open an entirely different version of an evening.</p>
         <p>I want to be able to love myself. One step at a time ig.</p>
         <p>Love you, Mom. Thank you for all the love and care you gave me. I could not be more grateful.</p>

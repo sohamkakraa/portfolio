@@ -2,6 +2,15 @@ import type { NextConfig } from "next";
 
 const isDev = process.env.NODE_ENV !== "production";
 
+// Google Analytics is allowed through the CSP only when a measurement ID is configured, so a build
+// without one keeps the stricter first-party-only policy.
+const gaEnabled = /^G-[A-Z0-9]{6,14}$/.test(process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim() ?? "");
+const gaScript = gaEnabled ? " https://www.googletagmanager.com" : "";
+const gaImg = gaEnabled ? " https://www.google-analytics.com https://*.google-analytics.com https://*.googletagmanager.com" : "";
+const gaConnect = gaEnabled
+  ? " https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com"
+  : "";
+
 const securityHeaders = [
   { key: "X-DNS-Prefetch-Control", value: "on" },
   // SAMEORIGIN, not DENY, because the admin replay stages a live copy of the site in an iframe.
@@ -23,12 +32,13 @@ const securityHeaders = [
       // unsafe-eval is React Refresh in dev only, so production does not carry it. unsafe-inline
       // stays for now because App Router emits inline hydration scripts; removing it needs a
       // nonce threaded through middleware, which is a change worth making on its own.
-      `script-src 'self' ${isDev ? "'unsafe-eval' " : ""}'unsafe-inline'`,
+      `script-src 'self' ${isDev ? "'unsafe-eval' " : ""}'unsafe-inline'${gaScript}`,
       "style-src 'self' 'unsafe-inline'",
       // data: for SVG grain overlay; blob: for image previews; book covers proxied via /api/book-cover
-      "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://photography.sohamkakra.com",
-      // Measurement is first-party now, so it needs nothing beyond the site's own origin.
-      "connect-src 'self'",
+      `img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://photography.sohamkakra.com${gaImg}`,
+      // First-party measurement needs only the site's own origin; Google Analytics adds its
+      // collection endpoints when it is configured.
+      `connect-src 'self'${gaConnect}`,
       "font-src 'self'",
       "frame-ancestors 'self'",
       "form-action 'self'",
@@ -53,6 +63,14 @@ const nextConfig: NextConfig = {
           { key: "Service-Worker-Allowed", value: "/" },
         ],
       },
+    ];
+  },
+  // The road homepage and its walkthroughs were retired for the logbook.
+  async redirects() {
+    return [
+      { source: "/journeys", destination: "/logbook", permanent: true },
+      { source: "/journeys/:path*", destination: "/logbook", permanent: true },
+      { source: "/about", destination: "/work", permanent: false },
     ];
   },
   images: {

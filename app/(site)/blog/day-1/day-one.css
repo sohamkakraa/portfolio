@@ -1,9 +1,11 @@
 .day-one {
-  --day-sand: #d9ae68;
-  --day-sea: #7599ad;
-  --day-night: #070b10;
+  /* Follows the site theme. Anything set over a photograph re-pins --day-ink to snow below. */
+  --day-sand: var(--accent);
+  --day-sea: var(--glacier);
+  --day-night: var(--bg);
+  --day-ink: var(--ink);
   background: var(--day-night);
-  color: #f4f0e8;
+  color: var(--day-ink);
   overflow: clip;
 }
 
@@ -14,7 +16,7 @@
   inset: 63px 0 auto;
   height: 2px;
   z-index: 60;
-  background: rgba(255,255,255,.08);
+  background: color-mix(in oklab, var(--day-ink) 8.0%, transparent);
 }
 
 .day-progress span {
@@ -34,17 +36,17 @@
   gap: 8px;
   max-width: 180px;
   padding-left: 15px;
-  border-left: 1px solid rgba(255,255,255,.18);
+  border-left: 1px solid color-mix(in oklab, var(--day-ink) 18.0%, transparent);
   transform: translateY(-50%);
   pointer-events: none;
 }
 
 .day-chapter-rail span {
-  font-family: var(--font-jetbrains), monospace;
+  font-family: var(--font-bricolage), system-ui, sans-serif;
   font-size: 7px;
   letter-spacing: .18em;
   text-transform: uppercase;
-  color: rgba(244,240,232,.35);
+  color: color-mix(in oklab, var(--day-ink) 35%, transparent);
 }
 
 .day-chapter-rail strong {
@@ -52,7 +54,7 @@
   font-size: 14px;
   line-height: 1.25;
   font-weight: 400;
-  color: rgba(244,240,232,.72);
+  color: color-mix(in oklab, var(--day-ink) 72%, transparent);
 }
 
 .day-hero {
@@ -96,17 +98,17 @@
 .day-stamp,
 .day-index,
 .day-route-label {
-  font-family: var(--font-jetbrains), monospace;
+  font-family: var(--font-bricolage), system-ui, sans-serif;
   text-transform: uppercase;
   letter-spacing: .18em;
 }
 
-.day-kicker { font-size: 11px; color: #d7c9b2; }
+.day-kicker { font-size: 11px; color: color-mix(in oklab, var(--day-ink) 80%, transparent); }
 
 .day-title {
   max-width: 1050px;
   margin: 18px 0 22px;
-  font-family: var(--font-fraunces), serif;
+  font-family: var(--font-bricolage), serif;
   font-size: clamp(64px, 11.5vw, 176px);
   font-weight: 300;
   letter-spacing: -.065em;
@@ -119,7 +121,7 @@
   font-family: var(--day-body-font);
   font-size: clamp(17px, 2vw, 23px);
   line-height: 1.55;
-  color: rgba(244,240,232,.74);
+  color: color-mix(in oklab, var(--day-ink) 74%, transparent);
 }
 
 .day-meta {
@@ -127,16 +129,16 @@
   gap: 28px;
   flex-wrap: wrap;
   margin-top: 38px;
-  font-family: var(--font-jetbrains), monospace;
+  font-family: var(--font-bricolage), system-ui, sans-serif;
   font-size: 10px;
   letter-spacing: .16em;
   text-transform: uppercase;
-  color: rgba(244,240,232,.56);
+  color: color-mix(in oklab, var(--day-ink) 56%, transparent);
 }
 
 .day-route {
-  background: #0b1118;
-  border-block: 1px solid rgba(255,255,255,.09);
+  background: var(--bg-2);
+  border-block: 1px solid color-mix(in oklab, var(--day-ink) 9.0%, transparent);
   padding: 28px 20px;
 }
 
@@ -151,16 +153,16 @@
 }
 
 .day-route-stop { display: grid; gap: 6px; }
-.day-route-label { font-size: 8px; color: rgba(244,240,232,.4); }
-.day-route-city { font-family: var(--font-fraunces), serif; font-size: clamp(16px, 2.2vw, 25px); }
-.day-route-line { width: 100%; height: 1px; background: rgba(255,255,255,.2); position: relative; }
+.day-route-label { font-size: 8px; color: color-mix(in oklab, var(--day-ink) 40%, transparent); }
+.day-route-city { font-family: var(--font-bricolage), serif; font-size: clamp(16px, 2.2vw, 25px); }
+.day-route-line { width: 100%; height: 1px; background: color-mix(in oklab, var(--day-ink) 20.0%, transparent); position: relative; }
 .day-route-line::after { content: ""; position: absolute; right: 0; top: -2px; width: 5px; height: 5px; border-radius: 50%; background: var(--day-sand); }
 
 .day-article {
   padding: clamp(80px, 12vw, 170px) 0;
   background:
     radial-gradient(circle at 80% 10%, rgba(88,122,143,.12), transparent 24%),
-    #0b0e12;
+    var(--bg-2);
 }
 
 .day-section {
@@ -175,13 +177,13 @@
 .day-index { display: block; margin-bottom: 15px; font-size: 9px; color: var(--day-sand); }
 .day-section h2 {
   margin: 0;
-  font-family: var(--font-fraunces), serif;
+  font-family: var(--font-bricolage), serif;
   font-size: clamp(42px, 7vw, 88px);
   font-weight: 300;
   line-height: .98;
   letter-spacing: -.045em;
 }
-.day-stamp { display: block; margin-top: 18px; font-size: 9px; color: rgba(244,240,232,.42); }
+.day-stamp { display: block; margin-top: 18px; font-size: 9px; color: color-mix(in oklab, var(--day-ink) 42%, transparent); }
 
 .day-copy { width: min(680px, 100%); margin-inline: auto; }
 .day-copy p {
@@ -189,17 +191,17 @@
   font-family: var(--day-body-font);
   font-size: clamp(18px, 1.6vw, 21px);
   line-height: 1.82;
-  color: rgba(244,240,232,.79);
+  color: color-mix(in oklab, var(--day-ink) 79%, transparent);
 }
 .day-copy p { line-height: 1.72; }
-.day-copy p:first-child { color: #f4f0e8; }
+.day-copy p:first-child { color: var(--day-ink); }
 .day-copy .day-big {
   margin-block: 1.3em;
-  font-family: var(--font-fraunces), serif;
+  font-family: var(--font-bricolage), serif;
   font-size: clamp(32px, 5vw, 58px);
   line-height: 1.08;
   letter-spacing: -.035em;
-  color: #f4f0e8;
+  color: var(--day-ink);
 }
 .day-copy .day-punch { color: var(--day-sand); font-weight: 600; }
 
@@ -208,7 +210,7 @@
   width: min(1240px, calc(100% - 32px));
   margin: clamp(60px, 9vw, 120px) auto;
 }
-.day-photo-frame { position: relative; overflow: hidden; background: #080b0e; }
+.day-photo-frame { position: relative; overflow: hidden; background: var(--bg-2); }
 .day-photo img {
   display: block;
   width: 100%;
@@ -222,12 +224,12 @@
   justify-content: space-between;
   gap: 20px;
   margin-top: 12px;
-  font-family: var(--font-jetbrains), monospace;
+  font-family: var(--font-bricolage), system-ui, sans-serif;
   font-size: 9px;
   line-height: 1.5;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: rgba(244,240,232,.4);
+  color: color-mix(in oklab, var(--day-ink) 40%, transparent);
 }
 
 .day-diptych {
@@ -247,12 +249,12 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 1px;
   margin: 50px 0;
-  background: rgba(255,255,255,.12);
-  border: 1px solid rgba(255,255,255,.12);
+  background: color-mix(in oklab, var(--day-ink) 12.0%, transparent);
+  border: 1px solid color-mix(in oklab, var(--day-ink) 12.0%, transparent);
 }
-.day-stat { padding: 24px 18px; background: #0b0e12; }
-.day-stat strong { display: block; font-family: var(--font-fraunces), serif; font-size: clamp(28px, 4vw, 42px); font-weight: 300; color: var(--day-sand); }
-.day-stat span { display: block; margin-top: 6px; font-family: var(--font-jetbrains), monospace; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: rgba(244,240,232,.42); }
+.day-stat { padding: 24px 18px; background: var(--bg-2); }
+.day-stat strong { display: block; font-family: var(--font-bricolage), serif; font-size: clamp(28px, 4vw, 42px); font-weight: 300; color: var(--day-sand); }
+.day-stat span { display: block; margin-top: 6px; font-family: var(--font-bricolage), system-ui, sans-serif; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: color-mix(in oklab, var(--day-ink) 42%, transparent); }
 
 .day-reference {
   display: grid;
@@ -261,13 +263,13 @@
   align-items: end;
   margin: 46px 0;
   padding: 24px;
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(255,255,255,.025);
+  border: 1px solid color-mix(in oklab, var(--day-ink) 12.0%, transparent);
+  background: color-mix(in oklab, var(--day-ink) 2.5%, transparent);
   transition: background .2s, border-color .2s;
 }
-.day-reference:hover { background: rgba(255,255,255,.055); border-color: rgba(217,174,104,.45); }
-.day-reference small { display: block; margin-bottom: 10px; font-family: var(--font-jetbrains), monospace; font-size: 8px; letter-spacing: .18em; color: var(--day-sand); text-transform: uppercase; }
-.day-reference strong { font-family: var(--font-fraunces), serif; font-size: clamp(22px, 3vw, 32px); font-weight: 300; }
+.day-reference:hover { background: color-mix(in oklab, var(--day-ink) 5.5%, transparent); border-color: rgba(217,174,104,.45); }
+.day-reference small { display: block; margin-bottom: 10px; font-family: var(--font-bricolage), system-ui, sans-serif; font-size: 8px; letter-spacing: .18em; color: var(--day-sand); text-transform: uppercase; }
+.day-reference strong { font-family: var(--font-bricolage), serif; font-size: clamp(22px, 3vw, 32px); font-weight: 300; }
 .day-reference span { font-size: 24px; color: var(--day-sand); }
 
 .day-storm {
@@ -282,8 +284,8 @@
 .day-storm-image img { transform: translate3d(0, var(--day-parallax, 0), 0) scale(1.08); will-change: transform; }
 .day-storm::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(rgba(4,7,10,.35), rgba(4,7,10,.83)); }
 .day-storm-copy { position: relative; z-index: 1; width: min(850px, calc(100% - 40px)); text-align: center; }
-.day-storm-copy p { margin: 0; font-family: var(--font-fraunces), serif; font-size: clamp(38px, 7vw, 92px); line-height: 1.02; letter-spacing: -.045em; }
-.day-storm-copy span { display: block; margin-top: 22px; font-family: var(--font-jetbrains), monospace; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.52); }
+.day-storm-copy p { margin: 0; font-family: var(--font-bricolage), serif; font-size: clamp(38px, 7vw, 92px); line-height: 1.02; letter-spacing: -.045em; }
+.day-storm-copy span { display: block; margin-top: 22px; font-family: var(--font-bricolage), system-ui, sans-serif; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: color-mix(in oklab, var(--day-ink) 52.0%, transparent); }
 
 .day-camera-settings {
   position: absolute;
@@ -303,10 +305,10 @@
   display: flex;
   gap: 3px;
   padding: 5px;
-  border: 1px solid rgba(255,255,255,.15);
+  border: 1px solid color-mix(in oklab, var(--day-ink) 15.0%, transparent);
   border-radius: 8px;
   background: rgba(5,9,13,.68);
-  color: #f4f0e8;
+  color: var(--day-ink);
   box-shadow: 0 12px 32px rgba(0,0,0,.2);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -324,8 +326,8 @@
 }
 
 .day-camera-settings svg:not(.day-camera-trigger) { grid-row: 1 / 3; align-self: center; width: 14px; height: 14px; color: var(--day-sand); stroke-width: 1.4; }
-.day-camera-settings small { font-family: var(--font-jetbrains), monospace; font-size: 6px; line-height: 1; letter-spacing: .12em; text-transform: uppercase; color: rgba(244,240,232,.44); }
-.day-camera-settings strong { font-family: var(--font-jetbrains), monospace; font-size: 9px; line-height: 1.25; font-weight: 400; letter-spacing: .04em; }
+.day-camera-settings small { font-family: var(--font-bricolage), system-ui, sans-serif; font-size: 6px; line-height: 1; letter-spacing: .12em; text-transform: uppercase; color: color-mix(in oklab, var(--day-ink) 44%, transparent); }
+.day-camera-settings strong { font-family: var(--font-bricolage), system-ui, sans-serif; font-size: 9px; line-height: 1.25; font-weight: 400; letter-spacing: .04em; }
 .day-camera-trigger { display: none; width: 15px; height: 15px; stroke-width: 1.4; }
 
 .day-camera-settings.is-previewing,
@@ -369,10 +371,10 @@
   .day-camera-settings.is-pinned .day-camera-trigger { display: none; }
 }
 
-.day-ending { text-align: center; padding: clamp(80px, 15vw, 180px) 20px; background: #e9dfcf; color: #171616; }
-.day-ending p { max-width: 720px; margin: 0 auto 24px; font-size: clamp(18px, 2vw, 23px); line-height: 1.7; color: rgba(23,22,22,.7); }
+.day-ending { text-align: center; padding: clamp(80px, 15vw, 180px) 20px; background: var(--bg-2); color: var(--ink); }
+.day-ending p { max-width: 720px; margin: 0 auto 24px; font-size: clamp(18px, 2vw, 23px); line-height: 1.7; color: var(--ink-2); }
 .day-ending p { font-family: var(--day-body-font); }
-.day-ending h2 { max-width: 1000px; margin: 55px auto 0; font-family: var(--font-fraunces), serif; font-size: clamp(58px, 11vw, 150px); font-weight: 300; line-height: .84; letter-spacing: -.065em; }
+.day-ending h2 { max-width: 1000px; margin: 55px auto 0; font-family: var(--font-bricolage), serif; font-size: clamp(58px, 11vw, 150px); font-weight: 300; line-height: .84; letter-spacing: -.065em; }
 
 .day-motion-ready .day-section,
 .day-motion-ready .day-photo,
@@ -451,3 +453,6 @@
   .day-motion-ready .day-storm,
   .day-motion-ready .day-section .day-copy > p { opacity: 1; transform: none; animation: none; transition: none; }
 }
+
+/* Text that sits on a photograph stays snow-coloured in both themes. */
+.day-hero, .day-storm, .day-camera-settings { --day-ink: #eef0ec; }

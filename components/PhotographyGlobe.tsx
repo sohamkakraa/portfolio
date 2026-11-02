@@ -14,6 +14,7 @@ import type {
   PhotographySection as PhotographySectionType,
   PhotoItem,
 } from "@/lib/portfolio-types";
+import { PHOTO_CATEGORY_COPY, PHOTOS_COPY } from "@/lib/basecamp/copy";
 
 type EnrichedLocation = {
   city: string;
@@ -214,29 +215,12 @@ export default function PhotographyGlobe({ section }: Props) {
           }}
         >
           <div>
-            <div className="label">{"// 03 · field journal"}</div>
-            <h2
-              className="serif"
-              style={{
-                marginTop: 12,
-                fontSize: "clamp(40px, 5.5vw, 72px)",
-                fontWeight: 300,
-                lineHeight: 1,
-                letterSpacing: "-0.03em",
-                color: "var(--ink)",
-              }}
-            >
-              <em style={{ color: "var(--accent)", fontStyle: "italic" }}>Photographs</em>, mapped to memory.
-            </h2>
-            <p
-              style={{
-                marginTop: 16,
-                fontSize: 15,
-                color: "var(--ink-2)",
-                maxWidth: 540,
-              }}
-            >
-              Filter by category or city. The globe re-aims at the densest region of whatever you select.
+            <div className="bc-eyebrow">{PHOTOS_COPY.eyebrow}</div>
+            <h1 className="bc-h1" style={{ marginTop: 12 }}>
+              {PHOTOS_COPY.title}
+            </h1>
+            <p className="bc-read bc-lede" style={{ marginTop: 16 }}>
+              {PHOTOS_COPY.intro}
             </p>
           </div>
           <div
@@ -439,6 +423,11 @@ export default function PhotographyGlobe({ section }: Props) {
                 preview · {Math.min(filtered.length, 12)} of {filtered.length}
               </span>
             </div>
+            {category && !city && PHOTO_CATEGORY_COPY[category] ? (
+              <p className="bc-read" style={{ fontSize: "1.02rem", margin: "-4px 0 14px", flexShrink: 0 }}>
+                {PHOTO_CATEGORY_COPY[category]}
+              </p>
+            ) : null}
             <div
               style={{
                 overflow: "hidden",
@@ -1065,7 +1054,7 @@ function ViewAllOverlay({
         }}
       >
         <div className="flex items-center gap-3">
-          <span className="mono-label" style={{ color: "var(--ink-3)" }}>field journal · full archive</span>
+          <span className="mono-label" style={{ color: "var(--ink-3)" }}>{PHOTOS_COPY.archive}</span>
           {categoryTitle && (
             <FilterChip label={categoryTitle} onClear={onClearCategory} />
           )}

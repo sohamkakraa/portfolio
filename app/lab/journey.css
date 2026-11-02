@@ -68,7 +68,7 @@ html.light:has(.lab) body {
   position: relative;
   min-height: 100vh;
   color: var(--l-ink);
-  font-family: var(--font-inter), system-ui, sans-serif;
+  font-family: var(--font-bricolage), system-ui, sans-serif;
   overflow-x: hidden;
 
   /* The lab owns its own surface. It must never inherit the site's light theme. */
@@ -257,7 +257,7 @@ html.light .lab--pale-in-light:not(.lab--on-snow) .lab-route-stop {
   color: var(--l-accent);
 }
 .lab-display {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-bricolage), Georgia, serif;
   font-optical-sizing: auto;
   font-weight: 300;
   letter-spacing: -0.025em;
@@ -290,7 +290,7 @@ html.light .lab--pale-in-light:not(.lab--on-snow) .lab-route-stop {
   margin: 0;
 }
 .lab-italic {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-bricolage), Georgia, serif;
   font-style: italic;
   font-weight: 400;
   color: var(--l-ink-3);

@@ -14,16 +14,37 @@ function link(url, label = url) {
   return `<a href="${escapeHtml(href)}">${escapeHtml(label)}</a>`;
 }
 
+const icons = {
+  location:
+    '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+  email: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
+  phone: '<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>',
+  website:
+    '<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+  linkedin:
+    '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>',
+  github:
+    '<path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/>',
+};
+
+// Icons are decorative SVG, so text extraction (and applicant tracking systems) still reads plain text.
+function icon(name) {
+  return `<svg class="contact-icon" viewBox="0 0 24 24" aria-hidden="true">${icons[name]}</svg>`;
+}
+
 function renderContact(phone) {
   const items = [
-    `<a href="mailto:${escapeHtml(profile.email)}">${escapeHtml(profile.email)}</a>`,
-    phone ? `<a href="tel:${escapeHtml(phone.replaceAll(" ", ""))}">${escapeHtml(phone)}</a>` : "",
-    link(profile.website),
-    link(profile.linkedin),
-    link(profile.github),
+    ["location", escapeHtml(profile.location)],
+    ["email", `<a href="mailto:${escapeHtml(profile.email)}">${escapeHtml(profile.email)}</a>`],
+    phone
+      ? ["phone", `<a href="tel:${escapeHtml(phone.replaceAll(" ", ""))}">${escapeHtml(phone)}</a>`]
+      : null,
+    ["website", link(profile.website)],
+    ["linkedin", link(profile.linkedin)],
+    ["github", link(profile.github)],
   ].filter(Boolean);
 
-  return items.map((item) => `<span>${item}</span>`).join("");
+  return items.map(([name, item]) => `<span>${icon(name)}${item}</span>`).join("");
 }
 
 function renderRole(role) {
@@ -92,7 +113,7 @@ export function renderResume({ variant, stylesheet, phone = "" }) {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>${escapeHtml(profile.name)} — Resume</title>
+    <title>${escapeHtml(profile.name)} · Resume</title>
     <style>${stylesheet}</style>
   </head>
   <body>
@@ -101,7 +122,6 @@ export function renderResume({ variant, stylesheet, phone = "" }) {
         <h1>${escapeHtml(profile.name)}</h1>
         <p class="headline">${escapeHtml(variant.headline)}</p>
         <div class="contact" aria-label="Contact details">
-          <span>${escapeHtml(profile.location)}</span>
           ${renderContact(phone)}
         </div>
         <div class="signal" aria-label="Professional focus">

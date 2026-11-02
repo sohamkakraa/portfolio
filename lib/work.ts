@@ -163,18 +163,18 @@ export const WORK: Role[] = [
       "An adaptive retrieval system that generates structure on demand for complex enterprise queries, rather than relying on an index built in advance for questions nobody had asked yet. It began as both the thesis and the internship. Alongside it: a 3D designer-and-printer agent that lives in Slack, and a standing habit of evaluating models and agentic tooling in my own time.",
   },
   {
-    id: "prosus-traineeship",
+    id: "prosus-talent-lab",
     org: "Prosus",
-    role: "Traineeship",
+    role: "Talent Lab resident",
     city: "Amsterdam",
-    span: "From 01 Oct 2026",
+    span: "Oct 2026 – now",
     years: "Oct 2026–",
     kind: "role",
-    status: "upcoming",
+    status: "current",
     chapter: "eindhoven",
-    line: "Prosus · Amsterdam · Traineeship · from 01 Oct 2026",
-    note: "The next chapter at Prosus, starting 1 October.",
-    detail: "Scheduled to begin on 1 October 2026. Details will follow once the work has started.",
+    line: "Prosus · Amsterdam · Talent Lab resident · Oct 2026 – now",
+    note: "Back at Prosus, this time in the Talent Lab.",
+    detail: "Started on 1 October 2026. My project for the next few months is not decided yet, so for now I am learning from people across the company and the fields they work in.",
   },
 ];
 
@@ -183,7 +183,7 @@ export const WORK_ARC = {
   eyebrow: "2021 – NOW · SEVEN ROLES, TWO HALVES",
   title: "From making other people's work legible to building things that decide",
   body:
-    "The first half of this list is infrastructure for humans: an employee management system, a learning platform, dashboards for finance and risk, an intranet for a company running on email. Useful, and all of it fundamentally a way of showing people what was already true about their own organisation. The second half stopped being about presenting information and started being about acting on it — Copilot agents taking over a helpdesk, a summer spent judging what seventy AI companies were actually capable of, a retrieval system that builds its own structure, and next a traineeship at Prosus. The Gulf years taught me what a business needs before it can be automated. That is the part most people building agents skip.",
+    "The first half of this list is infrastructure for humans: an employee management system, a learning platform, dashboards for finance and risk, an intranet for a company running on email. Useful, and all of it fundamentally a way of showing people what was already true about their own organisation. The second half stopped being about presenting information and started being about acting on it — Copilot agents taking over a helpdesk, a summer spent judging what seventy AI companies were actually capable of, a retrieval system that builds its own structure, and now the Talent Lab at Prosus. The Gulf years taught me what a business needs before it can be automated. That is the part most people building agents skip.",
 };
 
 export function rolesIn(chapter: string): Role[] {

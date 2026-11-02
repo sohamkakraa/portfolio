@@ -1,0 +1,19 @@
+.cm { max-width: 860px; margin: 0 auto; padding: 48px 20px 96px; color: var(--ink); display: grid; gap: 40px; }
+.cm h1 { font-family: var(--font-display); font-size: 2rem; font-weight: 700; margin: 0; }
+.cm h2 { font-family: var(--font-display); font-size: 1.2rem; font-weight: 650; margin: 0 0 12px; }
+.cm h3 { font-family: var(--font-display); font-size: 1rem; font-weight: 600; margin: 16px 0 8px; display: flex; gap: 8px; }
+.cm h3 span { color: var(--ink-3); font-weight: 500; }
+.cm-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px; }
+.cm-head nav { display: flex; gap: 16px; font-size: 0.95rem; }
+.cm-head a { color: var(--accent); }
+.cm-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.cm-row { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius-card); padding: 14px 16px; display: grid; gap: 6px; }
+.cm-row--signup { grid-template-columns: 1fr auto auto; align-items: center; gap: 12px; }
+.cm-q { font-size: 0.85rem; color: var(--ink-3); }
+.cm-text { margin: 0; font-family: var(--font-read), Georgia, serif; font-size: 1.05rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+.cm-meta { font-size: 0.85rem; color: var(--ink-3); }
+.cm-email { overflow-wrap: anywhere; min-width: 0; }
+.cm-actions { display: flex; gap: 8px; margin-top: 4px; }
+.cm-btn { font: inherit; font-size: 0.9rem; padding: 6px 12px; border-radius: var(--radius-input); border: 1px solid var(--line-2); background: transparent; color: var(--ink); cursor: pointer; }
+.cm-btn--yes { background: var(--accent-fill); color: #121314; border-color: var(--accent-fill); font-weight: 600; }
+.cm-empty, .cm-note { color: var(--ink-3); margin: 0; }

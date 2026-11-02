@@ -101,7 +101,7 @@ const CATEGORY_SEEDS: Omit<PhotographyCategory, "images">[] = [
 const basePortfolioData: Omit<PortfolioData, "photography"> = {
   site: {
     name: "Soham Kakra",
-    role: "Incoming trainee at Prosus · starts 1 October",
+    role: "AI Engineer · Talent Lab resident at Prosus",
     location: "Eindhoven, NL",
     email: "sohamkakra@gmail.com",
     nav: [
@@ -159,7 +159,7 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
     body:
       "I completed an M.Sc. in Data Science and AI at Eindhoven University of Technology (TU/e) in 2026. Across internships and independent products, I have worked on AI/ML-driven systems, full-stack applications, and analytics workflows that improve real decision-making.",
     highlights: [
-      "Prosus, Amsterdam · AI internship and master's thesis (Apr–28 Aug 2026) · traineeship from Oct 2026",
+      "Prosus, Amsterdam · AI internship and master's thesis (Apr–28 Aug 2026) · Talent Lab resident from Oct 2026",
       "Eindhoven University of Technology (TU/e) · M.Sc. Data Science & AI (2024–2026)",
       "Etihad Credit Insurance, Dubai · Data Analyst & IT Support (2023–2024)",
       "Heriot-Watt University Dubai · B.Sc. Computer Science, AI (2020–2023)",
@@ -177,7 +177,7 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
     meta: [
       { label: "Based in",  value: "Eindhoven, NL" },
       { label: "Degree",    value: "M.Sc. DS&AI · TU/e" },
-      { label: "Next",      value: "Prosus traineeship · 01 Oct" },
+      { label: "Now",       value: "Talent Lab resident · Prosus" },
       { label: "Reach",     value: "sohamkakra@gmail.com" },
     ],
     portraitLabel: "// portrait",
@@ -425,7 +425,7 @@ const basePortfolioData: Omit<PortfolioData, "photography"> = {
   contact: {
     title: "Get in touch",
     description:
-      "I recently completed my M.Sc. in Data Science and AI at TU/e and start a traineeship with Prosus on 1 October 2026. I am always open to conversations about AI, data systems, and full-stack product work.",
+      "I recently completed my M.Sc. in Data Science and AI at TU/e and since 1 October 2026 I am a Talent Lab resident at Prosus in Amsterdam. I am always open to conversations about AI, data systems, and full-stack product work.",
     ctaLabel: "Email me",
     email: "sohamkakra@gmail.com",
     headline: ["Let's {{em}}build{{/em}}", "something {{em}}quietly bold{{/em}}."],

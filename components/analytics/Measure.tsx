@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useReportWebVitals } from "next/web-vitals";
 import { getConsent, serverConsent, subscribeConsent } from "@/lib/analytics/consent";
 import { start, stop, view, vital } from "@/lib/analytics/client";
+import { gaStart, gaStop, gaView } from "@/lib/analytics/ga";
 import ConsentNote from "./ConsentNote";
 
 /**
@@ -37,6 +38,20 @@ export default function Measure() {
   // Runs after the effect above on mount, so the first view lands on a live collector.
   useEffect(() => {
     if (live) view(pathname);
+  }, [live, pathname]);
+
+  // Google Analytics follows the same switch: loaded on consent, stopped and cleaned up on withdrawal.
+  useEffect(() => {
+    if (!live) {
+      gaStop();
+      return;
+    }
+    gaStart();
+    return () => gaStop();
+  }, [live]);
+
+  useEffect(() => {
+    if (live) gaView(pathname);
   }, [live, pathname]);
 
   useReportWebVitals((metric) => {
