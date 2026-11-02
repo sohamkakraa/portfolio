@@ -36,5 +36,7 @@ Recommendation so far: **1 as the backbone, 2 as the personality.** Not yet chos
 
 - Plain words in menus and links. Creativity goes into what people see and feel, not into labels.
 - No "AI" in site copy. No em dashes. British spelling.
-- One loud thing per screen. Reduced motion gets a still version of everything.
-- Only Soham's own photos. Never fake stars.
+- "One loud thing" and "teaches one thing" are now flexible (Soham's edit, 31 Oct). He loosened them on purpose to leave room for creativity.
+- Reduced motion gets a still version of everything.
+- Only Soham's own photos, with credit to inspirations. Never fake stars (fixed rule in `VISUAL.md`).
+- His own words for "the vast and the small": *the more you keep your shutter open, the more moments you see.* A strong seed for idea 1.
